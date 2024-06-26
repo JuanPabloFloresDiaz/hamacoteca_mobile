@@ -113,7 +113,7 @@ const LoginScreen = ({ logueado, setLogueado }) => {
               <Ionicons name={passwordVisible ? "eye-outline" : "eye-off-outline"} size={20} style={styles.iconRight} />
             </TouchableOpacity>
           </View>
-          <Text style={styles.footerText} onPress={handleForgotPassword}>¿Recuperar su contraseña?</Text>
+          <Text style={styles.footerText} onPress={handleForgotPassword}>¿Recuperar su clave?</Text>
           <Button mode="contained" onPress={handleLogin} style={styles.button}>
             Iniciar sesión
           </Button>

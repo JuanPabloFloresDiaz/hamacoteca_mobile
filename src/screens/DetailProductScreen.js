@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 
-const DetailProductScreen = ({ logueado, setLogueado}) => {
+const DetailProductScreen = ({product}) => {
     return ( 
         <View style={styles.container}>
         <Text style={styles.title}>

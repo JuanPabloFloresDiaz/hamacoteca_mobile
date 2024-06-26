@@ -1,9 +1,8 @@
 // Función que maneja las peticiones fetch
 export default async function fetchData(filename, action, form = null) {
     // Variable que guarda la ip para importarla en la ruta general del servidor
-    //let ip = `10.10.1.121`;
-    // ip guayito 
-    let ip = `192.168.1.6`;
+    //let ip = `192.168.1.6`; 
+    let ip = `192.168.65.124`;
     // URL base del servidor
     const SERVER_URL = `http://${ip}/hamacoteca/api/`;
 
@@ -17,7 +16,7 @@ export default async function fetchData(filename, action, form = null) {
         // Construcción de la URL con los parámetros necesarios
         const PATH = new URL(SERVER_URL + filename);
         PATH.searchParams.append('action', action);
-        
+
         // Realización de la petición fetch
         const RESPONSE = await fetch(PATH.href, OPTIONS);
 
