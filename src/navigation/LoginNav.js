@@ -43,7 +43,7 @@ export default function LoginNav({ logueado, setLogueado }) {
       </Stack.Screen>
       <Stack.Screen
          name='VerificationCode'
-         options={{headerShown: true}}
+         options={{headerShown: false}}
       >
         {props => <VerificationCodeScreen {...props} setLogueado={setLogueado} logueado={logueado} />}
       </Stack.Screen>
@@ -55,7 +55,7 @@ export default function LoginNav({ logueado, setLogueado }) {
       </Stack.Screen>
       <Stack.Screen
          name='SignUp'
-         options={{headerShown: true}}
+         options={{headerShown: false}}
       >
         {props => <SignUpScreen {...props} setLogueado={setLogueado} logueado={logueado} />}
       </Stack.Screen>
