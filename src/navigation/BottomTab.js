@@ -39,7 +39,7 @@ export default function BottomTab({ logueado, setLogueado }) {
               if (route.name === 'Inicio') {
                 iconName = focused ? 'home' : 'home-outline';
               } else if (route.name === 'Tienda') {
-                iconName = focused ? 'shopping' : 'bag-check-outline';
+                iconName = focused ? 'bag-check' : 'bag-check-outline';
               } else if (route.name === 'Carrito') {
                 iconName = focused ? 'cart' : 'cart-outline';
               } else if (route.name === 'Perfil') {
@@ -52,7 +52,7 @@ export default function BottomTab({ logueado, setLogueado }) {
             tabBarInactiveTintColor: '#eee',
             tabBarStyle: styles.tabBar,
             headerStyle: {
-              backgroundColor: '#0078B7',
+              backgroundColor: '#38A34C',
               borderBottomRightRadius: 35,
               borderBottomLeftRadius: 35,
             },
@@ -66,7 +66,7 @@ export default function BottomTab({ logueado, setLogueado }) {
             component={RenderHomeScreen}
             options={{
               title: 'Inicio',
-              headerShown: false
+              headerShown: true
             }}
         />
         <Tab.Screen
@@ -74,7 +74,7 @@ export default function BottomTab({ logueado, setLogueado }) {
             component={RenderShoppingScreen}
             options={{
               title: 'Tienda',
-              headerShown: false
+              headerShown: true
             }}
         />
         <Tab.Screen
@@ -82,7 +82,7 @@ export default function BottomTab({ logueado, setLogueado }) {
             component={RenderCartScreen}
             options={{
               title: 'Carrito',
-              headerShown: false
+              headerShown: true
             }}
         />
         <Tab.Screen
@@ -90,7 +90,7 @@ export default function BottomTab({ logueado, setLogueado }) {
             component={RenderProfileScreen}
             options={{
               title: 'Perfil',
-              headerShown:false
+              headerShown:true
             }}
         />
 
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     elevation: 0,
-    backgroundColor: '#03045E',
+    backgroundColor: '#000000',
     borderRadius: 15,
     height: 70,
     padding: 10,
