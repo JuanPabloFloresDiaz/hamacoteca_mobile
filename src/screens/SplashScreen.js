@@ -1,46 +1,58 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-
+import React, { useEffect } from 'react';
+import { View, StyleSheet, Image, Animated } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const SplashScreen = () => {
-    return ( 
-        <View style={styles.container}>
-        <Text style={styles.title}>
-            Consumo de apis externas
-        </Text>
-        <Text style={styles.descripcion}>
-            Ejemplo de consumo de API externa utilizando la función <Text style={styles.negrita}>FETCH</Text>
-        </Text>
-        </View>
-     );
+  const navigation = useNavigation();
+  const rotation = new Animated.Value(0);
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(rotation, {
+        toValue: 1,
+        duration: 2000,
+        useNativeDriver: true,
+      })
+    ).start();
+
+    const timer = setTimeout(() => {
+      navigation.navigate('LoginScreen');
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [navigation]);
+
+  const rotate = rotation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
+  return (
+    <View style={styles.container}>
+      <Image source={require('../../assets/fondo-hamok.png')} style={styles.backgroundImage} />
+      <Animated.Image source={require('../../assets/logo.png')} style={[styles.logo, { transform: [{ rotate }] }]} />
+    </View>
+  );
 }
- 
+
 export default SplashScreen;
 
-
-// Estilos para los componentes.
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      paddingTop: 20,
-      paddingHorizontal:15
-    },
-    title: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginTop: 10,
-      textTransform: 'uppercase',
-    },
-    descripcion: {
-        fontSize: 16,
-        fontWeight: '400',
-        textAlign: 'justify',
-        marginTop: 10,
-      },
-      negrita:{
-        fontWeight:'bold'
-      }
-  });
-  
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+  },
+});

@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 
-const DetailProductScreen = () => {
+const DetailProductScreen = ({ logueado, setLogueado}) => {
     return ( 
         <View style={styles.container}>
         <Text style={styles.title}>
-            Consumo de apis externas
+        Pantalla del detalle de producto xd
         </Text>
         <Text style={styles.descripcion}>
             Ejemplo de consumo de API externa utilizando la función <Text style={styles.negrita}>FETCH</Text>

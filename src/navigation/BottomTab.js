@@ -110,19 +110,6 @@ export default function BottomTab({ logueado, setLogueado }) {
   );
 }
 
-const CustomTabBarButton = ({ children, onPress }) => (
-    <View style={styles.customButtonContainer}>
-      <View style={styles.customButton}>
-        <TouchableOpacity
-            style={styles.customButtonTouchable}
-            onPress={onPress}
-        >
-          {children}
-        </TouchableOpacity>
-      </View>
-    </View>
-);
-
 const styles = StyleSheet.create({
   tabBar: {
     position: 'absolute',

@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 
-const RecoveryPasswordScreen = () => {
+const RecoveryPasswordScreen = ({ logueado, setLogueado}) => {
     return ( 
         <View style={styles.container}>
         <Text style={styles.title}>
-            Consumo de apis externas
+        Pantalla de la recuperación de contraseña xd
         </Text>
         <Text style={styles.descripcion}>
             Ejemplo de consumo de API externa utilizando la función <Text style={styles.negrita}>FETCH</Text>

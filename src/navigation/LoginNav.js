@@ -1,21 +1,19 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen';
-import WelcomeScreen from '../screens/WelcomeScreen';
-import RecoverPasswordScreen from '../screens/changePasswordsScreen';
-import PlayersScreen from '../screens/PlayersScreen';
-import PlayersDetails from "../screens/PlayersDetails";
-import TrainingsScreen from "../screens/trainingsScreen";
-import AssistsScreen from "../screens/assistsScreen";
-import AssistsScreenM from "../screens/assistsScreenM";
-import TestPlayerScreen from "../screens/testPlayerScreen";
+import SplashScreen from '../screens/SplashScreen';
+import RecoverPasswordScreen from '../screens/RecoveryPasswordScreen';
+import VerificationCodeScreen from '../screens/VerificationCodeScreen';
+import ChangePasswordScreen from "../screens/ChangePasswordScreen";
+import SignUpScreen from "../screens/SignUpScreen";
+import DetailProductScreen from "../screens/DetailProductScreen";
 
 const Stack = createStackNavigator();
 
 export default function LoginNav({ logueado, setLogueado }) {
   return (
     <Stack.Navigator
-        initialRouteName='WelcomeScreen'
+        initialRouteName='SplashScreen'
         screenOptions={({ route }) => ({
             headerStyle: {
                 backgroundColor: '#0078B7',
@@ -33,9 +31,9 @@ export default function LoginNav({ logueado, setLogueado }) {
         {props => <LoginScreen {...props} setLogueado={setLogueado} logueado={logueado} />}
       </Stack.Screen>
       <Stack.Screen
-          name='WelcomeScreen'
+          name='SplashScreen'
           options={{headerShown: false}}
-          component= {WelcomeScreen}>
+          component= {SplashScreen}>
       </Stack.Screen>
       <Stack.Screen
         name='RecoverPassword'
@@ -44,25 +42,25 @@ export default function LoginNav({ logueado, setLogueado }) {
         {props => <RecoverPasswordScreen {...props} setLogueado={setLogueado} logueado={logueado} />}
       </Stack.Screen>
       <Stack.Screen
-         name='Jugadores'
+         name='VerificationCode'
          options={{headerShown: true}}
       >
-        {props => <PlayersScreen{...props} setLogueado={setLogueado} logueado={logueado} />}
+        {props => <VerificationCodeScreen {...props} setLogueado={setLogueado} logueado={logueado} />}
       </Stack.Screen>
       <Stack.Screen
-         name='PlayersDetails'
+         name='ChangePassword'
          options={{headerShown: false}}
       >
-        {props => <PlayersDetails{...props} setLogueado={setLogueado} logueado={logueado} />}
+        {props => <ChangePasswordScreen {...props} setLogueado={setLogueado} logueado={logueado} />}
       </Stack.Screen>
       <Stack.Screen
-         name='Entrenamientos'
+         name='SignUp'
          options={{headerShown: true}}
       >
-        {props => <TrainingsScreen{...props} setLogueado={setLogueado} logueado={logueado} />}
+        {props => <SignUpScreen {...props} setLogueado={setLogueado} logueado={logueado} />}
       </Stack.Screen>
       <Stack.Screen
-         name='Asistencia'
+         name='DetailProduct'
          options={{
             headerShown: true,
             headerStyle: {
@@ -72,33 +70,7 @@ export default function LoginNav({ logueado, setLogueado }) {
             },
          }}
       >
-        {props => <AssistsScreen{...props} setLogueado={setLogueado} logueado={logueado} />}
-      </Stack.Screen>
-      <Stack.Screen
-         name='Modificar asistencia'
-         options={{
-            headerShown: true,
-            headerStyle: {
-                backgroundColor: '#558D32', // Nuevo color de fondo para la pantalla de asistencias
-                borderBottomRightRadius: 35,
-                borderBottomLeftRadius: 35,
-            },
-         }}
-      >
-        {props => <AssistsScreenM{...props} setLogueado={setLogueado} logueado={logueado} />}
-      </Stack.Screen>
-      <Stack.Screen
-         name='Pruebas'
-         options={{
-            headerShown: true,
-            headerStyle: {
-                backgroundColor: '#0078B7', // Nuevo color de fondo para la pantalla de asistencias
-                borderBottomRightRadius: 35,
-                borderBottomLeftRadius: 35,
-            },
-         }}
-      >
-        {props => <TestPlayerScreen{...props} setLogueado={setLogueado} logueado={logueado} />}
+        {props => <DetailProductScreen {...props} setLogueado={setLogueado} logueado={logueado} />}
       </Stack.Screen>
     </Stack.Navigator>
   );
