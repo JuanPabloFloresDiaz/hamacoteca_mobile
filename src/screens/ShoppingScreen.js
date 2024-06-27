@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, FlatList, Dimensions, ScrollView } from 'react-native';
-import { Button, FAB, Card, Searchbar, Menu, Provider, Modal, Portal } from 'react-native-paper';
+import { Button, Card, Searchbar, Menu, Provider, Modal, Portal } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
 const windowHeight = Dimensions.get('window').height;
 
 const products = [
-  { id: '1', title: 'Hamaca', price: '$299,43', image: 'https://via.placeholder.com/150' },
-  { id: '2', title: 'Hamaca', price: '$299,43', image: 'https://via.placeholder.com/150' },
-  { id: '3', title: 'Hamaca', price: '$299,43', image: 'https://via.placeholder.com/150' },
-  { id: '4', title: 'Hamaca', price: '$299,43', image: 'https://via.placeholder.com/150' },
-  { id: '5', title: 'Hamaca', price: '$299,43', image: 'https://via.placeholder.com/150' },
-  { id: '6', title: 'Hamaca', price: '$299,43', image: 'https://via.placeholder.com/150' },
+  { id: '1', title: 'Hamaca', price: '$299,43', image: require('../../assets/Hamok-example.png')},
+  { id: '2', title: 'Hamaca', price: '$299,43', image: require('../../assets/Hamok-example.png')},
+  { id: '3', title: 'Hamaca', price: '$299,43', image: require('../../assets/Hamok-example.png')},
+  { id: '4', title: 'Hamaca', price: '$299,43', image: require('../../assets/Hamok-example.png')},
+  { id: '5', title: 'Hamaca', price: '$299,43', image: require('../../assets/Hamok-example.png')},
+  { id: '6', title: 'Hamaca', price: '$299,43', image: require('../../assets/Hamok-example.png')},
 ];
 
-const ShoppingScreen = ({logueado, setLogueado}) => {
+const ShoppingScreen = ({ logueado, setLogueado }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [menuVisible, setMenuVisible] = useState(false);
   const [sortOption, setSortOption] = useState(null);
@@ -34,12 +34,12 @@ const ShoppingScreen = ({logueado, setLogueado}) => {
   };
 
   const handleProductPress = (product) => {
-    navigation.navigate('LoginNav', {screen: 'DetailProduct', product });
+    navigation.navigate('LoginNav', { screen: 'DetailProduct', product });
   };
 
   const renderProductItem = ({ item }) => (
     <Card style={styles.card} onPress={() => handleProductPress(item.id)}>
-      <Card.Cover source={{ uri: item.image }} />
+      <Card.Cover source={item.image}/>
       <Card.Content>
         <Text style={styles.productTitle}>{item.title}</Text>
         <Text style={styles.productPrice}>{item.price}</Text>
@@ -67,9 +67,20 @@ const ShoppingScreen = ({logueado, setLogueado}) => {
         </View>
         <View style={styles.headerContainer}>
           <Text style={styles.resultsText}>30 Resultados</Text>
-          <Button mode="text" onPress={openMenu} style={styles.resultsText}>
-            Ordenar resultados
-          </Button>
+          <Menu
+            visible={menuVisible}
+            onDismiss={closeMenu}
+            anchor={
+              <Button mode="text" onPress={openMenu} style={styles.resultsText}>
+                Ordenar resultados
+              </Button>
+            }
+          >
+            <Menu.Item onPress={() => handleSortOption('alphabetically')} title="Ordenar alfabéticamente" />
+            <Menu.Item onPress={() => handleSortOption('date')} title="Ordenar por fecha de ingreso" />
+            <Menu.Item onPress={() => handleSortOption('priceHighToLow')} title="Ordenar por mayor precio" />
+            <Menu.Item onPress={() => handleSortOption('priceLowToHigh')} title="Ordenar por menor precio" />
+          </Menu>
         </View>
         <FlatList
           data={products}
@@ -78,23 +89,6 @@ const ShoppingScreen = ({logueado, setLogueado}) => {
           numColumns={2}
           contentContainerStyle={styles.productsList}
         />
-        <Menu
-          visible={menuVisible}
-          onDismiss={closeMenu}
-          anchor={
-            <FAB
-              style={styles.fab}
-              small
-              icon="sort"
-              onPress={openMenu}
-            />
-          }
-        >
-          <Menu.Item onPress={() => handleSortOption('alphabetically')} title="Ordenar alfabéticamente" />
-          <Menu.Item onPress={() => handleSortOption('date')} title="Ordenar por fecha de ingreso" />
-          <Menu.Item onPress={() => handleSortOption('priceHighToLow')} title="Ordenar por mayor precio" />
-          <Menu.Item onPress={() => handleSortOption('priceLowToHigh')} title="Ordenar por menor precio" />
-        </Menu>
         <Portal>
           <Modal visible={filterModalVisible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>
             <ScrollView contentContainerStyle={styles.modalContent}>
@@ -151,7 +145,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#EBF0FF',
-    color: 'gray'
+    color: 'gray',
   },
   filterButton: {
     marginLeft: 10,
@@ -189,13 +183,7 @@ const styles = StyleSheet.create({
   productPrice: {
     marginTop: 5,
     fontSize: 16,
-    color: '#888',
-  },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
+    color: '#334195',
   },
   modalContainer: {
     backgroundColor: 'white',
