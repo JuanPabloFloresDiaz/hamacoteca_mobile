@@ -1,19 +1,13 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, FlatList, Dimensions, ScrollView } from 'react-native';
-import { Button, Card, Searchbar, Menu, Provider, Modal, Portal } from 'react-native-paper';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { View, StyleSheet, Text, FlatList, Dimensions, ScrollView, RefreshControl } from 'react-native';
+import { Button, Searchbar, Menu, Provider, Modal, Portal } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import fetchData from '../../api/components';
+import ProductItem from '../components/ProductItem';
 
 const windowHeight = Dimensions.get('window').height;
-
-const products = [
-  { id: '1', title: 'Hamaca', price: '$299,43', image: require('../../assets/Hamok-example.png')},
-  { id: '2', title: 'Hamaca', price: '$299,43', image: require('../../assets/Hamok-example.png')},
-  { id: '3', title: 'Hamaca', price: '$299,43', image: require('../../assets/Hamok-example.png')},
-  { id: '4', title: 'Hamaca', price: '$299,43', image: require('../../assets/Hamok-example.png')},
-  { id: '5', title: 'Hamaca', price: '$299,43', image: require('../../assets/Hamok-example.png')},
-  { id: '6', title: 'Hamaca', price: '$299,43', image: require('../../assets/Hamok-example.png')},
-];
 
 const ShoppingScreen = ({ logueado, setLogueado }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,6 +15,9 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
   const [sortOption, setSortOption] = useState(null);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const navigation = useNavigation();
+  const [dataProductos, setDataProductos] = useState([]);
+  const [error, setError] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const onChangeSearch = query => setSearchQuery(query);
 
@@ -37,14 +34,38 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
     navigation.navigate('LoginNav', { screen: 'DetailProduct', product });
   };
 
-  const renderProductItem = ({ item }) => (
-    <Card style={styles.card} onPress={() => handleProductPress(item.id)}>
-      <Card.Cover source={item.image}/>
-      <Card.Content>
-        <Text style={styles.productTitle}>{item.title}</Text>
-        <Text style={styles.productPrice}>{item.price}</Text>
-      </Card.Content>
-    </Card>
+  const HAMACAS_API = 'servicios/publica/hamaca.php';
+
+  const fillProducts = async () => {
+    try {
+      const data = await fetchData(HAMACAS_API, 'readAll');
+      setDataProductos(data.dataset);
+    } catch (error) {
+      setError(error);
+    }
+  }
+
+  useEffect(() => {
+    fillProducts();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fillProducts();
+    }, [])
+  );
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true); // Activar el estado de refresco
+
+    // Lógica para recargar los datos
+    fillProducts();
+
+    setRefreshing(false); // Desactivar el estado de refresco cuando se complete
+  }, []);
+
+  const renderProductsItem = ({ item }) => (
+    <ProductItem item={item} onPress={handleProductPress} />
   );
 
   const showModal = () => setFilterModalVisible(true);
@@ -83,11 +104,19 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
           </Menu>
         </View>
         <FlatList
-          data={products}
-          renderItem={renderProductItem}
-          keyExtractor={(item) => item.id}
+          data={dataProductos}
+          renderItem={renderProductsItem}
+          keyExtractor={(item) => item.ID}
           numColumns={2}
           contentContainerStyle={styles.productsList}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#9Bd35A', '#689F38']}
+              progressBackgroundColor="#EBF0FF"
+            />
+          }
         />
         <Portal>
           <Modal visible={filterModalVisible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>

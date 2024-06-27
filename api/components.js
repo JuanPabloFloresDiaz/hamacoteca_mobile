@@ -1,10 +1,8 @@
+import * as Constantes from './constantes'
 // Función que maneja las peticiones fetch
 export default async function fetchData(filename, action, form = null) {
-    // Variable que guarda la ip para importarla en la ruta general del servidor
-    let ip = `192.168.1.6`; 
-    // let ip = `192.168.65.124`;
     // URL base del servidor
-    const SERVER_URL = `http://${ip}/hamacoteca/api/`;
+    const SERVER_URL = Constantes.SERVER_URL;
 
     // Opciones para la petición fetch
     const OPTIONS = {
