@@ -15,7 +15,7 @@ const products = [
   { id: '6', title: 'Hamaca', price: '$299,43', image: 'https://via.placeholder.com/150' },
 ];
 
-const ShoppingScreen = () => {
+const ShoppingScreen = ({logueado, setLogueado}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [menuVisible, setMenuVisible] = useState(false);
   const [sortOption, setSortOption] = useState(null);
@@ -34,11 +34,11 @@ const ShoppingScreen = () => {
   };
 
   const handleProductPress = (product) => {
-    navigation.navigate('DetailProduct', { product });
+    navigation.navigate('LoginNav', {screen: 'DetailProduct', product });
   };
 
   const renderProductItem = ({ item }) => (
-    <Card style={styles.card} onPress={() => handleProductPress(item)}>
+    <Card style={styles.card} onPress={() => handleProductPress(item.id)}>
       <Card.Cover source={{ uri: item.image }} />
       <Card.Content>
         <Text style={styles.productTitle}>{item.title}</Text>

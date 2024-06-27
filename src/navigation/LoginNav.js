@@ -16,7 +16,7 @@ export default function LoginNav({ logueado, setLogueado }) {
         initialRouteName='SplashScreen'
         screenOptions={({ route }) => ({
             headerStyle: {
-                backgroundColor: '#0078B7',
+                backgroundColor: 'rgba(56, 163, 76, 0.8)',
                 borderBottomRightRadius: 35,
                 borderBottomLeftRadius: 35,
             },
@@ -63,14 +63,15 @@ export default function LoginNav({ logueado, setLogueado }) {
          name='DetailProduct'
          options={{
             headerShown: true,
+            title: 'Detalle de producto',
             headerStyle: {
-                backgroundColor: '#558D32', // Nuevo color de fondo para la pantalla de asistencias
+                backgroundColor: 'rgba(56, 163, 76, 0.8)', // Nuevo color de fondo para la pantalla de asistencias
                 borderBottomRightRadius: 35,
                 borderBottomLeftRadius: 35,
             },
          }}
       >
-        {props => <DetailProductScreen {...props} setLogueado={setLogueado} logueado={logueado} />}
+        {props => <DetailProductScreen {...props} setLogueado={setLogueado} logueado={logueado}/>}
       </Stack.Screen>
     </Stack.Navigator>
   );

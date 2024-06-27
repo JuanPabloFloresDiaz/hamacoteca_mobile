@@ -52,7 +52,7 @@ export default function BottomTab({ logueado, setLogueado }) {
             tabBarInactiveTintColor: '#eee',
             tabBarStyle: styles.tabBar,
             headerStyle: {
-              backgroundColor: '#38A34C',
+              backgroundColor: 'rgba(56, 163, 76, 0.8)',
               borderBottomRightRadius: 35,
               borderBottomLeftRadius: 35,
             },
