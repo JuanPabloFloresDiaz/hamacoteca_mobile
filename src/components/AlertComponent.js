@@ -19,7 +19,7 @@ const AlertComponent = ({ visible, type, message, onClose, url = null }) => {
       break;
     case 4:
       title = 'Aviso';
-      icon = require('../../assets/gol.png'); // Cambien el icono si no les gusta
+      icon = require('../../assets/logo.png'); // Cambien el icono si no les gusta
       break;
     default:
       title = '';
