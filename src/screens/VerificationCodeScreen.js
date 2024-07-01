@@ -1,36 +1,42 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TextInput as RNTextInput, ImageBackground, TouchableOpacity } from 'react-native';
 import { Button, PaperProvider } from 'react-native-paper';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
-
 const VerificationCodeScrenn = ({ logueado, setLogueado}) => {
-  const [email, setEmail] = React.useState('');
+  const [code, setCode] = React.useState('');
   const navigation = useNavigation();
 
-  const handleForgotVerification = () => {
+  const handleForgotPassword = () => {
     // Navegar a la pantalla de recuperación de contraseña
-    navigation.navigate('VerificationCode');
+    navigation.navigate('ChangePassword');
   };
+
+  const handleForgotRecovery = () => {
+    // Navegar a la pantalla de recuperación de contraseña
+    navigation.navigate('RecoverPassword');
+  };
+
 
   return (
     <PaperProvider>
       <ImageBackground source={require('../../assets/fondo-change.png')} style={styles.backgroundImage}>
         <View style={styles.container}>
-        <Image source={require('../../assets/icon-correo.png')} style={styles.logo} />
-          <Text style={styles.textLabel}>Ingrese su correo</Text>
-          <View style={styles.inputContainer}>
-            <Ionicons name="mail-outline" size={20} style={styles.icon} />
+        <TouchableOpacity style={styles.backButton} onPress={handleForgotRecovery}>
+        <Text style={styles.backText}>←</Text>
+        </TouchableOpacity>
+        <Image source={require('../../assets/icon-verfication.png')} style={styles.logo} />
+          <Text style={styles.textLabel}>Ingresa el código de verificación</Text>
+          <View style={styles.inputContainer}>  
             <RNTextInput
-              placeholder="correo electrónico "
-              value={email}
-              onChangeText={setEmail}
+              placeholder="000 000"
+              value={code}
+              onChangeText={setCode}
               style={styles.input}
             />
           </View>
-          <Button mode="contained" onPress={handleForgotVerification} style={styles.button}>
-            Enviar
+          <Button mode="contained" onPress={handleForgotPassword} style={styles.button}>
+            Verificar
           </Button>
         </View>
       </ImageBackground>
@@ -89,6 +95,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginTop: 10,
     backgroundColor: 'black',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 16,
+  },
+  backText: {
+    fontSize: 35,
+    color: '#000',
   }
   });
   

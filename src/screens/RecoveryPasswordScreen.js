@@ -14,10 +14,18 @@ const RecoveryPasswordScreen = ({ logueado, setLogueado }) => {
     navigation.navigate('VerificationCode');
   };
 
+  const handleForgotLogin = () => {
+    // Navegar a la pantalla de recuperación de contraseña
+    navigation.navigate('LoginScreen');
+  };
+
   return (
     <PaperProvider>
       <ImageBackground source={require('../../assets/fondo-change.png')} style={styles.backgroundImage}>
         <View style={styles.container}>
+        <TouchableOpacity style={styles.backButton} onPress={handleForgotLogin}>
+        <Text style={styles.backText}>←</Text>
+      </TouchableOpacity>
         <Image source={require('../../assets/icon-correo.png')} style={styles.logo} />
           <Text style={styles.textLabel}>Ingrese su correo</Text>
           <View style={styles.inputContainer}>
@@ -89,6 +97,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginTop: 10,
     backgroundColor: 'black',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 16,
+  },
+  backText: {
+    fontSize: 35,
+    color: '#000',
   }
 });
   
