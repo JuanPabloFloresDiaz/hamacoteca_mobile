@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#1E90FF',
+    backgroundColor: '#38A34C',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

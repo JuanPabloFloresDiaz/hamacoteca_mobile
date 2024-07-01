@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Text } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
+import { Card, Text, ActivityIndicator } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
 import imageData from '../../api/images';
+
 
 const ProductItem = ({ item, onPress }) => {
   const [imagenUrl, setImagenUrl] = useState(null);
@@ -24,7 +25,11 @@ const ProductItem = ({ item, onPress }) => {
   }, [item.IMAGEN]);
 
   if (loading) {
-    return <Text>Cargando...</Text>;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
 
   if (error) {
@@ -47,6 +52,12 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 5,
     borderRadius: 10,
+    zIndex:2,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   productTitle: {
     marginTop: 10,
