@@ -1,46 +1,106 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView, StyleSheet, ActivityIndicator, Text } from 'react-native';
+import ProductDetailCarousel from '../components/DetailProductComponents/ProductDetailCarousel';
+import ProductSpecifications from '../components/DetailProductComponents/ProductSpecifications';
+import ProductReviews from '../components/DetailProductComponents/ProductReviews';
+import RelatedProducts from '../components/DetailProductComponents/RelatedProducts';
+import fetchData from '../../api/components';
 
+const DetailProductScreen = ({ route }) => {
+  const { productId } = route.params || {};
 
-const DetailProductScreen = ({logueado, setLogueado}) => {
-    return ( 
-        <View style={styles.container}>
-        <Text style={styles.title}>
-        Pantalla del detalle de producto xd
-        </Text>
-        <Text style={styles.descripcion}>
-            Ejemplo de consumo de API externa utilizando la función <Text style={styles.negrita}>FETCH</Text>
-        </Text>
-        </View>
-     );
-}
- 
-export default DetailProductScreen;
+  const PRODUCTO_API = 'servicios/publica/hamaca.php';
+  const FOTO_API = 'servicios/publica/foto.php';
+  const VALORACIONES_API = 'servicios/publica/valoracion.php';
 
+  const [product, setProduct] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-// Estilos para los componentes.
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      paddingTop: 20,
-      paddingHorizontal:15
-    },
-    title: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginTop: 10,
-      textTransform: 'uppercase',
-    },
-    descripcion: {
-        fontSize: 16,
-        fontWeight: '400',
-        textAlign: 'justify',
-        marginTop: 10,
-      },
-      negrita:{
-        fontWeight:'bold'
+  useEffect(() => {
+
+    const fetchProductDetails = async () => {
+      try {
+        const form = new FormData();
+        form.append('idProducto', 1);
+        console.log(form);
+        const productData = await fetchData(PRODUCTO_API, 'readOne', form);
+        const photoData = await fetchData(FOTO_API, 'readAll', form);
+        const reviewData = await fetchData(VALORACIONES_API, 'readOne', form);
+        const relatedProductsData = await fetchData(PRODUCTO_API, 'readRecommended', form);
+
+        console.log(productData.dataset);
+        console.log(photoData.dataset);
+        console.log(reviewData.dataset);
+        console.log(relatedProductsData.dataset);
+
+        setProduct({ ...productData.dataset, images: photoData.dataset, reviews: reviewData.dataset });
+        setRelatedProducts(relatedProductsData.dataset);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+
       }
-  });
-  
+    };
+
+    fetchProductDetails();
+  }, [productId]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView style={styles.container}>
+      {product && (
+        <>
+          <ProductDetailCarousel images={product.images} />
+          <ProductSpecifications
+            category={product.category}
+            material={product.material}
+            description={product.description}
+          />
+          <ProductReviews reviews={product.reviews} />
+          <RelatedProducts products={relatedProducts} onPress={(id) => console.log('Product pressed', id)} />
+        </>
+      )}
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+  },
+});
+
+export default DetailProductScreen;
