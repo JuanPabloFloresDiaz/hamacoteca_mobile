@@ -11,6 +11,7 @@ const windowHeight = Dimensions.get('window').height;
 
 const ShoppingScreen = ({ logueado, setLogueado }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [quantityProducts, setQuantityProducts] = useState('');
   const [menuVisible, setMenuVisible] = useState(false);
   const [sortOption, setSortOption] = useState(null);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
@@ -30,13 +31,13 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
     // Implementar la lógica de ordenamiento aquí
   };
 
-  const handleProductPress = (product) => {
-    if (!product) {
+  const handleProductPress = (productId) => {
+    if (!productId) {
       alert('No se pudo cargar el producto');
       return;
     }
-    console.log("Producto seleccionado " + product);
-    navigation.navigate('LoginNav', { screen: 'DetailProduct', params: { product } });
+    console.log("Producto seleccionado " + productId);
+    navigation.navigate('LoginNav', { screen: 'DetailProduct', params: { productId } });
   };
 
   const HAMACAS_API = 'servicios/publica/hamaca.php';
@@ -45,6 +46,7 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
     try {
       const data = await fetchData(HAMACAS_API, 'readAll');
       setDataProductos(data.dataset);
+      setQuantityProducts(data.message);
     } catch (error) {
       setError(error);
     }
@@ -92,7 +94,7 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
           </Button>
         </View>
         <View style={styles.headerContainer}>
-          <Text style={styles.resultsText}>30 Resultados</Text>
+          <Text style={styles.resultsText}>{quantityProducts}</Text>
           <Menu
             visible={menuVisible}
             onDismiss={closeMenu}

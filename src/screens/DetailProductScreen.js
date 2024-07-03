@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, ActivityIndicator, Text } from 'react-native';
+import { View, ScrollView, StyleSheet, ActivityIndicator, Text, Dimensions } from 'react-native';
 import ProductDetailCarousel from '../components/DetailProductComponents/ProductDetailCarousel';
 import ProductSpecifications from '../components/DetailProductComponents/ProductSpecifications';
 import ProductReviews from '../components/DetailProductComponents/ProductReviews';
 import RelatedProducts from '../components/DetailProductComponents/RelatedProducts';
+import ProductMainInfo from '../components/DetailProductComponents/ProductMainInfo'; // Importamos el nuevo componente
 import fetchData from '../../api/components';
+
+const windowHeight = Dimensions.get('window').height;
 
 const DetailProductScreen = ({ route }) => {
   const { productId } = route.params || {};
@@ -19,29 +22,23 @@ const DetailProductScreen = ({ route }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-
     const fetchProductDetails = async () => {
       try {
+        console.log("Identificador del producto mandado entre pantallas: "+ productId)
         const form = new FormData();
-        form.append('idProducto', 1);
-        console.log(form);
+        form.append('idProducto', productId);
         const productData = await fetchData(PRODUCTO_API, 'readOne', form);
         const photoData = await fetchData(FOTO_API, 'readAll', form);
         const reviewData = await fetchData(VALORACIONES_API, 'readOne', form);
         const relatedProductsData = await fetchData(PRODUCTO_API, 'readRecommended', form);
 
-        // console.log(productData.dataset);
-        // console.log(photoData.dataset);
-        // console.log(reviewData.dataset);
-        // console.log(relatedProductsData.dataset);
-
+        console.log("Identificador del producto mandado entre pantallas: "+ productId)
         setProduct({ ...productData.dataset, images: photoData.dataset, reviews: reviewData.dataset });
         setRelatedProducts(relatedProductsData.dataset);
       } catch (error) {
         setError(error.message);
       } finally {
         setLoading(false);
-
       }
     };
 
@@ -69,6 +66,7 @@ const DetailProductScreen = ({ route }) => {
       {product && (
         <>
           <ProductDetailCarousel images={product.images} />
+          <ProductMainInfo name={product.NOMBRE} price={parseFloat(product.PRECIO)} rating={parseFloat(product.VALORACIÓN)} />
           <ProductSpecifications
             category={product.CATEGORIA}
             material={product.MATERIAL}
@@ -86,6 +84,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    padding: 10,
+    marginBottom: windowHeight * 0.11,
   },
   loadingContainer: {
     flex: 1,

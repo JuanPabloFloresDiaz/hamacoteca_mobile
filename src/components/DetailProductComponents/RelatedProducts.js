@@ -17,7 +17,7 @@ const RelatedProducts = ({ products, onPress }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 2,
   },
   title: {
     fontSize: 18,

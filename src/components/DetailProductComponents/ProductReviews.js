@@ -56,7 +56,7 @@ const ProductReviews = ({ reviews }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 2,
   },
   title: {
     fontSize: 18,

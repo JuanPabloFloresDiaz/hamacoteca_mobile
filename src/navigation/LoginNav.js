@@ -10,7 +10,7 @@ import DetailProductScreen from "../screens/DetailProductScreen";
 
 const Stack = createStackNavigator();
 
-export default function LoginNav({ logueado, setLogueado }) {
+export default function LoginNav({ logueado, setLogueado, productId }) {
   return (
     <Stack.Navigator
         initialRouteName='SplashScreen'
@@ -62,7 +62,7 @@ export default function LoginNav({ logueado, setLogueado }) {
       <Stack.Screen
          name='DetailProduct'
          options={{
-            headerShown: true,
+            headerShown: false,
             title: 'Detalle de producto',
             headerStyle: {
                 backgroundColor: 'rgba(56, 163, 76, 0.8)', // Nuevo color de fondo para la pantalla de asistencias
@@ -71,7 +71,7 @@ export default function LoginNav({ logueado, setLogueado }) {
             },
          }}
       >
-        {props => <DetailProductScreen {...props} setLogueado={setLogueado} logueado={logueado}/>}
+        {props => <DetailProductScreen {...props} setLogueado={setLogueado} logueado={logueado} productId={productId}/>}
       </Stack.Screen>
     </Stack.Navigator>
   );

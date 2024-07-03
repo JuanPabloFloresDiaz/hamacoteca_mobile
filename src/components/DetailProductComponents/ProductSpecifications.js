@@ -5,11 +5,15 @@ const ProductSpecifications = ({ category, material, description }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Especificaciones</Text>
-      <Text style={styles.label}>Categoría:</Text>
-      <Text style={styles.value}>{category}</Text>
-      <Text style={styles.label}>Material:</Text>
-      <Text style={styles.value}>{material}</Text>
-      <Text style={styles.label}>Descripción:</Text>
+      <View style={styles.mainContainer}>
+        <Text style={styles.label}>Categoría:</Text>
+        <Text style={styles.value}>{category}</Text>
+      </View>
+      <View style={styles.mainContainer}>
+        <Text style={styles.label}>Material:</Text>
+        <Text style={styles.value}>{material}</Text>
+      </View>
+      <Text style={styles.labelDescripcion}>Descripción:</Text>
       <Text style={styles.value}>{description}</Text>
     </View>
   );
@@ -17,15 +21,27 @@ const ProductSpecifications = ({ category, material, description }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 2,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  mainContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   label: {
     fontSize: 14,
     color: '#777',
+  },
+  labelDescripcion: {
+    fontSize: 14,
+    color: '#777',
+    marginBottom: 16,
   },
   value: {
     fontSize: 14,
