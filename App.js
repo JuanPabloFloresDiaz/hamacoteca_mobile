@@ -1,53 +1,57 @@
-// Hooks de React
-import { useEffect, useState } from 'react';
-// Utilidades de React Navigation
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-
 import LoginNav from './src/navigation/LoginNav';
 import BottomTab from './src/navigation/BottomTab';
 import fetchData from './api/components';
+import { createStackNavigator } from '@react-navigation/stack';
+import SplashScreen from './src/screens/SplashScreen';
 
-//Componente principal
+const Stack = createStackNavigator();
+
 export default function App() {
-
-  // URL de la API para el usuario
   const API = 'servicios/publica/cliente.php';
-  // logueado: Variable para indicar si la sesion ya está lista
-  // setLogueado: Función para actualizar la variable logueado
   const [logueado, setLogueado] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Función que ayuda a verificar si existe previamente una sesión abierta
   const verifyLogged = async () => {
     try {
       const data = await fetchData(API, 'getUser');
       if (data.session) {
-        setLogueado(true)
+        setLogueado(true);
         console.log(data.nombre);
       } else {
-        setLogueado(false)
+        setLogueado(false);
       }
     } catch (error) {
       console.log(error);
     }
   };
-  useEffect(() => {
-    verifyLogged();
-  }, [])
 
-  // Retorna el contenedor de navegación
+  useEffect(() => {
+    const initializeApp = async () => {
+      await verifyLogged();
+      setLoading(false);
+    };
+
+    initializeApp();
+  }, []);
+
+  if (loading) {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
+
   return (
     <NavigationContainer>
       {logueado ?
-        // Si la aplicación está lista, muestra el componente BottomTab
-        <BottomTab
-          logueado={logueado}
-          setLogueado={setLogueado} />
+        <BottomTab logueado={logueado} setLogueado={setLogueado} />
         :
-        // Si la aplicación no está lista, muestra el componente NavStack
-        <LoginNav
-          logueado={logueado}
-          setLogueado={setLogueado}
-        />
+        <LoginNav logueado={logueado} setLogueado={setLogueado} />
       }
     </NavigationContainer>
   );

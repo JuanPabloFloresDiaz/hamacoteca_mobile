@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, Text } from 'react-native';
 import ProductItem from '../ProductItem'; // Asegúrate de importar el componente ProductItem
 
 const RelatedProducts = ({ products, onPress }) => {
