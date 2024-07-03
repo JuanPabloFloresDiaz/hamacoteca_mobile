@@ -30,10 +30,10 @@ const DetailProductScreen = ({ route }) => {
         const reviewData = await fetchData(VALORACIONES_API, 'readOne', form);
         const relatedProductsData = await fetchData(PRODUCTO_API, 'readRecommended', form);
 
-        console.log(productData.dataset);
-        console.log(photoData.dataset);
-        console.log(reviewData.dataset);
-        console.log(relatedProductsData.dataset);
+        // console.log(productData.dataset);
+        // console.log(photoData.dataset);
+        // console.log(reviewData.dataset);
+        // console.log(relatedProductsData.dataset);
 
         setProduct({ ...productData.dataset, images: photoData.dataset, reviews: reviewData.dataset });
         setRelatedProducts(relatedProductsData.dataset);
@@ -70,9 +70,9 @@ const DetailProductScreen = ({ route }) => {
         <>
           <ProductDetailCarousel images={product.images} />
           <ProductSpecifications
-            category={product.category}
-            material={product.material}
-            description={product.description}
+            category={product.CATEGORIA}
+            material={product.MATERIAL}
+            description={product.DESCRIPCIÓN}
           />
           <ProductReviews reviews={product.reviews} />
           <RelatedProducts products={relatedProducts} onPress={(id) => console.log('Product pressed', id)} />

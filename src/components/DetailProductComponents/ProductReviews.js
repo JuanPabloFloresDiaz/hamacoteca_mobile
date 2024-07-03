@@ -1,17 +1,52 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import imageData from '../../../api/images';
 
 const ProductReviews = ({ reviews }) => {
+  const [avatarUrls, setAvatarUrls] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const cargarAvatares = async () => {
+      try {
+        const urls = {};
+        for (const review of reviews) {
+          urls[review.avatar] = await imageData('clientes', review.IMAGEN);
+        }
+        setAvatarUrls(urls);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarAvatares();
+  }, [reviews]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return <Text>Error al cargar los avatares</Text>;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Valoraciones</Text>
       <ScrollView horizontal>
         {reviews.map((review, index) => (
           <View key={index} style={styles.reviewCard}>
-            <Image source={{ uri: review.avatar }} style={styles.avatar} />
-            <Text style={styles.name}>{review.name}</Text>
-            <Text style={styles.rating}>{review.rating} ★</Text>
-            <Text style={styles.comment}>{review.comment}</Text>
+            <Image source={{ uri: avatarUrls[review.avatar] }} style={styles.avatar} />
+            <Text style={styles.name}>{review.NOMBRE}</Text>
+            <Text style={styles.rating}>{review.CALIFICACIÓN} ★</Text>
+            <Text style={styles.comment}>{review.COMENTARIO}</Text>
           </View>
         ))}
       </ScrollView>
@@ -50,6 +85,11 @@ const styles = StyleSheet.create({
   comment: {
     fontSize: 14,
     color: '#333',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
