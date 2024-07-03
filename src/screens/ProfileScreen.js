@@ -105,7 +105,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Dirección:</Text>
                 <View style={styles.rowContent}>
-                  <AntDesign name="map" size={24} />
+                  <Entypo name="map" size={24} />
                   <TextInput
                     style={styles.infoText}
                     value={profile.address}

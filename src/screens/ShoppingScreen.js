@@ -31,7 +31,12 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
   };
 
   const handleProductPress = (product) => {
-    navigation.navigate('LoginNav', { screen: 'DetailProduct', product });
+    if (!product) {
+      alert('No se pudo cargar el producto');
+      return;
+    }
+    console.log("Producto seleccionado " + product);
+    navigation.navigate('LoginNav', { screen: 'DetailProduct', params: { product } });
   };
 
   const HAMACAS_API = 'servicios/publica/hamaca.php';

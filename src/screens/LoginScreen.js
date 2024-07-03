@@ -84,9 +84,11 @@ const LoginScreen = ({ logueado, setLogueado }) => {
 
   return (
     <PaperProvider>
-      <ImageBackground source={require('../../assets/fondo-hamok.png')} style={styles.backgroundImage}>
+      <ImageBackground source={require('../../assets/fondo-login.png')} style={styles.backgroundImage}>
         <View style={styles.container}>
+          <View style={styles.containerLogo}>
           <Image source={require('../../assets/logo.png')} style={styles.logo} />
+          </View>
           <Text style={styles.title}>Inicio de sesión</Text>
           <Text style={styles.subtitle}>Bienvenido al inicio de sesión</Text>
           <Text style={styles.textLabel}>Correo o alias</Text>
@@ -113,7 +115,7 @@ const LoginScreen = ({ logueado, setLogueado }) => {
               <Ionicons name={passwordVisible ? "eye-outline" : "eye-off-outline"} size={20} style={styles.iconRight} />
             </TouchableOpacity>
           </View>
-          <Text style={styles.footerText} onPress={handleForgotPassword}>¿Recuperar su clave?</Text>
+          <Text style={styles.recoverText} onPress={handleForgotPassword}>¿Recuperar su clave?</Text>
           <Button mode="contained" onPress={handleLogin} style={styles.button}>
             Iniciar sesión
           </Button>
@@ -137,9 +139,11 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
+  },
+  containerLogo: {
+    alignItems: 'center',
   },
   backgroundImage: {
     flex: 1,
@@ -150,13 +154,13 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    textAlign: 'center',
     marginTop: 10,
-    textTransform: 'uppercase',
     color: '#000',
   },
   subtitle: {
@@ -198,10 +202,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: 'black',
   },
+  recoverText: {
+    marginBottom: 20,
+    fontSize: 14,
+    color: '#777',
+    textAlign: 'right',
+  },
   footerText: {
     marginTop: 20,
     fontSize: 14,
     color: '#777',
+    textAlign: 'center',
   },
   registerLink: {
     color: '#000',
