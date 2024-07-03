@@ -90,7 +90,7 @@ export default function BottomTab({ logueado, setLogueado }) {
             component={RenderProfileScreen}
             options={{
               title: 'Perfil',
-              headerShown:true
+              headerShown:false
             }}
         />
 
