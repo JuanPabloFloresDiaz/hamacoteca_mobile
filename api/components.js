@@ -29,7 +29,7 @@ export default async function fetchData(filename, action, form = null) {
         return DATA;
 
     } catch (error) {
-        console.error('Fetch error:', error);
+        console.log('Fetch error:', error);
         throw error; // Lanza el error para que useEffect pueda manejarlo
     }
 };

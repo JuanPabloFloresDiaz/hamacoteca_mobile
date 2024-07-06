@@ -70,7 +70,7 @@ const Carrito = ({ navigation, logueado, setLogueado }) => {
     }
   };
 
-  
+
 
   // Función para finalizar el pedido
   const finalizarPedido = async () => {
@@ -125,7 +125,7 @@ const Carrito = ({ navigation, logueado, setLogueado }) => {
       accionBotonDetalle={handleEditarDetalle}
       getDetalleCarrito={getDetalleCarrito}
       updateDataDetalleCarrito={setDataDetalleCarrito}
-       // Nueva prop para actualizar la lista
+    // Nueva prop para actualizar la lista
     />
   );
 
@@ -135,72 +135,49 @@ const Carrito = ({ navigation, logueado, setLogueado }) => {
       const precio = Number(item.PRECIO);
       const cantidad = Number(item.CANTIDAD);
       return total + ((isNaN(precio) || isNaN(cantidad)) ? 0 : precio * cantidad);
-    }, 0).toFixed(2); 
+    }, 0).toFixed(2);
   };
 
   return (
     <Provider>
       <View style={styles.container}>
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={['#9Bd35A', '#689F38']}
-              progressBackgroundColor="#EBF0FF"
-            />
-          }
-        >
-          {/* Mostrar el texto "Tus pedidos" solo si hay productos en el carrito */}
-          {dataDetalleCarrito.length > 0 && (
-            <Text style={styles.resultsText}>Tus pedidos</Text>
-          )}
-          {/* Componente de modal para editar cantidad */}
-          <ModalEditarCantidad
-            setModalVisible={setModalVisible}
-            modalVisible={modalVisible}
-            idDetalle={idDetalle}
-            setIdDetalle={setIdDetalle}
-            setCantidadProductoCarrito={setCantidadProductoCarrito}
-            cantidadProductoCarrito={cantidadProductoCarrito}
-            getDetalleCarrito={getDetalleCarrito}
+        <ModalEditarCantidad
+          setModalVisible={setModalVisible}
+          modalVisible={modalVisible}
+          idDetalle={idDetalle}
+          setIdDetalle={setIdDetalle}
+          setCantidadProductoCarrito={setCantidadProductoCarrito}
+          cantidadProductoCarrito={cantidadProductoCarrito}
+          getDetalleCarrito={getDetalleCarrito}
+        />
+        {dataDetalleCarrito.length > 0 && (
+          <Text style={styles.resultsText}>Tus pedidos</Text>
+        )}
+        {dataDetalleCarrito.length > 0 ? (
+          <FlatList
+            data={dataDetalleCarrito}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.ID.toString()}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={['#9Bd35A', '#689F38']}
+                progressBackgroundColor="#EBF0FF"
+              />
+            }
           />
-          {/* Lista de detalles del carrito */}
-          {dataDetalleCarrito.length > 0 ? (
-            <FlatList
-              data={dataDetalleCarrito}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.ID.toString()}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  colors={['#9Bd35A', '#689F38']}
-                  progressBackgroundColor="#EBF0FF"
-                />
-              }
-            />
-          ) : (
-            <Text style={styles.titleDetalle}>No hay productos en el carrito.</Text>
-          )}
-
-          {dataDetalleCarrito.length > 0 && (
-
-            <Text style={styles.titleTotal}>Total: ${getTotalDinero()}</Text>
-          )}
-
-          {/* Mostrar el botón "Finalizar pedido" solo si hay productos en el carrito */}
-          {dataDetalleCarrito.length > 0 && (
-
-            <Button mode="contained" onPress={finalizarPedido} style={styles.button}>
-              Finalizar pedido
-            </Button>
-          )}
-
-
-        </ScrollView>
-
+        ) : (
+          <Text style={styles.titleDetalle}>No hay productos en el carrito.</Text>
+        )}
+        {dataDetalleCarrito.length > 0 && (
+          <Text style={styles.titleTotal}>Total: ${getTotalDinero()}</Text>
+        )}
+        {dataDetalleCarrito.length > 0 && (
+          <Button mode="contained" onPress={finalizarPedido} style={styles.button}>
+            Finalizar pedido
+          </Button>
+        )}
       </View>
     </Provider>
 
@@ -230,7 +207,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     color: '#5C3D2E',
   },
-  button:{
+  button: {
     width: '100%',
     paddingVertical: 10,
     marginTop: 10,

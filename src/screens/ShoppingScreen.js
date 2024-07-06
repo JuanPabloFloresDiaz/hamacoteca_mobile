@@ -42,11 +42,17 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
 
   const HAMACAS_API = 'servicios/publica/hamaca.php';
 
-  const fillProducts = async () => {
+  const fillProducts = async (searchForm = null) => {
     try {
-      const data = await fetchData(HAMACAS_API, 'readAll');
-      setDataProductos(data.dataset);
-      setQuantityProducts(data.message);
+      const action = searchForm ? 'searchRows' : 'readAll';
+      const data = await fetchData(HAMACAS_API, action, searchForm);
+      if (data.status) {
+        setDataProductos(data.dataset);
+        setQuantityProducts(data.message);
+      } else {
+        setDataProductos([]);
+        setQuantityProducts('Existen 0 coincidencias');
+      }
     } catch (error) {
       setError(error);
     }
@@ -70,6 +76,16 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
 
     setRefreshing(false); // Desactivar el estado de refresco cuando se complete
   }, []);
+
+  useEffect(() => {
+    if(searchQuery != ''){
+      const formData = new FormData();
+      formData.append('search', searchQuery);
+      fillProducts(formData);
+    }else{
+      fillProducts();
+    }
+  }, [searchQuery]);
 
   const renderProductsItem = ({ item }) => (
     <ProductItem item={item} onPress={handleProductPress} />

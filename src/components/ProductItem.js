@@ -3,7 +3,6 @@ import { Card, Text, ActivityIndicator } from 'react-native-paper';
 import { StyleSheet, View } from 'react-native';
 import imageData from '../../api/images';
 
-
 const ProductItem = ({ item, onPress }) => {
   const [imagenUrl, setImagenUrl] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -52,7 +51,7 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 5,
     borderRadius: 10,
-    zIndex:2,
+    zIndex: 2,
   },
   loadingContainer: {
     flex: 1,

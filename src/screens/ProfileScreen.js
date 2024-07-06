@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, ScrollView, Image } from "react-native";
 import { TextInput, Card, Avatar, Button } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import fetchData from "../../api/components";
 import { AntDesign } from "@expo/vector-icons";
 import Entypo from '@expo/vector-icons/Entypo';
+import * as ImagePicker from 'expo-image-picker';
 import foto from '../../assets/anya.jpg';
-
 
 const windowHeight = Dimensions.get('window').height;
 
 const ProfileScreen = ({ logueado, setLogueado }) => {
-  // URL de la API para el usuario
   const USER_API = 'servicios/publica/cliente.php';
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
@@ -19,7 +18,8 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     email: "sochiiii@gmail.com",
     dui: "12345678-9",
     phone: "1212-1212",
-    address: "Avenida Aguilares 218 San Salvador CP, San Salvador 1101"
+    address: "Avenida Aguilares 218 San Salvador CP, San Salvador 1101",
+    image: Image.resolveAssetSource(foto).uri,
   });
 
   const handleEditPress = () => {
@@ -38,7 +38,6 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     setProfile({ ...profile, [name]: value });
   };
 
-  // Manejo de cierre de sesión
   const handleLogOut = async () => {
     try {
       const data = await fetchData(USER_API, "logOut");
@@ -53,15 +52,32 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  const pickImage = async () => {
+    if (isEditing) {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setProfile({ ...profile, image: result.assets[0].uri });
+      }
+    }
+  };
+
   return (
     <ScrollView>
       <View style={styles.container}>
-      <LinearGradient colors={["#85CF74", "#4CAF50"]} style={styles.header}>
-        <Avatar.Image
-          size={100}
-          source={foto}
-        />
-        <Text style={styles.name}>Xochilt</Text>
+        <LinearGradient colors={["#85CF74", "#4CAF50"]} style={styles.header}>
+          <TouchableOpacity onPress={pickImage}>
+            <Avatar.Image
+              size={100}
+              source={{ uri: profile.image }}
+            />
+          </TouchableOpacity>
+          <Text style={styles.name}>Xochilt</Text>
           <Text style={styles.email}>sochiiii@gmail.com</Text>
           <TouchableOpacity onPress={handleEditPress} style={styles.editIcon}>
             <AntDesign name={isEditing ? "leftcircle" : "edit"} size={30} color="#FFF"/>
