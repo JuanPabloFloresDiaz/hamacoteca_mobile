@@ -3,12 +3,12 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Card, ActivityIndicator } from 'react-native-paper';
 import imageData from '../../api/images';
 import iconDelete from '../../assets/icon-delete.png';
+import iconEdit from '../../assets/icon-edit-cart.png';
 
 const ProductCart = ({ item, onPress }) => {
   const [imagenUrl, setImagenUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const cargarImagen = async () => {
@@ -25,8 +25,6 @@ const ProductCart = ({ item, onPress }) => {
     cargarImagen();
   }, [item.IMAGEN]);
 
-  const incrementQuantity = () => setQuantity(quantity + 1);
-  const decrementQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
 
   if (loading) {
     return (
@@ -46,20 +44,17 @@ const ProductCart = ({ item, onPress }) => {
         <Image source={{ uri: imagenUrl }} style={styles.image} />
         <View style={styles.infoContainer}>
           <Text style={styles.productTitle}>{item.NOMBRE}</Text>
+          <Text style={styles.productPrice}>Cantidad: {item.CANTIDAD}</Text>
           <Text style={styles.productPrice}>${item.PRECIO}</Text>
-          <View style={styles.quantityContainer}>
-            <TouchableOpacity onPress={decrementQuantity} style={styles.quantityButton}>
-              <Text style={styles.quantityButtonText}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.quantityText}>{quantity}</Text>
-            <TouchableOpacity onPress={incrementQuantity} style={styles.quantityButton}>
-              <Text style={styles.quantityButtonText}>+</Text>
-            </TouchableOpacity>
-          </View>
         </View>
+        <View tyle={styles.infoContainer}>
+        <TouchableOpacity onPress={() => onPress(item.ID)} style={styles.editButton}>
+          <Image source={iconEdit} style={styles.imagenDelete} />
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => onPress(item.ID)} style={styles.deleteButton}>
           <Image source={iconDelete} style={styles.imagenDelete} />
         </TouchableOpacity>
+        </View>
       </View>
     </Card>
   );
@@ -94,7 +89,7 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     fontSize: 16,
-    color: '#334195',
+    color: '#000',
     marginBottom: 5,
   },
   quantityContainer: {
@@ -121,6 +116,13 @@ const styles = StyleSheet.create({
   deleteButton: {
     size: 24,
     marginLeft: 10,
+    
+  },
+  editButton: {
+    size: 24,
+    marginLeft: 10,
+    marginTop:5,
+    marginBottom: 10,
   },
   deleteButtonText: {
     color: '#f00',
