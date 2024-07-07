@@ -9,20 +9,20 @@ const HomeScreen = () => {
   const carouselItems = [
     {
       title: "Hamacas de gran calidad",
-      image: require('../../assets/anya.jpg'),
+      image: require('../../assets/imagen.png'),
     },
     {
       title: "Hamacas cómodas",
-      image: require('../../assets/anya.jpg'),
+      image: require('../../assets/hamaca1.png'),
     },
     {
       title: "Hamacas para exteriores",
-      image: require('../../assets/anya.jpg'),
+      image: require('../../assets/hamaca2.png'),
     },
   ];
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       {/* Featured Product */}
       <Swiper style={styles.wrapper} showsButtons={true} autoplay={true}>
         {carouselItems.map((item, index) => (
@@ -43,23 +43,23 @@ const HomeScreen = () => {
       <Text style={styles.sectionTitle}>Categorías</Text>
       <ScrollView horizontal style={styles.categoriesContainer} showsHorizontalScrollIndicator={false}>
         <TouchableOpacity style={styles.categoryItem}>
-          <Image source={require('../../assets/anya.jpg')} style={styles.categoryImage} />
+          <Image source={require('../../assets/clasicas.jpg')} style={styles.categoryImage} />
           <Text style={styles.categoryText}>Clásicas</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.categoryItem}>
-          <Image source={require('../../assets/anya.jpg')} style={styles.categoryImage} />
+          <Image source={require('../../assets/tela.png')} style={styles.categoryImage} />
           <Text style={styles.categoryText}>De tela</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.categoryItem}>
-          <Image source={require('../../assets/anya.jpg')} style={styles.categoryImage} />
+          <Image source={require('../../assets/silla.png')} style={styles.categoryImage} />
           <Text style={styles.categoryText}>Silla</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.categoryItem}>
-          <Image source={require('../../assets/anya.jpg')} style={styles.categoryImage} />
+          <Image source={require('../../assets/soporte.png')} style={styles.categoryImage} />
           <Text style={styles.categoryText}>Con soporte</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.categoryItem}>
-          <Image source={require('../../assets/anya.jpg')} style={styles.categoryImage} />
+          <Image source={require('../../assets/acero.png')} style={styles.categoryImage} />
           <Text style={styles.categoryText}>Soporte acero</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -67,7 +67,7 @@ const HomeScreen = () => {
       {/* Products of the week */}
       <View style={styles.productsOfWeekContainer}>
         <Image 
-          source={require('../../assets/anya.jpg')} 
+          source={require('../../assets/productos.png')} 
           style={styles.productsOfWeekImage}
         />
         <View style={styles.productsOfWeekOverlay}>
@@ -77,22 +77,22 @@ const HomeScreen = () => {
         
         <View style={styles.productGrid}>
           <View style={styles.productItem}>
-            <Image source={require('../../assets/anya.jpg')} style={styles.productImage} />
+            <Image source={require('../../assets/hamacaclasic.png')} style={styles.productImage} />
             <Text style={styles.productName}>Hamaca clásica</Text>
             <Text style={styles.productPrice}>$299,43</Text>
           </View>
           <View style={styles.productItem}>
-            <Image source={require('../../assets/anya.jpg')} style={styles.productImage} />
+            <Image source={require('../../assets/hamacatela.png')} style={styles.productImage} />
             <Text style={styles.productName}>Hamaca de tela</Text>
             <Text style={styles.productPrice}>$299,43</Text>
           </View>
           <View style={styles.productItem}>
-            <Image source={require('../../assets/anya.jpg')} style={styles.productImage} />
+            <Image source={require('../../assets/hamacagrande.png')} style={styles.productImage} />
             <Text style={styles.productName}>Hamaca grande</Text>
             <Text style={styles.productPrice}>$299,43</Text>
           </View>
           <View style={styles.productItem}>
-            <Image source={require('../../assets/anya.jpg')} style={styles.productImage} />
+            <Image source={require('../../assets/hamacapequeña.png')} style={styles.productImage} />
             <Text style={styles.productName}>Hamaca pequeña</Text>
             <Text style={styles.productPrice}>$299,43</Text>
           </View>
@@ -106,6 +106,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  contentContainer: {
+    paddingBottom: 100, // Añadir espacio en la parte inferior
   },
   wrapper: {
     height: 300,
