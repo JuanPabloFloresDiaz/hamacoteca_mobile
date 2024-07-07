@@ -4,6 +4,7 @@ import { TextInput, Button, PaperProvider, Avatar, Card } from 'react-native-pap
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import RNPickerSelect from 'react-native-picker-select';
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -16,7 +17,7 @@ const RegisterScreen = () => {
         dui: '',
         phoneNumber: '',
         birthDate: new Date(),
-        gender: 'Masculino',
+        gender: '',
     });
 
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -153,10 +154,18 @@ const RegisterScreen = () => {
                                     <Text style={styles.label}>Género:</Text>
                                     <View style={styles.rowContent}>
                                         <Entypo name="user" size={24} />
-                                        <TextInput
-                                            style={styles.infoText}
+                                        <RNPickerSelect
+                                            onValueChange={(value) => handleChange("gender", value)}
+                                            items={[
+                                                { label: 'Masculino', value: 'Masculino' },
+                                                { label: 'Femenino', value: 'Femenino' },
+                                            ]}
                                             value={form.gender}
-                                            onChangeText={(text) => handleChange("gender", text)}
+                                            style={{
+                                                inputIOS: styles.pickerText,
+                                                inputAndroid: styles.pickerText
+                                            }}
+                                            useNativeAndroidPickerStyle={false}
                                         />
                                     </View>
                                 </View>
@@ -232,6 +241,13 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         flex: 1,
     },
+    pickerText: {
+        fontSize: 16,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+        color: 'black',
+        flex: 1,
+    },
     fila: {
         flexDirection: "row",
         alignItems: "center",
@@ -256,4 +272,27 @@ const styles = StyleSheet.create({
         height: '100%',
         resizeMode: 'cover',
     }
+});
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        fontSize: 16,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 4,
+        color: 'black',
+        paddingRight: 30,
+    },
+    inputAndroid: {
+        fontSize: 16,
+        paddingVertical: 8,
+        paddingHorizontal: 10,
+        borderWidth: 0.5,
+        borderColor: 'gray',
+        borderRadius: 8,
+        color: 'black',
+        paddingRight: 30,
+    },
 });
