@@ -19,6 +19,7 @@ const RegisterScreen = () => {
         phoneNumber: '',
         birthDate: new Date(),
         gender: '',
+        address: '', // Agregado campo de dirección
     });
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [image, setImage] = useState(null);
@@ -30,7 +31,7 @@ const RegisterScreen = () => {
     const navigation = useNavigation();
 
     const handleRegister = () => {
-        
+        // Implementar la lógica de registro aquí
     };
 
     const onDateChange = (event, selectedDate) => {
@@ -189,6 +190,19 @@ const RegisterScreen = () => {
                                                 inputAndroid: styles.pickerText
                                             }}
                                             useNativeAndroidPickerStyle={false}
+                                        />
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <View style={styles.infoRow}>
+                                    <Text style={styles.label}>Dirección:</Text>
+                                    <View style={styles.rowContent}>
+                                        <Entypo name="map" size={24} />
+                                        <TextInput
+                                            style={styles.infoText}
+                                            value={form.address}
+                                            onChangeText={(text) => handleChange("address", text)}
                                         />
                                     </View>
                                 </View>

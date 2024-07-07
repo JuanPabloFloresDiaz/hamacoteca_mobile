@@ -1,46 +1,242 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import Swiper from 'react-native-swiper';
+import { Ionicons } from '@expo/vector-icons';
 
+const { width } = Dimensions.get('window');
 
-const HomeScreen = ({ logueado, setLogueado}) => {
-    return ( 
-        <View style={styles.container}>
-        <Text style={styles.title}>
-        Pantalla del dashboard xd
-        </Text>
-        <Text style={styles.descripcion}>
-            Ejemplo de consumo de API externa utilizando la función <Text style={styles.negrita}>FETCH</Text>
-        </Text>
+const HomeScreen = () => {
+  const carouselItems = [
+    {
+      title: "Hamacas de gran calidad",
+      image: require('../../assets/anya.jpg'),
+    },
+    {
+      title: "Hamacas cómodas",
+      image: require('../../assets/anya.jpg'),
+    },
+    {
+      title: "Hamacas para exteriores",
+      image: require('../../assets/anya.jpg'),
+    },
+  ];
+
+  return (
+    <ScrollView style={styles.container}>
+      {/* Featured Product */}
+      <Swiper style={styles.wrapper} showsButtons={true} autoplay={true}>
+        {carouselItems.map((item, index) => (
+          <View style={styles.slide} key={index}>
+            <Image source={item.image} style={styles.featuredImage} />
+            <View style={styles.featuredTextOverlay}>
+              <Text style={styles.featuredTitle}>{item.title}</Text>
+              <TouchableOpacity style={styles.featuredButton}>
+                <Text style={styles.featuredButtonText}>Ver productos</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))}
+      </Swiper>
+
+      {/* Categories */}
+      <Text style={styles.welcomeText}>Bienvenido José Gonzáles</Text>
+      <Text style={styles.sectionTitle}>Categorías</Text>
+      <ScrollView horizontal style={styles.categoriesContainer} showsHorizontalScrollIndicator={false}>
+        <TouchableOpacity style={styles.categoryItem}>
+          <Image source={require('../../assets/anya.jpg')} style={styles.categoryImage} />
+          <Text style={styles.categoryText}>Clásicas</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.categoryItem}>
+          <Image source={require('../../assets/anya.jpg')} style={styles.categoryImage} />
+          <Text style={styles.categoryText}>De tela</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.categoryItem}>
+          <Image source={require('../../assets/anya.jpg')} style={styles.categoryImage} />
+          <Text style={styles.categoryText}>Silla</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.categoryItem}>
+          <Image source={require('../../assets/anya.jpg')} style={styles.categoryImage} />
+          <Text style={styles.categoryText}>Con soporte</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.categoryItem}>
+          <Image source={require('../../assets/anya.jpg')} style={styles.categoryImage} />
+          <Text style={styles.categoryText}>Soporte acero</Text>
+        </TouchableOpacity>
+      </ScrollView>
+
+      {/* Products of the week */}
+      <View style={styles.productsOfWeekContainer}>
+        <Image 
+          source={require('../../assets/anya.jpg')} 
+          style={styles.productsOfWeekImage}
+        />
+        <View style={styles.productsOfWeekOverlay}>
+          <Text style={styles.productsOfWeekTitle}>Productos de la semana</Text>
+          <Text style={styles.productsOfWeekSubtitle}>Las hamacas del momento</Text>
         </View>
-     );
-}
- 
-export default HomeScreen;
+        
+        <View style={styles.productGrid}>
+          <View style={styles.productItem}>
+            <Image source={require('../../assets/anya.jpg')} style={styles.productImage} />
+            <Text style={styles.productName}>Hamaca clásica</Text>
+            <Text style={styles.productPrice}>$299,43</Text>
+          </View>
+          <View style={styles.productItem}>
+            <Image source={require('../../assets/anya.jpg')} style={styles.productImage} />
+            <Text style={styles.productName}>Hamaca de tela</Text>
+            <Text style={styles.productPrice}>$299,43</Text>
+          </View>
+          <View style={styles.productItem}>
+            <Image source={require('../../assets/anya.jpg')} style={styles.productImage} />
+            <Text style={styles.productName}>Hamaca grande</Text>
+            <Text style={styles.productPrice}>$299,43</Text>
+          </View>
+          <View style={styles.productItem}>
+            <Image source={require('../../assets/anya.jpg')} style={styles.productImage} />
+            <Text style={styles.productName}>Hamaca pequeña</Text>
+            <Text style={styles.productPrice}>$299,43</Text>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
+  );
+};
 
-
-// Estilos para los componentes.
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      paddingTop: 20,
-      paddingHorizontal:15
-    },
-    title: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginTop: 10,
-      textTransform: 'uppercase',
-    },
-    descripcion: {
-        fontSize: 16,
-        fontWeight: '400',
-        textAlign: 'justify',
-        marginTop: 10,
-      },
-      negrita:{
-        fontWeight:'bold'
-      }
-  });
-  
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  wrapper: {
+    height: 300,
+  },
+  slide: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  featuredImage: {
+    width: width,
+    height: 300,
+    position: 'absolute',
+  },
+  featuredTextOverlay: {
+    padding: 20,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    width: width,
+    alignItems: 'center',
+  },
+  featuredTitle: {
+    color: 'white',
+    fontSize: 28,
+    fontWeight: 'bold',
+  },
+  featuredButton: {
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  featuredButtonText: {
+    color: 'black',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#223263',
+    marginTop: 20,
+    marginLeft: 10,
+  },
+  categoriesContainer: {
+    flexDirection: 'row',
+    padding: 10,
+  },
+  categoryItem: {
+    alignItems: 'center',
+    marginRight: 20,
+  },
+  categoryImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+  },
+  categoryText: {
+    marginTop: 5,
+    fontSize: 16,
+  },
+  productsOfWeekContainer: {
+    padding: 10,
+  },
+  productsOfWeekImage: {
+    width: width - 20,
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
+    alignSelf: 'center',
+  },
+  productsOfWeekOverlay: {
+    position: 'absolute',
+    top: 15,
+    left: 15,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 10,
+    borderRadius: 5,
+  },
+  productsOfWeekTitle: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  productsOfWeekSubtitle: {
+    color: 'white',
+    fontSize: 18,
+  },
+  subTitle: {
+    color: 'gray',
+    fontSize: 18,
+  },
+  productGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  productItem: {
+    width: '48%',
+    marginBottom: 20,
+  },
+  productImage: {
+    width: '100%',
+    height: 150,
+    borderRadius: 10,
+  },
+  productName: {
+    marginTop: 5,
+    fontSize: 16,
+    color: '#223263',
+  },
+  productPrice: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#334195',
+  },
+  navbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  welcomeText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    backgroundColor: '#f0f0f0',
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+});
+
+export default HomeScreen;

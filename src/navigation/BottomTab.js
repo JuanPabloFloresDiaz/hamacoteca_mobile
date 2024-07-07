@@ -66,7 +66,7 @@ export default function BottomTab({ logueado, setLogueado }) {
             component={RenderHomeScreen}
             options={{
               title: 'Inicio',
-              headerShown: true
+              headerShown: false
             }}
         />
         <Tab.Screen
