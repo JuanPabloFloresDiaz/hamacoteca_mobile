@@ -24,7 +24,17 @@ const HomeScreen = () => {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       {/* Featured Product */}
-      <Swiper style={styles.wrapper} showsButtons={true} autoplay={true}>
+      <Swiper 
+        style={styles.wrapper} 
+        showsButtons={true} 
+        autoplay={true} 
+        dotColor="white"
+        activeDotColor="white"
+        dotStyle={styles.dotStyle}
+        activeDotStyle={styles.activeDotStyle}
+        nextButton={<Text style={styles.buttonText}>›</Text>}
+        prevButton={<Text style={styles.buttonText}>‹</Text>}
+      >
         {carouselItems.map((item, index) => (
           <View style={styles.slide} key={index}>
             <Image source={item.image} style={styles.featuredImage} />
@@ -135,13 +145,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   featuredButton: {
-    backgroundColor: 'white',
+    backgroundColor: 'black',
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
   },
   featuredButtonText: {
-    color: 'black',
+    color: 'white',
     textAlign: 'center',
     fontWeight: 'bold',
   },
@@ -239,6 +249,16 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginTop: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 50,
+  },
+  dotStyle: {
+    marginBottom: -20, 
+  },
+  activeDotStyle: {
+    marginBottom: -20, 
   },
 });
 
