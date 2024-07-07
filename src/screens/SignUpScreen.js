@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, ImageBackground, Platform } from 'react-native';
-import { TextInput, Button, PaperProvider, Avatar, Card } from 'react-native-paper';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, ImageBackground, Platform, Image } from 'react-native';
+import { TextInput, Button, PaperProvider, Card, Avatar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
+import * as ImagePicker from 'expo-image-picker';
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -19,8 +20,8 @@ const RegisterScreen = () => {
         birthDate: new Date(),
         gender: '',
     });
-
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const [image, setImage] = useState(null);
 
     const handleChange = (name, value) => {
         setForm({ ...form, [name]: value });
@@ -29,7 +30,7 @@ const RegisterScreen = () => {
     const navigation = useNavigation();
 
     const handleRegister = () => {
-        // Lógica para registrar el usuario
+        
     };
 
     const onDateChange = (event, selectedDate) => {
@@ -37,6 +38,28 @@ const RegisterScreen = () => {
         setShowDatePicker(Platform.OS === 'ios');
         handleChange('birthDate', currentDate);
     };
+
+    const pickImage = async () => {
+        // Pedir permisos para acceder a la galería de fotos
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Se requieren permisos para acceder a la galería.');
+            return;
+        }
+
+        // Abrir el selector de imágenes
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+    };
+
 
     return (
         <PaperProvider>
@@ -171,10 +194,16 @@ const RegisterScreen = () => {
                                 </View>
                             </View>
                             <View style={styles.avatarContainer}>
-                                <Avatar.Image
-                                    size={100}
-                                    source={require('../../assets/anya.jpg')}
-                                />
+                                <TouchableOpacity onPress={pickImage}>
+                                    {image ? (
+                                        <Image source={{ uri: image }} style={styles.avatarImage} />
+                                    ) : (
+                                        <Avatar.Image
+                                            size={100}
+                                            source={require('../../assets/anya.jpg')}
+                                        />
+                                    )}
+                                </TouchableOpacity>
                             </View>
                             <Button mode="contained" onPress={handleRegister} style={styles.button}>
                                 Registrarse
