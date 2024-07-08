@@ -17,14 +17,14 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
     name: "Xochilt",
-  fullname: "López",
-  email: "sochiiii@gmail.com",
-  dui: "12345678-9",
-  phone: "1212-1212",
-  address: "Avenida Aguilares 218 San Salvador CP, San Salvador 1101",
-  birthday: new Date("2005-09-26"),
-  gender: "Femenino",  
-  image: Image.resolveAssetSource(foto).uri,
+    fullname: "López",
+    email: "sochiiii@gmail.com",
+    dui: "12345678-9",
+    phone: "1212-1212",
+    address: "Avenida Aguilares 218 San Salvador CP, San Salvador 1101",
+    birthday: new Date("2005-09-26"),
+    gender: "Femenino",  
+    image: Image.resolveAssetSource(foto).uri,
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -131,7 +131,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
                 <Text style={styles.label}>Fecha de nacimiento:</Text>
                 <View style={styles.rowContent}>
                   <Entypo name="calendar" size={24} />
-                  <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                  <TouchableOpacity onPress={() => isEditing && setShowDatePicker(true)}>
                     <Text style={styles.infoText}>
                       {profile.birthday.toLocaleDateString()}
                     </Text>
@@ -148,27 +148,27 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
               </View>
             </View>
             <View style={styles.inputContainer}>
-  <View style={styles.infoRow}>
-    <Text style={styles.label}>Género:</Text>
-    <View style={styles.rowContent}>
-      <Entypo name="user" size={24} />
-      <RNPickerSelect
-        onValueChange={(value) => handleChange("gender", value)}
-        items={[
-          { label: "Masculino", value: "Masculino" },
-          { label: "Femenino", value: "Femenino" },
-        ]}
-        value={profile.gender}
-        style={{
-          inputIOS: styles.pickerText,
-          inputAndroid: styles.pickerText,
-        }}
-        useNativeAndroidPickerStyle={false}
-      />
-    </View>
-  </View>
-</View>
-
+              <View style={styles.infoRow}>
+                <Text style={styles.label}>Género:</Text>
+                <View style={styles.rowContent}>
+                  <Entypo name="user" size={24} />
+                  <RNPickerSelect
+                    onValueChange={(value) => handleChange("gender", value)}
+                    items={[
+                      { label: "Masculino", value: "Masculino" },
+                      { label: "Femenino", value: "Femenino" },
+                    ]}
+                    value={profile.gender}
+                    style={{
+                      inputIOS: styles.pickerText,
+                      inputAndroid: styles.pickerText,
+                    }}
+                    useNativeAndroidPickerStyle={false}
+                    disabled={!isEditing}
+                  />
+                </View>
+              </View>
+            </View>
             <View style={styles.inputContainer}>
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Correo:</Text>
@@ -362,6 +362,14 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 100/2
+  },
+  pickerText: {
+    flex: 1,
+    marginLeft: 10,
+    fontSize: 16,
+    backgroundColor: "transparent",
+    height: 40,
+    borderWidth: 0,
   },
 });
 
