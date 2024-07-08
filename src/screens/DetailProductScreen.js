@@ -71,6 +71,7 @@ const DetailProductScreen = ({ route }) => {
             category={product.CATEGORIA}
             material={product.MATERIAL}
             description={product.DESCRIPCIÓN}
+            existencias={product.CANTIDAD}
           />
           <ProductReviews reviews={product.reviews} />
           <RelatedProducts products={relatedProducts} onPress={(id) => console.log('Product pressed', id)} />

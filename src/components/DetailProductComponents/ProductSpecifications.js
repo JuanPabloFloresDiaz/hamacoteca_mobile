@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const ProductSpecifications = ({ category, material, description }) => {
+const ProductSpecifications = ({ category, material, description, existencias }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Especificaciones</Text>
@@ -12,6 +12,10 @@ const ProductSpecifications = ({ category, material, description }) => {
       <View style={styles.mainContainer}>
         <Text style={styles.label}>Material:</Text>
         <Text style={styles.value}>{material}</Text>
+      </View>
+      <View style={styles.mainContainer}>
+        <Text style={styles.label}>Existencias:</Text>
+        <Text style={styles.value}>{existencias}</Text>
       </View>
       <Text style={styles.labelDescripcion}>Descripción:</Text>
       <Text style={styles.value}>{description}</Text>
