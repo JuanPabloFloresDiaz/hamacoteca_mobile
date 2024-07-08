@@ -16,6 +16,7 @@ const windowHeight = Dimensions.get('window').height;
 
 const ProfileScreen = ({ logueado, setLogueado }) => {
 
+  //URL de la API
   const USER_API = 'servicios/publica/cliente.php';
 
   //Estado para alternar el modo de edición
