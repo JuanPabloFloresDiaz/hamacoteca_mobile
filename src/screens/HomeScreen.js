@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState,useEffect} from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { Ionicons } from '@expo/vector-icons';
+import fetchData from '../../api/components';
 
 const { width } = Dimensions.get('window');
 
@@ -20,6 +21,28 @@ const HomeScreen = () => {
       image: require('../../assets/hamaca2.png'),
     },
   ];
+  const API = 'servicios/publica/cliente.php';
+  const [username, setUsername] = useState('');
+
+  const getUser = async () => {
+    try {
+      const data = await fetchData(API, 'getUser');
+      if (data.session) {
+        setUsername(data.username);
+        console.log(data.nombre);
+      } else {
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+  useEffect(() => {
+    const initializeApp = async () => {
+      await getUser();
+    };
+    initializeApp();
+  }, []);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -49,7 +72,7 @@ const HomeScreen = () => {
       </Swiper>
 
       {/* Categories */}
-      <Text style={styles.welcomeText}>Bienvenido José Gonzáles</Text>
+      <Text style={styles.welcomeText}>Bienvenido {username}</Text>
       <Text style={styles.sectionTitle}>Categorías</Text>
       <ScrollView horizontal style={styles.categoriesContainer} showsHorizontalScrollIndicator={false}>
         <TouchableOpacity style={styles.categoryItem}>
