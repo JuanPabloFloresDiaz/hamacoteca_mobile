@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, ScrollView, Image } from "react-native";
 import { TextInput, Card, Avatar, Button } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
@@ -6,7 +6,9 @@ import fetchData from "../../api/components";
 import { AntDesign } from "@expo/vector-icons";
 import Entypo from '@expo/vector-icons/Entypo';
 import * as ImagePicker from 'expo-image-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import foto from '../../assets/anya.jpg';
+import RNPickerSelect from "react-native-picker-select";
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -14,20 +16,21 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
   const USER_API = 'servicios/publica/cliente.php';
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
-    name: "Xochilt Gabriela López Pineda",
-    email: "sochiiii@gmail.com",
-    dui: "12345678-9",
-    phone: "1212-1212",
-    address: "Avenida Aguilares 218 San Salvador CP, San Salvador 1101",
-    image: Image.resolveAssetSource(foto).uri,
+    name: "Xochilt",
+  fullname: "López",
+  email: "sochiiii@gmail.com",
+  dui: "12345678-9",
+  phone: "1212-1212",
+  address: "Avenida Aguilares 218 San Salvador CP, San Salvador 1101",
+  birthday: new Date("2005-09-26"),
+  gender: "Femenino",  
+  image: Image.resolveAssetSource(foto).uri,
   });
 
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
   const handleEditPress = () => {
-    if (isEditing) {
-      setIsEditing(false);
-    } else {
-      setIsEditing(true);
-    }
+    setIsEditing(!isEditing);
   };
 
   const handleSavePress = () => {
@@ -67,6 +70,12 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  const onDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || profile.birthday;
+    setShowDatePicker(false);
+    handleChange("birthday", currentDate);
+  };
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -103,6 +112,63 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
                 </View>
               </View>
             </View>
+            <View style={styles.inputContainer}>
+              <View style={styles.infoRow}>
+                <Text style={styles.label}>Apellido:</Text>
+                <View style={styles.rowContent}>
+                  <AntDesign name="user" size={24} />
+                  <TextInput
+                    style={styles.infoText}
+                    value={profile.fullname}
+                    editable={isEditing}
+                    onChangeText={(text) => handleChange("fullname", text)}
+                  />
+                </View>
+              </View>
+            </View>
+            <View style={[styles.inputContainer, { flex: 1 }]}>
+              <View style={styles.infoRow}>
+                <Text style={styles.label}>Fecha de nacimiento:</Text>
+                <View style={styles.rowContent}>
+                  <Entypo name="calendar" size={24} />
+                  <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                    <Text style={styles.infoText}>
+                      {profile.birthday.toLocaleDateString()}
+                    </Text>
+                  </TouchableOpacity>
+                  {showDatePicker && (
+                    <DateTimePicker
+                      value={profile.birthday}
+                      mode="date"
+                      display="default"
+                      onChange={onDateChange}
+                    />
+                  )}
+                </View>
+              </View>
+            </View>
+            <View style={styles.inputContainer}>
+  <View style={styles.infoRow}>
+    <Text style={styles.label}>Género:</Text>
+    <View style={styles.rowContent}>
+      <Entypo name="user" size={24} />
+      <RNPickerSelect
+        onValueChange={(value) => handleChange("gender", value)}
+        items={[
+          { label: "Masculino", value: "Masculino" },
+          { label: "Femenino", value: "Femenino" },
+        ]}
+        value={profile.gender}
+        style={{
+          inputIOS: styles.pickerText,
+          inputAndroid: styles.pickerText,
+        }}
+        useNativeAndroidPickerStyle={false}
+      />
+    </View>
+  </View>
+</View>
+
             <View style={styles.inputContainer}>
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Correo:</Text>
