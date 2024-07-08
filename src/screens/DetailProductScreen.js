@@ -33,7 +33,10 @@ const DetailProductScreen = ({ route }) => {
         const relatedProductsData = await fetchData(PRODUCTO_API, 'readRecommended', form);
 
         console.log("Identificador del producto mandado entre pantallas: "+ productId)
-        setProduct({ ...productData.dataset, images: photoData.dataset, reviews: reviewData.dataset });
+        // Combinar la imagen principal del producto con las demás imágenes
+        const allImages = [{ IMAGEN: productData.dataset.IMAGEN }, ...photoData.dataset];
+
+        setProduct({ ...productData.dataset, images: allImages, reviews: reviewData.dataset });
         setRelatedProducts(relatedProductsData.dataset);
       } catch (error) {
         setError(error.message);
