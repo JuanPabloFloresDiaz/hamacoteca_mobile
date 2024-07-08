@@ -41,7 +41,7 @@ const DetailProductScreen = ({ route }) => {
 
         console.log("Identificador del producto mandado entre pantallas: " + productId)
         // Combinar la imagen principal del producto con las demás imágenes
-        const allImages = [{ IMAGEN: productData.dataset.IMAGEN }, ...photoData.dataset];
+        const allImages = [{ folder: 'hamacas', IMAGEN: productData.dataset.IMAGEN }, ...photoData.dataset.map(img => ({ folder: 'fotos', IMAGEN: img.IMAGEN }))];
 
         //Mandar las distintas dataset, a los componentes según la necesidad de estos
         setProduct({ ...productData.dataset, images: allImages, reviews: reviewData.dataset });
