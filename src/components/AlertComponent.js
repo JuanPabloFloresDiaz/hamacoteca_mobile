@@ -1,7 +1,10 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
+// Componente de alertas propio
 const AlertComponent = ({ visible, type, message, onClose, url = null }) => {
+  const navigation = useNavigation();
   let title, icon;
 
   switch (type) {
@@ -26,11 +29,12 @@ const AlertComponent = ({ visible, type, message, onClose, url = null }) => {
       icon = null;
   }
 
+  //Uso mas adelante
   const handleAccept = () => {
     onClose();
     if (url) {
-      // Maneja la navegación a la URL si es necesario
-      // Esto puede variar dependiendo de tu configuración de navegación
+      // Navegar a la pantalla especificada
+      navigation.navigate(url);
     }
   };
 

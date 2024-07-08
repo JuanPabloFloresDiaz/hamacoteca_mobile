@@ -24,11 +24,13 @@ import RNPickerSelect from "react-native-picker-select";
 import * as ImagePicker from "expo-image-picker";
 import fetchData from '../../api/components';
 
+//Constante para manejar el alto de la pantalla
 const windowHeight = Dimensions.get("window").height;
 
 const RegisterScreen = () => {
+  //Url de la api
   const USER_API = "servicios/publica/cliente.php";
-
+  //Constantes para el manejo de datos
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [correo, setCorreo] = useState("");
@@ -41,8 +43,10 @@ const RegisterScreen = () => {
   const [image, setImage] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+  //Constante de navegación entre pantallas
   const navigation = useNavigation();
 
+  //Metodo para manejar el registro de usuarios
   const handleRegister = async () => {
     try {
       const formData = new FormData();
@@ -51,10 +55,12 @@ const RegisterScreen = () => {
       formData.append("correoRegistro", correo);
       formData.append("direccionRegistro", direccion);
       formData.append("duiRegistro", dui);
+      //Manejo de insertar fecha en la base de datos
       formData.append("fechanacimientoRegistro", fechaNacimiento.toISOString().split('T')[0]);
       formData.append("telefonoRegistro", telefono);
       formData.append("claveRegistro", clave);
       formData.append("generoRegistro", genero);
+      //Manejo de insertar imagen en la base de datos
       if (image) {
         const uriParts = image.split('.');
         const fileType = uriParts[uriParts.length - 1];
@@ -65,11 +71,11 @@ const RegisterScreen = () => {
         });
       }
 
+      //Petición a la api para insertar un usuario
       const response = await fetchData(USER_API, "signUpMovli", formData);
 
       if (response.status) {
         Alert.alert(response.message);
-        // limpiarCampos(); // Si tienes una función para limpiar los campos
       } else {
         Alert.alert("Error", response.error);
       }
@@ -78,6 +84,7 @@ const RegisterScreen = () => {
     }
   };
 
+  //Metodo para cambiar fecha
   const onDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
@@ -85,6 +92,7 @@ const RegisterScreen = () => {
     }
   };
 
+  //Metodo para abrir la galeria y seleccionar la imagen
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {

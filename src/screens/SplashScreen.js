@@ -7,6 +7,7 @@ const SplashScreen = () => {
   const rotation = new Animated.Value(0);
 
   useEffect(() => {
+    // Animación de rotación del logo
     Animated.loop(
       Animated.timing(rotation, {
         toValue: 1,
@@ -14,7 +15,7 @@ const SplashScreen = () => {
         useNativeDriver: true,
       })
     ).start();
-
+    //Después de 3 segundos cambiar a la pantalla del login
     const timer = setTimeout(() => {
       navigation.navigate('LoginScreen');
     }, 3000);

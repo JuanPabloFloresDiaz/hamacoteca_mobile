@@ -7,24 +7,31 @@ import RelatedProducts from '../components/DetailProductComponents/RelatedProduc
 import ProductMainInfo from '../components/DetailProductComponents/ProductMainInfo'; // Importamos el nuevo componente
 import fetchData from '../../api/components';
 
+//Constante para manejar el alto de la pantalla
 const windowHeight = Dimensions.get('window').height;
 
 const DetailProductScreen = ({ route }) => {
+  //Constante para manejar el identificador del producto entre pantallas y componentes que lo utilizaran
   const { productId } = route.params || {};
 
+  //Constantes para definir las rutas de las apis
   const PRODUCTO_API = 'servicios/publica/hamaca.php';
   const FOTO_API = 'servicios/publica/foto.php';
   const VALORACIONES_API = 'servicios/publica/valoracion.php';
 
+  //Constante para manejar los datos
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    //Constante para manejar las distintas peticiones que cargan el detalle de producto
     const fetchProductDetails = async () => {
       try {
-        console.log("Identificador del producto mandado entre pantallas: "+ productId)
+        console.log("Identificador del producto mandado entre pantallas: " + productId)
+
+        //Manejo de peticiones a la api, para traer los datos del detalle de producto
         const form = new FormData();
         form.append('idProducto', productId);
         const productData = await fetchData(PRODUCTO_API, 'readOne', form);
@@ -32,10 +39,11 @@ const DetailProductScreen = ({ route }) => {
         const reviewData = await fetchData(VALORACIONES_API, 'readOne', form);
         const relatedProductsData = await fetchData(PRODUCTO_API, 'readRecommended', form);
 
-        console.log("Identificador del producto mandado entre pantallas: "+ productId)
+        console.log("Identificador del producto mandado entre pantallas: " + productId)
         // Combinar la imagen principal del producto con las demás imágenes
         const allImages = [{ IMAGEN: productData.dataset.IMAGEN }, ...photoData.dataset];
 
+        //Mandar las distintas dataset, a los componentes según la necesidad de estos
         setProduct({ ...productData.dataset, images: allImages, reviews: reviewData.dataset });
         setRelatedProducts(relatedProductsData.dataset);
       } catch (error) {
@@ -48,6 +56,7 @@ const DetailProductScreen = ({ route }) => {
     fetchProductDetails();
   }, [productId]);
 
+  //Activity indicator mientras carga la pantalla (falta mejorar funcionalidad de este)
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -56,6 +65,7 @@ const DetailProductScreen = ({ route }) => {
     );
   }
 
+  //Texto rojo de que no se pudo cargar el detalle de producto
   if (error) {
     return (
       <View style={styles.errorContainer}>
@@ -69,7 +79,7 @@ const DetailProductScreen = ({ route }) => {
       {product && (
         <>
           <ProductDetailCarousel images={product.images} />
-          <ProductMainInfo name={product.NOMBRE} price={parseFloat(product.PRECIO)} rating={parseFloat(product.PROMEDIO)} productId={productId}/>
+          <ProductMainInfo name={product.NOMBRE} price={parseFloat(product.PRECIO)} rating={parseFloat(product.PROMEDIO)} productId={productId} />
           <ProductSpecifications
             category={product.CATEGORIA}
             material={product.MATERIAL}

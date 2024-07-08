@@ -12,6 +12,7 @@ import LoginNav from '../navigation/LoginNav';
 // Navegador Bottom Tabs Navigator
 const Tab = createBottomTabNavigator();
 
+// Navegación entre pantallas que estan añadidas al menú inferior
 export default function BottomTab({ logueado, setLogueado }) {
   // Función para renderizar HomeScreen con props
   const RenderHomeScreen = props => (

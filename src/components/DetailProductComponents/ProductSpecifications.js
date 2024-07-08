@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+//Componente que muestra las especificaciones del producto
 const ProductSpecifications = ({ category, material, description, existencias }) => {
   return (
     <View style={styles.container}>

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, ScrollView, StyleSheet, Text } from 'react-native';
 import ProductItem from '../ProductItem'; // Asegúrate de importar el componente ProductItem
 
+//Componente que muestra los productos recomendados
 const RelatedProducts = ({ products, onPress }) => {
   return (
     <View style={styles.container}>

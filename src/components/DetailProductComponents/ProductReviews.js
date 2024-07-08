@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import imageData from '../../../api/images';
 
+//Componente que muestra los comentarios
 const ProductReviews = ({ reviews }) => {
   const [avatarUrls, setAvatarUrls] = useState({});
   const [loading, setLoading] = useState(true);

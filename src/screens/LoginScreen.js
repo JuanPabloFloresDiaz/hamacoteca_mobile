@@ -8,6 +8,7 @@ import AlertComponent from '../components/AlertComponent';
 import fetchData from '../../api/components';
 
 const LoginScreen = ({ logueado, setLogueado }) => {
+  //Constantes para el manejo de datos
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [passwordVisible, setPasswordVisible] = React.useState(false);
@@ -21,6 +22,7 @@ const LoginScreen = ({ logueado, setLogueado }) => {
   const USER_API = 'servicios/publica/cliente.php';
 
 
+  //Constante para manejar la visibilidad del campo de la contraseña
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -65,18 +67,21 @@ const LoginScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  //Constante para ocultar la visibilidad de la alerta
   const handleAlertClose = () => {
     setAlertVisible(false);
     if (alertCallback) alertCallback();
   };
 
 
+  //Constante para redirijir a la pantalla de recuperar contraseña
   const handleForgotPassword = () => {
     // Navegar a la pantalla de recuperación de contraseña
     navigation.navigate('RecoverPassword');
   };
 
 
+  //Constante para redirijir a la pantalla de registro de usuarios
   const handleSignUp = () => {
     // Navegar a la pantalla de recuperación de contraseña
     navigation.navigate('SignUp');

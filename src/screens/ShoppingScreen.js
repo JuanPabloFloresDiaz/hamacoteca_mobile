@@ -7,9 +7,11 @@ import { Ionicons } from '@expo/vector-icons';
 import fetchData from '../../api/components';
 import ProductItem from '../components/ProductItem';
 
+//Constante para manejar el alto de la pantalla
 const windowHeight = Dimensions.get('window').height;
 
 const ShoppingScreen = ({ logueado, setLogueado }) => {
+  //Constantes para el manejo de datos
   const [searchQuery, setSearchQuery] = useState('');
   const [quantityProducts, setQuantityProducts] = useState('');
   const [menuVisible, setMenuVisible] = useState(false);
@@ -20,36 +22,49 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
+  //Constantes para la busqueda con el elemento de la libreria searchBar
   const onChangeSearch = query => setSearchQuery(query);
 
+  //Constantes para el manejo del menú de ordenar resultados
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
 
+  //Constante para ocultar el menú de opciones de ordenar resultados
   const handleSortOption = (option) => {
     setSortOption(option);
     closeMenu();
     // Implementar la lógica de ordenamiento aquí
   };
 
+  //Constante para que al seleccionar un producto, redirija a la pantalla de detalle de producto, enviando el id del producto
   const handleProductPress = (productId) => {
+    //Verificación de si el identificador del producto se ha enviado bien
     if (!productId) {
       alert('No se pudo cargar el producto');
       return;
     }
     console.log("Producto seleccionado " + productId);
+    //Navegar a detalle de producto
     navigation.navigate('LoginNav', { screen: 'DetailProduct', params: { productId } });
   };
 
+  //Url de la api
   const HAMACAS_API = 'servicios/publica/hamaca.php';
 
+  //Metodo para cargar los productos, con la condición de que si se esta buscando algo, entonces busca, si no muestra todo
   const fillProducts = async (searchForm = null) => {
     try {
+      //Verificación de acción a realizar
       const action = searchForm ? 'searchRows' : 'readAll';
+      //Petición a la api
       const data = await fetchData(HAMACAS_API, action, searchForm);
+      //La petición funciona correctamente
       if (data.status) {
         setDataProductos(data.dataset);
         setQuantityProducts(data.message);
-      } else {
+      }
+      //Si la petición falla
+      else {
         setDataProductos([]);
         setQuantityProducts('Existen 0 coincidencias');
       }
@@ -58,16 +73,19 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
     }
   }
 
+  //Cargar los productos
   useEffect(() => {
     fillProducts();
   }, []);
 
+  //Cargar los productos después de volver a cargar la pantalla en el menú
   useFocusEffect(
     useCallback(() => {
       fillProducts();
     }, [])
   );
 
+  //Metodo para refrescar la pantalla
   const onRefresh = useCallback(() => {
     setRefreshing(true); // Activar el estado de refresco
 
@@ -76,21 +94,23 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
 
     setRefreshing(false); // Desactivar el estado de refresco cuando se complete
   }, []);
-
+  //Verificación, buscar si existe algo buscado en el campo de buscar, si no leer todo
   useEffect(() => {
-    if(searchQuery != ''){
+    if (searchQuery != '') {
       const formData = new FormData();
       formData.append('search', searchQuery);
       fillProducts(formData);
-    }else{
+    } else {
       fillProducts();
     }
   }, [searchQuery]);
 
+  //Renderizador de las cartas de los productos
   const renderProductsItem = ({ item }) => (
     <ProductItem item={item} onPress={handleProductPress} />
   );
 
+  //Metodos para el manejo de los modals
   const showModal = () => setFilterModalVisible(true);
   const hideModal = () => setFilterModalVisible(false);
 

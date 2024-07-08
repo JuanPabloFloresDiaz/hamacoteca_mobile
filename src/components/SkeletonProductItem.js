@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 
+// Item para hacer un skeleton de carga, para proximas defensas
 const SkeletonProductItem = () => (
   <View style={styles.container}>
     <View style={styles.imageContainer}>

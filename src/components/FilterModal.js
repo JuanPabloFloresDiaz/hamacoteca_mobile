@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 
+// Modal de filtros de busqueda en pantalla de tienda
 const FilterModal = ({ visible, onClose }) => {
   return (
     <ScrollView contentContainerStyle={styles.modalContainer}>

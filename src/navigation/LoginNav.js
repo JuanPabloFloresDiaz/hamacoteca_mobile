@@ -10,6 +10,7 @@ import DetailProductScreen from "../screens/DetailProductScreen";
 
 const Stack = createStackNavigator();
 
+// Navegación entre pantallas que no estan añadidas al menú inferior
 export default function LoginNav({ logueado, setLogueado, productId }) {
   return (
     <Stack.Navigator

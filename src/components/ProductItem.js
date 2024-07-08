@@ -4,13 +4,16 @@ import { StyleSheet, View } from 'react-native';
 import imageData from '../../api/images';
 
 const ProductItem = ({ item, onPress }) => {
+  //Constantes para el manejo de la imagen
   const [imagenUrl, setImagenUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    //Metodo para cargar la imagen y manejar el error en caso de que no se encuentren
     const cargarImagen = async () => {
       try {
+        //Traer la imagen y aplicarla a la url
         const uri = await imageData('hamacas', item.IMAGEN);
         setImagenUrl(uri);
       } catch (error) {
