@@ -1,9 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import fetchData from '../../../api/components';
+import AlertComponent from '../AlertComponent';
 
-const ProductMainInfo = ({ name, price, rating }) => {
+const PEDIDO_API = 'servicios/publica/pedido.php';
+
+const ProductMainInfo = ({ name, price, rating, productId }) => {
   const [quantity, setQuantity] = useState(1);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertType, setAlertType] = useState(1);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertCallback, setAlertCallback] = useState(null);
+
+  const handleAlertClose = () => {
+    setAlertVisible(false);
+    if (alertCallback) alertCallback();
+  };
 
   const renderStars = (rating) => {
     const stars = [];
@@ -19,12 +32,44 @@ const ProductMainInfo = ({ name, price, rating }) => {
     return stars;
   };
 
+  const handleAgregarDetalleCarrito = async () => {
+    try {
+      if (quantity <= 0) {
+        Alert.alert("La cantidad no puede ser igual o menor a 0");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('idProducto', productId);
+      formData.append('cantidad', quantity);
+
+      const data = await fetchData(PEDIDO_API, 'manipulateDetail', formData);
+
+      if (data.status) {
+        setAlertType(1);
+        setAlertMessage(`Producto agregado al carrito`);
+        setAlertCallback(null);
+        setAlertVisible(true);
+      } else {
+        setAlertType(2);
+        setAlertMessage(`Error al agregar producto al carrito`);
+        setAlertCallback(null);
+        setAlertVisible(true);
+      }
+    } catch (error) {
+      setAlertType(2);
+      setAlertMessage(`Error de fetch al agregar producto al carrito`);
+      setAlertCallback(null);
+      setAlertVisible(true);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
         <Text style={styles.productTitle}>{name}</Text>
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.favoriteButton} onPress={() => console.log('Comprar', quantity)} >
+          <TouchableOpacity style={styles.favoriteButton} onPress={handleAgregarDetalleCarrito}>
             <FontAwesome name="shopping-bag" style={styles.shoppingIcon} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.favoriteButton} onPress={() => console.log('Añadir a favoritos')}>
@@ -45,6 +90,12 @@ const ProductMainInfo = ({ name, price, rating }) => {
           onChangeText={(text) => setQuantity(Number(text))}
         />
       </View>
+      <AlertComponent
+        visible={alertVisible}
+        type={alertType}
+        message={alertMessage}
+        onClose={handleAlertClose}
+      />
     </View>
   );
 };

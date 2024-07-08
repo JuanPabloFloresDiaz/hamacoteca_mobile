@@ -66,7 +66,7 @@ const DetailProductScreen = ({ route }) => {
       {product && (
         <>
           <ProductDetailCarousel images={product.images} />
-          <ProductMainInfo name={product.NOMBRE} price={parseFloat(product.PRECIO)} rating={parseFloat(product.VALORACIÓN)} />
+          <ProductMainInfo name={product.NOMBRE} price={parseFloat(product.PRECIO)} rating={parseFloat(product.PROMEDIO)} productId={productId}/>
           <ProductSpecifications
             category={product.CATEGORIA}
             material={product.MATERIAL}
