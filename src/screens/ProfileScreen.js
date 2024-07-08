@@ -11,29 +11,39 @@ import RNPickerSelect from "react-native-picker-select";
 import imageData from "../../api/images";
 import foto from '../../assets/anya.jpg';
 
+//Obtiene la altura de la ventana
 const windowHeight = Dimensions.get('window').height;
 
 const ProfileScreen = ({ logueado, setLogueado }) => {
+
+  //URL de la API
   const USER_API = 'servicios/publica/cliente.php';
+
+  //Estado para alternar el modo de edición
   const [isEditing, setIsEditing] = useState(false);
+
+  //Almacena la información del perfil
   const [profile, setProfile] = useState({
-    name: "Xochilt",
-    fullname: "López",
-    email: "sochiiii@gmail.com",
-    dui: "12345678-9",
-    phone: "1212-1212",
-    address: "Avenida Aguilares 218 San Salvador CP, San Salvador 1101",
-    birthday: new Date("2005-09-26"),
-    gender: "Femenino",  
+    name: " ",
+    fullname: " ",
+    email: " ",
+    dui: " ",
+    phone: " ",
+    address: " ",
+    birthday: new Date(" "),
+    gender: " ",  
     image: Image.resolveAssetSource(foto).uri,
   });
 
+  //Controla la visualización del selector de fecha
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+  //Función para alternar entre el modo de edición y vista
   const handleEditPress = () => {
     setIsEditing(!isEditing);
   };
 
+  //Función para guardar los cambios en el perfil
   const handleSavePress = async () => {
     try {
       const formData = new FormData();
@@ -74,10 +84,12 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  //Función para manejar cambios en el perfil
   const handleChange = (name, value) => {
     setProfile({ ...profile, [name]: value });
   };
 
+  //Función para cerrar sesión
   const handleLogOut = async () => {
     try {
       const data = await fetchData(USER_API, "logOut");
@@ -92,6 +104,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  //Función para seleccionar una imagen desde la galería
   const pickImage = async () => {
     if (isEditing) {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -107,12 +120,14 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  //Función para manejar el cambio de fecha
   const onDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || profile.birthday;
     setShowDatePicker(false);
     handleChange("birthday", currentDate);
   };
 
+  //Función para leer los datos del perfil desde la API
   const readProfile = async () => {
     try {
       const data = await fetchData(USER_API, 'readOne');
@@ -139,6 +154,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  //Lee los datos del perfil al montar el componente
   useEffect(() => {
     readProfile();
   }, []);
@@ -146,6 +162,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
   return (
     <ScrollView>
       <View style={styles.container}>
+        {/*Contenedor para el header*/}
         <LinearGradient colors={["#85CF74", "#4CAF50"]} style={styles.header}>
           <TouchableOpacity onPress={pickImage}>
             <Avatar.Image
@@ -165,6 +182,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
 
         <Card style={styles.profileCard}>
           <Card.Content>
+            {/*Contenedor para el nombre*/}
             <View style={styles.inputContainer}>
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Nombre:</Text>
@@ -179,6 +197,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
                 </View>
               </View>
             </View>
+            {/*Contenedor para el apellido*/}
             <View style={styles.inputContainer}>
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Apellido:</Text>
@@ -193,6 +212,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
                 </View>
               </View>
             </View>
+            {/*Contenedor para la fecha de nacimiento*/}
             <View style={[styles.inputContainer, { flex: 1 }]}>
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Fecha de nacimiento:</Text>
@@ -214,6 +234,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
                 </View>
               </View>
             </View>
+            {/*Contenedor para el género*/}
             <View style={styles.inputContainer}>
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Género:</Text>
@@ -236,6 +257,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
                 </View>
               </View>
             </View>
+            {/*Contenedor para el correo*/}
             <View style={styles.inputContainer}>
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Correo:</Text>
@@ -250,6 +272,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
                 </View>
               </View>
             </View>
+            {/*Contenedor para la dirección*/}
             <View style={styles.inputContainer}>
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Dirección:</Text>
@@ -264,6 +287,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
                 </View>
               </View>
             </View>
+            {/*Contenedor para el DUI*/}
             <View style={styles.fila}>
               <View style={[styles.inputContainer, { flex: 1 }]}>
                 <View style={styles.infoRow}>
@@ -279,6 +303,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
                   </View>
                 </View>
               </View>
+              {/*Contenedor para el teléfono*/}
               <View style={[styles.inputContainer, { flex: 1 }]}>
                 <View style={styles.infoRow}>
                   <Text style={styles.label}>Teléfono</Text>
@@ -295,6 +320,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
               </View>
             </View>
           </Card.Content>
+          {/*Botón para guardar cambios*/}
           {isEditing && (
             <Button
               mode="contained"

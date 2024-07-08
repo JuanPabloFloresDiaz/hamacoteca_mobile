@@ -13,7 +13,7 @@ const ProductDetailCarousel = ({ images }) => {
   useEffect(() => {
     const cargarImagenes = async () => {
       try {
-        const urls = await Promise.all(images.map(img => imageData('fotos', img.IMAGEN)));
+        const urls = await Promise.all(images.map(img => imageData(img.folder, img.IMAGEN)));
         setImageUrls(urls);
         console.log('URLS: ', urls);
       } catch (error) {

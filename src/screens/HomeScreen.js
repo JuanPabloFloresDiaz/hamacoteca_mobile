@@ -4,9 +4,11 @@ import Swiper from 'react-native-swiper';
 import { Ionicons } from '@expo/vector-icons';
 import fetchData from '../../api/components';
 
+//Obtiene la altura de la ventana
 const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
+  //Definición de elementos del carrusel
   const carouselItems = [
     {
       title: "Hamacas de gran calidad",
@@ -21,14 +23,20 @@ const HomeScreen = () => {
       image: require('../../assets/hamaca2.png'),
     },
   ];
+
+  //URL de la API
   const API = 'servicios/publica/cliente.php';
+
+  //Estado para almacenar el nombre de usuario
   const [username, setUsername] = useState('');
 
+  //Función para obtener el nombre de usuario desde la API
   const getUser = async () => {
     try {
       const data = await fetchData(API, 'getUser');
       if (data.session) {
-        setUsername(data.username);
+        //Establece el nombre de usuario
+        setUsername(data.username); 
         console.log(data.nombre);
       } else {
       }
@@ -37,6 +45,7 @@ const HomeScreen = () => {
     }
   };
   
+  //Obtiene el nombre del usuario cuando el componente se monte
   useEffect(() => {
     const initializeApp = async () => {
       await getUser();
@@ -46,7 +55,7 @@ const HomeScreen = () => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      {/* Featured Product */}
+      {/* Carrusel */}
       <Swiper 
         style={styles.wrapper} 
         showsButtons={true} 
@@ -71,7 +80,7 @@ const HomeScreen = () => {
         ))}
       </Swiper>
 
-      {/* Categories */}
+      {/* Texto de bienvenida y categorías */}
       <Text style={styles.welcomeText}>Bienvenido {username}</Text>
       <Text style={styles.sectionTitle}>Categorías</Text>
       <ScrollView horizontal style={styles.categoriesContainer} showsHorizontalScrollIndicator={false}>
@@ -97,7 +106,7 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </ScrollView>
 
-      {/* Products of the week */}
+      {/* Products de la semana */}
       <View style={styles.productsOfWeekContainer}>
         <Image 
           source={require('../../assets/productos.png')} 
@@ -141,7 +150,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   contentContainer: {
-    paddingBottom: 100, // Añadir espacio en la parte inferior
+    paddingBottom: 100, 
   },
   wrapper: {
     height: 300,
