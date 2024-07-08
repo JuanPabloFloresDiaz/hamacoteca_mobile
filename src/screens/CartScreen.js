@@ -4,10 +4,11 @@ import { Text, View, StyleSheet, FlatList, Dimensions, RefreshControl, ScrollVie
 import { Button, Searchbar, Menu, Provider, Modal, Portal } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import Constants from 'expo-constants';
-import fetchData from '../../api/components';
+import fetchData from '../../api/components'; // Importa función para realizar peticiones API
 import CarritoCard from '../components/DetailProductCart/CarritoCard';
 import ModalEditarCantidad from '../components/DetailProductCart/ModalEditar';
 
+//Constante para manejar el alto de la pantalla
 const windowHeight = Dimensions.get('window').height;
 
 const Carrito = ({ navigation, logueado, setLogueado }) => {
@@ -21,6 +22,7 @@ const Carrito = ({ navigation, logueado, setLogueado }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
+  //Url de la api
   const PEDIDO_API = 'servicios/publica/pedido.php';
   // Función para navegar hacia atrás a la pantalla de productos
   const backProducts = () => {
@@ -87,6 +89,7 @@ const Carrito = ({ navigation, logueado, setLogueado }) => {
           {
             text: 'Aceptar',
             onPress: async () => {
+              // Realización de la petición de finalizar pedido
               const data = await fetchData(PEDIDO_API, 'finishOrder');
               if (data.status) {
                 Alert.alert("Pedido finalizado correctamente")

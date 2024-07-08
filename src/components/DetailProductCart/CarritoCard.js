@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Card, ActivityIndicator, PaperProvider } from 'react-native-paper';
 import Constants from 'expo-constants';
-import fetchData from '../../../api/components';
-import imageData from '../../../api/images';
+import fetchData from '../../../api/components'; // Importa función para realizar peticiones API
+import imageData from '../../../api/images'; // Importa función para obtener datos de imagen
 import iconDelete from '../../../assets/icon-delete.png';
 import iconEdit from '../../../assets/icon-edit-cart.png';
 import AlertComponent from '../AlertComponent';
@@ -17,13 +17,18 @@ const CarritoCard = ({item, cargarCategorias,
   idDetalle,
   setIdDetalle, getDetalleCarrito, updateDataDetalleCarrito}) => {
  
+    //Constantes para el manejo de la imagen
     const [imagenUrl, setImagenUrl] = useState(null);
+
+    //Constantes para el manejo de datos
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [alertVisible, setAlertVisible] = useState(false);
     const [alertType, setAlertType] = useState(1);
     const [alertMessage, setAlertMessage] = useState('');
     const [alertCallback, setAlertCallback] = useState(null);
+
+    //Url de la api
     const PEDIDO_API = 'servicios/publica/pedido.php';
 
     const handleAlertClose = () => {
@@ -31,6 +36,7 @@ const CarritoCard = ({item, cargarCategorias,
       if (alertCallback) alertCallback();
     };
 
+    // Función para eliminar un detalle del carrito
     const handleDeleteDetalleCarrito = async (idDetalle) => {
       try {
         // Mostrar un mensaje de confirmación antes de eliminar
@@ -45,8 +51,10 @@ const CarritoCard = ({item, cargarCategorias,
             {
               text: 'Eliminar',
               onPress: async () => {
+                // Creación del formulario para la petición
                 const formData = new FormData();
                 formData.append('idPedido', idDetalle);
+                // Realización de la petición de eliminar
                 const data = await fetchData(PEDIDO_API, 'deleteDetail', formData);
                 if (data.status) {
                   Alert.alert('Producto removido correctamente');
@@ -64,6 +72,7 @@ const CarritoCard = ({item, cargarCategorias,
       }
     };
 
+    //Metodo para cargar la imagen y manejar el error en caso de que no se encuentren
     useEffect(() => {
       const cargarImagen = async () => {
         try {

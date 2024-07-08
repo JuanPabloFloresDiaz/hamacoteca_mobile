@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import fetchData from '../../../api/components';
-import AlertComponent from '../AlertComponent';
+import fetchData from '../../../api/components'; // Importa función para realizar peticiones API
+import AlertComponent from '../AlertComponent'; // Importa compoenete para alerta personalizado
 
 
 const ModalEditar = ({setModalVisible, modalVisible, idDetalle, setCantidadProductoCarrito, cantidadProductoCarrito, getDetalleCarrito}) => {
+    //Url de la api
     const PEDIDO_API = 'servicios/publica/pedido.php';
+    //constante para el manejo de dato
     const [alertVisible, setAlertVisible] = useState(false);
     const [alertType, setAlertType] = useState(1);
     const [alertMessage, setAlertMessage] = useState('');
     const [alertCallback, setAlertCallback] = useState(null);
 
+    //Constante para ocultar la visibilidad de la alerta
     const handleAlertClose = () => {
         setAlertVisible(false);
         if (alertCallback) alertCallback();
       };
 
+    // Función para editar un detalle del carrito
     const handleUpdateDetalleCarrito = async () => {
         
       try {
@@ -24,11 +28,13 @@ const ModalEditar = ({setModalVisible, modalVisible, idDetalle, setCantidadProdu
           Alert.alert("La cantidad no puede ser igual o menor a 0");
           return; // Corrige la lógica aquí
         }
-  
+
+        // Creación del formulario para la petición
         const formData = new FormData();
         formData.append('idPedido', idDetalle);
         formData.append('cantidad', cantidadProductoCarrito);
   
+        // Realización de la petición de actualizar
         const data = await fetchData(PEDIDO_API, 'updateDetail', formData);
   
         if (data.status) {
@@ -57,8 +63,10 @@ const ModalEditar = ({setModalVisible, modalVisible, idDetalle, setCantidadProdu
       setModalVisible(false);
     };
   
+
     return (
        <View>
+       {/*Modal para editar la cantidad del producto*/}
             <Modal
             visible={modalVisible}
             animationType="slide"
