@@ -39,9 +39,16 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertType, setAlertType] = useState(1);
   const [alertMessage, setAlertMessage] = useState('');
+  const [alertCallback, setAlertCallback] = useState(null);
 
   //Controla la visualización del selector de fecha
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  //Constante para ocultar la visibilidad de la alerta
+  const handleAlertClose = () => {
+    setAlertVisible(false);
+    if (alertCallback) alertCallback();
+  };
 
   //Función para alternar entre el modo de edición y vista
   const handleEditPress = () => {
@@ -78,14 +85,21 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
       const response = await fetchData(USER_API, "updateRow", formData);
 
       if (response.status) {
-        Alert.alert(response.message);
-        setIsEditing(false);
+        setAlertType(1);
+        setAlertMessage(`${response.message}`);
+        setAlertCallback(null);
+        setAlertVisible(true);
       } else {
-        Alert.alert("Error", response.error);
+        setAlertType(2);
+        setAlertMessage(`Error: ${response.error}`);
+        setAlertCallback(null);
+        setAlertVisible(true);
       }
     } catch (error) {
-      Alert.alert("No se pudo acceder a la API", error.message);
-      console.log(error.message);
+      setAlertType(2);
+      setAlertMessage(`Error: ${error.message}`);
+      setAlertCallback(null);
+      setAlertVisible(true);
     }
   };
 
