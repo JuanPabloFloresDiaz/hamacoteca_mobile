@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, ScrollView, StyleSheet, ActivityIndicator, Text } from 'react-native';
+import { View, Image, ActivityIndicator, Text, StyleSheet, Dimensions } from 'react-native';
+import Swiper from 'react-native-swiper';
 import imageData from '../../../api/images';
+
+const { width } = Dimensions.get('window');
 
 const ProductDetailCarousel = ({ images }) => {
   const [imageUrls, setImageUrls] = useState([]);
@@ -12,7 +15,7 @@ const ProductDetailCarousel = ({ images }) => {
       try {
         const urls = await Promise.all(images.map(img => imageData('fotos', img.IMAGEN)));
         setImageUrls(urls);
-        console.log('URLS: ', urls)
+        console.log('URLS: ', urls);
       } catch (error) {
         setError(error);
       } finally {
@@ -36,27 +39,54 @@ const ProductDetailCarousel = ({ images }) => {
   }
 
   return (
-    <ScrollView horizontal pagingEnabled style={styles.carousel}>
+    <Swiper 
+      style={styles.wrapper} 
+      showsButtons={true} 
+      autoplay={true} 
+      dotColor="white"
+      activeDotColor="white"
+      dotStyle={styles.dotStyle}
+      activeDotStyle={styles.activeDotStyle}
+      nextButton={<Text style={styles.buttonText}>›</Text>}
+      prevButton={<Text style={styles.buttonText}>‹</Text>}
+    >
       {imageUrls.map((url, index) => (
-        <Image key={index} source={{ uri: url }} style={styles.image} />
+        <View style={styles.slide} key={index}>
+          <Image source={{ uri: url }} style={styles.image} />
+        </View>
       ))}
-    </ScrollView>
+    </Swiper>
   );
 };
 
 const styles = StyleSheet.create({
-  carousel: {
-    width: '100%',
-    height: 250,
+  wrapper: {
+    height: 300,
+  },
+  slide: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: width,
+    height: 300,
+    position: 'absolute',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  dotStyle: {
+    marginBottom: -20, 
+  },
+  activeDotStyle: {
+    marginBottom: -20, 
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 50,
   },
 });
 
