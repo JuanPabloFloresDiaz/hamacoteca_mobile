@@ -7,8 +7,9 @@ import { AntDesign } from "@expo/vector-icons";
 import Entypo from '@expo/vector-icons/Entypo';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import foto from '../../assets/anya.jpg';
 import RNPickerSelect from "react-native-picker-select";
+import imageData from "../../api/images";
+import foto from '../../assets/anya.jpg';
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -33,8 +34,44 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     setIsEditing(!isEditing);
   };
 
-  const handleSavePress = () => {
-    setIsEditing(false);
+  const handleSavePress = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("nombrePerfil", profile.name);
+      formData.append("apellidoPerfil", profile.fullname);
+      formData.append("correoPerfil", profile.email);
+      formData.append("direccionPerfil", profile.address);
+      formData.append("duiPerfil", profile.dui);
+      if (profile.birthday instanceof Date) {
+        formData.append("fechanacimientoPerfil", profile.birthday.toISOString().split('T')[0]);
+      } else {
+        Alert.alert("Error", "Fecha de nacimiento no válida");
+        return;
+      }
+      formData.append("telefonoPerfil", profile.phone);
+      formData.append("generoPerfil", profile.gender);
+      if (profile.image) {
+        const uriParts = profile.image.split('.');
+        const fileType = uriParts[uriParts.length - 1];
+        formData.append("imagenPerfil", {
+          uri: profile.image,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`,
+        });
+      }
+
+      const response = await fetchData(USER_API, "updateRow", formData);
+
+      if (response.status) {
+        Alert.alert(response.message);
+        setIsEditing(false);
+      } else {
+        Alert.alert("Error", response.error);
+      }
+    } catch (error) {
+      Alert.alert("No se pudo acceder a la API", error.message);
+      console.log(error.message);
+    }
   };
 
   const handleChange = (name, value) => {
@@ -76,6 +113,36 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     handleChange("birthday", currentDate);
   };
 
+  const readProfile = async () => {
+    try {
+      const data = await fetchData(USER_API, 'readOne');
+      const profileData = data.dataset;
+      const imageUrl = profileData.FOTO ? await imageData('clientes', profileData.FOTO) : Image.resolveAssetSource(foto).uri;
+
+      setProfile({
+        name: profileData.NOMBRE,
+        fullname: profileData.APELLIDO,
+        email: profileData.CORREO,
+        dui: profileData.DUI,
+        phone: profileData.TELÉFONO,
+        address: profileData.DIRECCION,
+        birthday: new Date(profileData.NACIMIENTO),
+        gender: profileData.GENERO,
+        image: imageUrl,
+      });
+
+      console.log(data.dataset);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      console.log('petición hecha');
+    }
+  };
+
+  useEffect(() => {
+    readProfile();
+  }, []);
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -86,8 +153,8 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
               source={{ uri: profile.image }}
             />
           </TouchableOpacity>
-          <Text style={styles.name}>Xochilt</Text>
-          <Text style={styles.email}>sochiiii@gmail.com</Text>
+          <Text style={styles.name}>{profile.name}</Text>
+          <Text style={styles.email}>{profile.email}</Text>
           <TouchableOpacity onPress={handleEditPress} style={styles.editIcon}>
             <AntDesign name={isEditing ? "leftcircle" : "edit"} size={30} color="#FFF"/>
           </TouchableOpacity>
@@ -227,11 +294,6 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
                 </View>
               </View>
             </View>
-            <View style={styles.activeSinceRow}>
-              <View style={styles.status}></View>
-              <Text style={styles.infoText2}>Activo desde</Text>
-            </View>
-            <Text style={styles.dateText}>30 de septiembre de 2023</Text>
           </Card.Content>
           {isEditing && (
             <Button
