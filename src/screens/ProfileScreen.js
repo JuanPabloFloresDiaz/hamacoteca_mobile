@@ -10,6 +10,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from "react-native-picker-select";
 import imageData from "../../api/images";
 import foto from '../../assets/anya.jpg';
+import AlertComponent from '../components/AlertComponent';
 
 //Obtiene la altura de la ventana
 const windowHeight = Dimensions.get('window').height;
@@ -34,6 +35,10 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     gender: " ",  
     image: Image.resolveAssetSource(foto).uri,
   });
+
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertType, setAlertType] = useState(1);
+  const [alertMessage, setAlertMessage] = useState('');
 
   //Controla la visualización del selector de fecha
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -332,6 +337,12 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
           )}
         </Card>
       </View>
+      <AlertComponent
+        visible={alertVisible}
+        type={alertType}
+        message={alertMessage}
+        onClose={handleAlertClose}
+      />
     </ScrollView>
   );
 }

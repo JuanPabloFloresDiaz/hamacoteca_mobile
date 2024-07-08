@@ -3,6 +3,7 @@ import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
 import Swiper from 'react-native-swiper';
 import { Ionicons } from '@expo/vector-icons';
 import fetchData from '../../api/components';
+import AlertComponent from '../components/AlertComponent';
 
 //Obtiene la altura de la ventana
 const { width } = Dimensions.get('window');

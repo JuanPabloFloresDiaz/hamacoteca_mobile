@@ -23,6 +23,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import RNPickerSelect from "react-native-picker-select";
 import * as ImagePicker from "expo-image-picker";
 import fetchData from '../../api/components';
+import AlertComponent from '../components/AlertComponent';
 
 //Constante para manejar el alto de la pantalla
 const windowHeight = Dimensions.get("window").height;
@@ -42,6 +43,11 @@ const RegisterScreen = () => {
   const [genero, setGenero] = useState(null);
   const [image, setImage] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertType, setAlertType] = useState(1);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertCallback, setAlertCallback] = useState(null);
+  const [url, setUrl] = useState('');
 
   //Constante de navegación entre pantallas
   const navigation = useNavigation();
@@ -75,13 +81,32 @@ const RegisterScreen = () => {
       const response = await fetchData(USER_API, "signUpMovli", formData);
 
       if (response.status) {
-        Alert.alert(response.message);
+        setAlertType(1);
+        setAlertMessage(`${response.message}`);
+        setAlertCallback(null);
+        setAlertVisible(true);
+        setUrl('LoginScreen');
       } else {
-        Alert.alert("Error", response.error);
+        setAlertType(2);
+        setAlertMessage(`Error: ${response.error}`);
+        setAlertCallback(null);
+        setAlertVisible(true);
+        setUrl(null);
       }
     } catch (error) {
-      Alert.alert("No se pudo acceder a la API", error.message);
+      setAlertType(2);
+      setAlertMessage(`Error: ${error.message}`);
+      setAlertCallback(null);
+      setAlertVisible(true);
+      setUrl(null);
     }
+  };
+
+  
+  //Constante para ocultar la visibilidad de la alerta
+  const handleAlertClose = () => {
+    setAlertVisible(false);
+    if (alertCallback) alertCallback();
   };
 
   //Metodo para cambiar fecha
@@ -290,6 +315,13 @@ const RegisterScreen = () => {
           </Card>
         </View>
       </ScrollView>
+      <AlertComponent
+        visible={alertVisible}
+        type={alertType}
+        message={alertMessage}
+        onClose={handleAlertClose}
+        url={url}
+      />
     </PaperProvider>
   );
 };
