@@ -92,7 +92,7 @@ const LoginScreen = ({ logueado, setLogueado }) => {
       <ImageBackground source={require('../../assets/fondo-login.png')} style={styles.backgroundImage}>
         <View style={styles.container}>
           <View style={styles.containerLogo}>
-          <Image source={require('../../assets/logo.png')} style={styles.logo} />
+            <Image source={require('../../assets/logo.png')} style={styles.logo} />
           </View>
           <Text style={styles.title}>Inicio de sesión</Text>
           <Text style={styles.subtitle}>Bienvenido al inicio de sesión</Text>
@@ -104,6 +104,9 @@ const LoginScreen = ({ logueado, setLogueado }) => {
               value={email}
               onChangeText={setEmail}
               style={styles.input}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
             />
           </View>
           <Text style={styles.textLabel}>Contraseña</Text>

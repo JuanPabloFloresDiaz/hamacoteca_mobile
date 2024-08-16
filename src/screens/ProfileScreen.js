@@ -32,7 +32,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     phone: " ",
     address: " ",
     birthday: new Date(" "),
-    gender: " ",  
+    gender: " ",
     image: Image.resolveAssetSource(foto).uri,
   });
 
@@ -53,49 +53,67 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
   //Función para alternar entre el modo de edición y vista
   const handleEditPress = () => {
     setIsEditing(!isEditing);
+    readProfile();
   };
 
   //Función para guardar los cambios en el perfil
   const handleSavePress = async () => {
     try {
-      const formData = new FormData();
-      formData.append("nombrePerfil", profile.name);
-      formData.append("apellidoPerfil", profile.fullname);
-      formData.append("correoPerfil", profile.email);
-      formData.append("direccionPerfil", profile.address);
-      formData.append("duiPerfil", profile.dui);
-      if (profile.birthday instanceof Date) {
-        formData.append("fechanacimientoPerfil", profile.birthday.toISOString().split('T')[0]);
-      } else {
-        Alert.alert("Error", "Fecha de nacimiento no válida");
+
+      //Validación de correo electrónico
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(profile.email)) {
+        Alert.alert("Error", "Correo electrónico no válido");
         return;
-      }
-      formData.append("telefonoPerfil", profile.phone);
-      formData.append("generoPerfil", profile.gender);
-      if (profile.image) {
-        const uriParts = profile.image.split('.');
-        const fileType = uriParts[uriParts.length - 1];
-        formData.append("imagenPerfil", {
-          uri: profile.image,
-          name: `photo.${fileType}`,
-          type: `image/${fileType}`,
-        });
-      }
-
-      const response = await fetchData(USER_API, "updateRow", formData);
-
-      if (response.status) {
-        setAlertType(1);
-        setAlertMessage(`${response.message}`);
-        setAlertCallback(null);
-        setAlertVisible(true);
-      } else {
+      } else if (!profile.name || !profile.fullname || !profile.email || !profile.address || !profile.dui || !profile.phone) {
         setAlertType(2);
-        setAlertMessage(`Error: ${response.error}`);
+        setAlertMessage(`Campos requeridos, Por favor, complete todos los campos.`);
         setAlertCallback(null);
         setAlertVisible(true);
+        return;
+      } else {
+
+        const formData = new FormData();
+        formData.append("nombrePerfil", profile.name);
+        formData.append("apellidoPerfil", profile.fullname);
+        formData.append("correoPerfil", profile.email);
+        formData.append("direccionPerfil", profile.address);
+        formData.append("duiPerfil", profile.dui);
+        if (profile.birthday instanceof Date) {
+          formData.append("fechanacimientoPerfil", profile.birthday.toISOString().split('T')[0]);
+        } else {
+          Alert.alert("Error", "Fecha de nacimiento no válida");
+          return;
+        }
+        formData.append("telefonoPerfil", profile.phone);
+        formData.append("generoPerfil", profile.gender);
+        if (profile.image) {
+          const uriParts = profile.image.split('.');
+          const fileType = uriParts[uriParts.length - 1];
+          formData.append("imagenPerfil", {
+            uri: profile.image,
+            name: `photo.${fileType}`,
+            type: `image/${fileType}`,
+          });
+        }
+
+        const response = await fetchData(USER_API, "updateRow", formData);
+
+        if (response.status) {
+          setAlertType(1);
+          setAlertMessage(`${response.message}`);
+          setAlertCallback(null);
+          setAlertVisible(true);
+          setIsEditing(false);
+        } else {
+          setAlertType(2);
+          setAlertMessage(`Error: ${response.error}`);
+          setAlertCallback(null);
+          setAlertVisible(true);
+        }
       }
-    } catch (error) {
+    }
+    catch (error) {
       setAlertType(2);
       setAlertMessage(`Error: ${error.message}`);
       setAlertCallback(null);
@@ -192,7 +210,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
           <Text style={styles.name}>{profile.name}</Text>
           <Text style={styles.email}>{profile.email}</Text>
           <TouchableOpacity onPress={handleEditPress} style={styles.editIcon}>
-            <AntDesign name={isEditing ? "leftcircle" : "edit"} size={30} color="#FFF"/>
+            <AntDesign name={isEditing ? "leftcircle" : "edit"} size={30} color="#FFF" />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleLogOut} style={styles.logoutIcon}>
             <Entypo name="log-out" size={30} color="#FFF" />
@@ -474,7 +492,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#558D32',
     width: 10,
     height: 10,
-    borderRadius: 100/2
+    borderRadius: 100 / 2
   },
   pickerText: {
     flex: 1,

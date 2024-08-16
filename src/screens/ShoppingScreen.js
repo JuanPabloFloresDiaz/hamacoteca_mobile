@@ -22,6 +22,7 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
+  const [loadedItems, setLoadedItems] = useState(4);
   //Constantes para la busqueda con el elemento de la libreria searchBar
   const onChangeSearch = query => setSearchQuery(query);
 
@@ -36,18 +37,12 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
     // Implementar la lógica de ordenamiento aquí
   };
 
-  //Constante para que al seleccionar un producto, redirija a la pantalla de detalle de producto, enviando el id del producto
-  const handleProductPress = (productId) => {
-    //Verificación de si el identificador del producto se ha enviado bien
-    if (!productId) {
-      alert('No se pudo cargar el producto');
-      return;
-    }
-    console.log("Producto seleccionado " + productId);
-    //Navegar a detalle de producto
-    navigation.navigate('LoginNav', { screen: 'DetailProduct', params: { productId } });
+  const cargarMasElementos = () => {
+    // Incrementa la cantidad de elementos cargados (por ejemplo, carga 5 elementos más)
+    setLoadedItems(loadedItems + 5);
   };
 
+  
   //Url de la api
   const HAMACAS_API = 'servicios/publica/hamaca.php';
 
@@ -72,6 +67,18 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
       setError(error);
     }
   }
+
+  //Constante para que al seleccionar un producto, redirija a la pantalla de detalle de producto, enviando el id del producto
+  const handleProductPress = (productId) => {
+    //Verificación de si el identificador del producto se ha enviado bien
+    if (!productId) {
+      alert('No se pudo cargar el producto');
+      return;
+    }
+    console.log("Producto seleccionado " + productId);
+    //Navegar a detalle de producto
+    navigation.navigate('LoginNav', { screen: 'DetailProduct', params: { productId } });
+  };
 
   //Cargar los productos
   useEffect(() => {
