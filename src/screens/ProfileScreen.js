@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, ScrollView, Image } from "react-native";
 import { TextInput, Card, Avatar, Button } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
@@ -11,6 +11,7 @@ import RNPickerSelect from "react-native-picker-select";
 import imageData from "../../api/images";
 import foto from '../../assets/anya.jpg';
 import AlertComponent from '../components/AlertComponent';
+import { useFocusEffect } from "@react-navigation/native";
 
 //Obtiene la altura de la ventana
 const windowHeight = Dimensions.get('window').height;
@@ -104,7 +105,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
           setAlertMessage(`${response.message}`);
           setAlertCallback(null);
           setAlertVisible(true);
-          setIsEditing(false);
+          handleEditPress();
         } else {
           setAlertType(2);
           setAlertMessage(`Error: ${response.error}`);
@@ -115,7 +116,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
     }
     catch (error) {
       setAlertType(2);
-      setAlertMessage(`Error: ${error.message}`);
+      setAlertMessage(`Error al cargar la petición: ${error.message}`);
       setAlertCallback(null);
       setAlertVisible(true);
     }
@@ -195,6 +196,14 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
   useEffect(() => {
     readProfile();
   }, []);
+
+
+  useFocusEffect(
+    useCallback(() => {
+      readProfile();
+    }, [])
+  );
+
 
   return (
     <ScrollView>

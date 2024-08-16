@@ -1,9 +1,10 @@
-import React, {useState,useEffect} from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { Ionicons } from '@expo/vector-icons';
 import fetchData from '../../api/components';
 import AlertComponent from '../components/AlertComponent';
+import { useFocusEffect } from "@react-navigation/native";
 
 //Obtiene la altura de la ventana
 const { width } = Dimensions.get('window');
@@ -33,19 +34,19 @@ const HomeScreen = () => {
 
   //Función para obtener el nombre de usuario desde la API
   const getUser = async () => {
+    setUsername('');
     try {
       const data = await fetchData(API, 'getUser');
       if (data.session) {
         //Establece el nombre de usuario
-        setUsername(data.username); 
-        console.log(data.nombre);
+        setUsername(data.username);
       } else {
       }
     } catch (error) {
       console.log(error);
     }
   };
-  
+
   //Obtiene el nombre del usuario cuando el componente se monte
   useEffect(() => {
     const initializeApp = async () => {
@@ -54,13 +55,23 @@ const HomeScreen = () => {
     initializeApp();
   }, []);
 
+
+  useFocusEffect(
+    useCallback(() => {
+      const initializeApp = async () => {
+        await getUser();
+      };
+      initializeApp();
+    }, [])
+  );
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       {/* Carrusel */}
-      <Swiper 
-        style={styles.wrapper} 
-        showsButtons={true} 
-        autoplay={true} 
+      <Swiper
+        style={styles.wrapper}
+        showsButtons={true}
+        autoplay={true}
         dotColor="white"
         activeDotColor="white"
         dotStyle={styles.dotStyle}
@@ -109,15 +120,15 @@ const HomeScreen = () => {
 
       {/* Products de la semana */}
       <View style={styles.productsOfWeekContainer}>
-        <Image 
-          source={require('../../assets/productos.png')} 
+        <Image
+          source={require('../../assets/productos.png')}
           style={styles.productsOfWeekImage}
         />
         <View style={styles.productsOfWeekOverlay}>
           <Text style={styles.productsOfWeekTitle}>Productos de la semana</Text>
           <Text style={styles.productsOfWeekSubtitle}>Las hamacas del momento</Text>
         </View>
-        
+
         <View style={styles.productGrid}>
           <View style={styles.productItem}>
             <Image source={require('../../assets/hamacaclasic.png')} style={styles.productImage} />
@@ -151,7 +162,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   contentContainer: {
-    paddingBottom: 100, 
+    paddingBottom: 100,
   },
   wrapper: {
     height: 300,
@@ -288,10 +299,10 @@ const styles = StyleSheet.create({
     fontSize: 50,
   },
   dotStyle: {
-    marginBottom: -20, 
+    marginBottom: -20,
   },
   activeDotStyle: {
-    marginBottom: -20, 
+    marginBottom: -20,
   },
 });
 
