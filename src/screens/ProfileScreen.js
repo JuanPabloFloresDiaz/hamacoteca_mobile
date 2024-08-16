@@ -16,7 +16,7 @@ import { useFocusEffect } from "@react-navigation/native";
 //Obtiene la altura de la ventana
 const windowHeight = Dimensions.get('window').height;
 
-const ProfileScreen = ({ logueado, setLogueado }) => {
+const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
 
   //URL de la API
   const USER_API = 'servicios/publica/cliente.php';
@@ -201,6 +201,7 @@ const ProfileScreen = ({ logueado, setLogueado }) => {
   useFocusEffect(
     useCallback(() => {
       readProfile();
+      setCategoryId(null);
     }, [])
   );
 

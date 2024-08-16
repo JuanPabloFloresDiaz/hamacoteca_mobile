@@ -11,7 +11,7 @@ import ModalEditarCantidad from '../components/DetailProductCart/ModalEditar';
 //Constante para manejar el alto de la pantalla
 const windowHeight = Dimensions.get('window').height;
 
-const Carrito = ({ navigation, logueado, setLogueado }) => {
+const Carrito = ({ navigation, logueado, setLogueado, setCategoryId }) => {
   // Estado para almacenar los detalles del carrito
   const [dataDetalleCarrito, setDataDetalleCarrito] = useState([]);
   // Estado para el id del detalle seleccionado para modificar
@@ -53,6 +53,7 @@ const Carrito = ({ navigation, logueado, setLogueado }) => {
     // La función useFocusEffect ejecuta un efecto cada vez que la pantalla se enfoca.
     React.useCallback(() => {
       getDetalleCarrito(); // Llama a la función getDetalleCarrito.
+      setCategoryId(null);
     }, [])
   );
 

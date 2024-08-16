@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -14,21 +14,23 @@ const Tab = createBottomTabNavigator();
 
 // Navegación entre pantallas que estan añadidas al menú inferior
 export default function BottomTab({ logueado, setLogueado }) {
+  // Estado para categoryId
+  const [categoryId, setCategoryId] = useState(null);
   // Función para renderizar HomeScreen con props
   const RenderHomeScreen = props => (
-      <HomeScreen {...props} setLogueado={setLogueado} logueado={logueado} />
+      <HomeScreen {...props} setLogueado={setLogueado} logueado={logueado} categoryId={categoryId} setCategoryId={setCategoryId}/>
   );
   // Función para renderizar HomeScreen con props
   const RenderProfileScreen = props => (
-      <ProfileScreen {...props} setLogueado={setLogueado} logueado={logueado} />
+      <ProfileScreen {...props} setLogueado={setLogueado} logueado={logueado} categoryId={categoryId} setCategoryId={setCategoryId}/>
   );
   // Función para renderizar HomeScreen con props
   const RenderCartScreen = props => (
-      <CartScreen {...props} setLogueado={setLogueado} logueado={logueado} />
+      <CartScreen {...props} setLogueado={setLogueado} logueado={logueado} categoryId={categoryId} setCategoryId={setCategoryId}/>
   );
   // Función para renderizar HomeScreen con props
   const RenderShoppingScreen = props => (
-      <ShoppingScreen {...props} setLogueado={setLogueado} logueado={logueado} />
+      <ShoppingScreen {...props} setLogueado={setLogueado} logueado={logueado} categoryId={categoryId} setCategoryId={setCategoryId}/>
   );
   return (
       <Tab.Navigator

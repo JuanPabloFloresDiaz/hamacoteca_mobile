@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { Ionicons } from '@expo/vector-icons';
 import fetchData from '../../api/components';
 import AlertComponent from '../components/AlertComponent';
 import { useFocusEffect } from "@react-navigation/native";
+import ProductItem from '../components/ProductItem';
+import CategoryItem from '../components/CategoriesItem';
+import { useNavigation } from '@react-navigation/native';
 
 //Obtiene la altura de la ventana
 const { width } = Dimensions.get('window');
 
-const HomeScreen = () => {
+const HomeScreen = ({ categoryId, setCategoryId }) => {
   //Definición de elementos del carrusel
   const carouselItems = [
     {
@@ -28,9 +31,15 @@ const HomeScreen = () => {
 
   //URL de la API
   const API = 'servicios/publica/cliente.php';
+  let PRODUCTOS_API = 'servicios/publica/hamaca.php';
+  let CATEGORIAS_API = 'servicios/publica/categoria.php';
 
   //Estado para almacenar el nombre de usuario
   const [username, setUsername] = useState('');
+  const [categorias, setCategorias] = useState([]);
+  const [productosSemana, setProductosSemana] = useState([]);
+  const [error, setError] = useState(null);
+  const navigation = useNavigation();
 
   //Función para obtener el nombre de usuario desde la API
   const getUser = async () => {
@@ -47,10 +56,48 @@ const HomeScreen = () => {
     }
   };
 
+  //Metodo para cargar los productos de la semana
+  const fillProductsWeek = async () => {
+    try {
+      //Petición a la api
+      const data = await fetchData(PRODUCTOS_API, "readMostSell");
+      //La petición funciona correctamente
+      if (data.status) {
+        setProductosSemana(data.dataset);
+      }
+      //Si la petición falla
+      else {
+        setProductosSemana([]);
+      }
+    } catch (error) {
+      setError(error);
+    }
+  }
+
+  //Metodo para cargar los productos, con la condición de que si se esta buscando algo, entonces busca, si no muestra todo
+  const fillCategories = async () => {
+    try {
+      //Petición a la api
+      const data = await fetchData(CATEGORIAS_API, "readAll");
+      //La petición funciona correctamente
+      if (data.status) {
+        setCategorias(data.dataset);
+      }
+      //Si la petición falla
+      else {
+        setCategorias([]);
+      }
+    } catch (error) {
+      setError(error);
+    }
+  }
+
   //Obtiene el nombre del usuario cuando el componente se monte
   useEffect(() => {
     const initializeApp = async () => {
       await getUser();
+      await fillCategories();
+      await fillProductsWeek();
     };
     initializeApp();
   }, []);
@@ -60,10 +107,58 @@ const HomeScreen = () => {
     useCallback(() => {
       const initializeApp = async () => {
         await getUser();
+        await fillCategories();
+        await fillProductsWeek();
       };
       initializeApp();
+      setCategoryId(null); // Actualizar el estado en BottomTab
     }, [])
   );
+
+  //Constante para que al seleccionar un producto, redirija a la pantalla de detalle de producto, enviando el id del producto
+  const handleProductPress = (productId) => {
+    //Verificación de si el identificador del producto se ha enviado bien
+    if (!productId) {
+      alert('No se pudo cargar el producto');
+      return;
+    }
+    console.log("Producto seleccionado " + productId);
+    //Navegar a detalle de producto
+    navigation.navigate('LoginNav', { screen: 'DetailProduct', params: { productId } });
+  };
+
+
+  //Constante para que al seleccionar un producto, redirija a la pantalla de detalle de producto, enviando el id del producto
+  const handlePress = async () => {
+    setCategoryId(null); // Actualizar el estado en BottomTab
+    navigation.navigate('Tienda');
+  };
+
+  //Constante para que al seleccionar un producto, redirija a la pantalla de detalle de producto, enviando el id del producto
+  const handleCategoryPress = async (categoria) => {
+    //Verificación de si el identificador del producto se ha enviado bien
+    if (!categoria) {
+      alert('No se pudo cargar la categoría');
+      return;
+    } else {
+      setCategoryId(categoria); // Actualizar el estado en BottomTab
+      console.log("Categoría seleccionado en pantalla home" + categoryId);
+      //Navegar a detalle de producto
+      navigation.navigate('Tienda', { categoryId });
+    }
+  };
+
+  //Renderizador de las cartas de los productos
+  const renderProductItem = ({ item }) => (
+    <ProductItem item={item} onPress={handleProductPress} />
+  );
+
+
+  //Renderizador de las cartas de los productos
+  const renderCategoryItem = ({ item }) => (
+    <CategoryItem item={item} onPress={handleCategoryPress} />
+  );
+
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -84,7 +179,7 @@ const HomeScreen = () => {
             <Image source={item.image} style={styles.featuredImage} />
             <View style={styles.featuredTextOverlay}>
               <Text style={styles.featuredTitle}>{item.title}</Text>
-              <TouchableOpacity style={styles.featuredButton}>
+              <TouchableOpacity style={styles.featuredButton} onPress={handlePress}>
                 <Text style={styles.featuredButtonText}>Ver productos</Text>
               </TouchableOpacity>
             </View>
@@ -95,27 +190,12 @@ const HomeScreen = () => {
       {/* Texto de bienvenida y categorías */}
       <Text style={styles.welcomeText}>Bienvenido {username}</Text>
       <Text style={styles.sectionTitle}>Categorías</Text>
-      <ScrollView horizontal style={styles.categoriesContainer} showsHorizontalScrollIndicator={false}>
-        <TouchableOpacity style={styles.categoryItem}>
-          <Image source={require('../../assets/clasicas.jpg')} style={styles.categoryImage} />
-          <Text style={styles.categoryText}>Clásicas</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryItem}>
-          <Image source={require('../../assets/tela.png')} style={styles.categoryImage} />
-          <Text style={styles.categoryText}>De tela</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryItem}>
-          <Image source={require('../../assets/silla.png')} style={styles.categoryImage} />
-          <Text style={styles.categoryText}>Silla</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryItem}>
-          <Image source={require('../../assets/soporte.png')} style={styles.categoryImage} />
-          <Text style={styles.categoryText}>Con soporte</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryItem}>
-          <Image source={require('../../assets/acero.png')} style={styles.categoryImage} />
-          <Text style={styles.categoryText}>Soporte acero</Text>
-        </TouchableOpacity>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
+        {categorias.map((item, index) => (
+          <View key={index}>
+            {renderCategoryItem({ item })}
+          </View>
+        ))}
       </ScrollView>
 
       {/* Products de la semana */}
@@ -128,29 +208,13 @@ const HomeScreen = () => {
           <Text style={styles.productsOfWeekTitle}>Productos de la semana</Text>
           <Text style={styles.productsOfWeekSubtitle}>Las hamacas del momento</Text>
         </View>
-
         <View style={styles.productGrid}>
-          <View style={styles.productItem}>
-            <Image source={require('../../assets/hamacaclasic.png')} style={styles.productImage} />
-            <Text style={styles.productName}>Hamaca clásica</Text>
-            <Text style={styles.productPrice}>$299,43</Text>
-          </View>
-          <View style={styles.productItem}>
-            <Image source={require('../../assets/hamacatela.png')} style={styles.productImage} />
-            <Text style={styles.productName}>Hamaca de tela</Text>
-            <Text style={styles.productPrice}>$299,43</Text>
-          </View>
-          <View style={styles.productItem}>
-            <Image source={require('../../assets/hamacagrande.png')} style={styles.productImage} />
-            <Text style={styles.productName}>Hamaca grande</Text>
-            <Text style={styles.productPrice}>$299,43</Text>
-          </View>
-          <View style={styles.productItem}>
-            <Image source={require('../../assets/hamacapequeña.png')} style={styles.productImage} />
-            <Text style={styles.productName}>Hamaca pequeña</Text>
-            <Text style={styles.productPrice}>$299,43</Text>
-          </View>
-        </View>
+          {productosSemana.map((item, index) => (
+            <View key={index} style={styles.productItem}>
+              {renderProductItem({ item })}
+            </View>
+          ))}
+        </View> 
       </View>
     </ScrollView>
   );
@@ -277,6 +341,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     color: '#334195',
+  },
+  productGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   navbar: {
     flexDirection: 'row',

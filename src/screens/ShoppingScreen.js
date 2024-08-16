@@ -6,11 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import fetchData from '../../api/components';
 import ProductItem from '../components/ProductItem';
-
 //Constante para manejar el alto de la pantalla
 const windowHeight = Dimensions.get('window').height;
 
-const ShoppingScreen = ({ logueado, setLogueado }) => {
+const ShoppingScreen = ({ categoryId, setCategoryId }) => {
+  console.log('idCategoria redirigido a la pantalla shopping: ' + categoryId);
   //Constantes para el manejo de datos
   const [searchQuery, setSearchQuery] = useState('');
   const [quantityProducts, setQuantityProducts] = useState('');
@@ -21,7 +21,6 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
   const [dataProductos, setDataProductos] = useState([]);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
-
   const [loadedItems, setLoadedItems] = useState(4);
   //Constantes para la busqueda con el elemento de la libreria searchBar
   const onChangeSearch = query => setSearchQuery(query);
@@ -42,7 +41,7 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
     setLoadedItems(loadedItems + 5);
   };
 
-  
+
   //Url de la api
   const HAMACAS_API = 'servicios/publica/hamaca.php';
 
@@ -50,18 +49,35 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
   const fillProducts = async (searchForm = null) => {
     try {
       //Verificación de acción a realizar
-      const action = searchForm ? 'searchRows' : 'readAll';
-      //Petición a la api
-      const data = await fetchData(HAMACAS_API, action, searchForm);
-      //La petición funciona correctamente
-      if (data.status) {
-        setDataProductos(data.dataset);
-        setQuantityProducts(data.message);
-      }
-      //Si la petición falla
-      else {
-        setDataProductos([]);
-        setQuantityProducts('Existen 0 coincidencias');
+      if (!categoryId) {
+        const action = searchForm ? 'searchRows' : 'readAll';
+        //Petición a la api
+        const data = await fetchData(HAMACAS_API, action, searchForm);
+        //La petición funciona correctamente
+        if (data.status) {
+          setDataProductos(data.dataset);
+          setQuantityProducts(data.message);
+        }
+        //Si la petición falla
+        else {
+          setDataProductos([]);
+          setQuantityProducts('Existen 0 coincidencias');
+        }
+      } else {
+        searchForm = new FormData();
+        searchForm.append('idCategoria', categoryId);
+        //Petición a la api
+        const data = await fetchData(HAMACAS_API, 'readProductosCategoria', searchForm);
+        //La petición funciona correctamente
+        if (data.status) {
+          setDataProductos(data.dataset);
+          setQuantityProducts(data.message);
+        }
+        //Si la petición falla
+        else {
+          setDataProductos([]);
+          setQuantityProducts('Existen 0 coincidencias');
+        }
       }
     } catch (error) {
       setError(error);
@@ -82,23 +98,27 @@ const ShoppingScreen = ({ logueado, setLogueado }) => {
 
   //Cargar los productos
   useEffect(() => {
-    fillProducts();
+    const initializeApp = async () => {
+      await fillProducts();
+    };
+    initializeApp();
   }, []);
 
   //Cargar los productos después de volver a cargar la pantalla en el menú
   useFocusEffect(
     useCallback(() => {
-      fillProducts();
+      const initializeApp = async () => {
+        await fillProducts();
+      };
+      initializeApp();
     }, [])
   );
 
   //Metodo para refrescar la pantalla
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true); // Activar el estado de refresco
-
     // Lógica para recargar los datos
-    fillProducts();
-
+    await fillProducts();
     setRefreshing(false); // Desactivar el estado de refresco cuando se complete
   }, []);
   //Verificación, buscar si existe algo buscado en el campo de buscar, si no leer todo
