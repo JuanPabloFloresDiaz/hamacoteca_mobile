@@ -233,6 +233,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+
   },
   contentContainer: {
     paddingBottom: 100,
@@ -386,6 +387,8 @@ const styles = StyleSheet.create({
     marginBottom: -20,
   }, 
   welcomeContainer: {
+    width: width - 20,
+    alignSelf: 'center',
     padding: 15,
     marginBottom: 20,
     borderRadius: 10,
