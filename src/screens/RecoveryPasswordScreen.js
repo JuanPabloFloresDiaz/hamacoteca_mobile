@@ -1,17 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TextInput as RNTextInput, ImageBackground, TouchableOpacity } from 'react-native';
 import { Button, PaperProvider } from 'react-native-paper';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import fetchData from '../../api/components';
+import AlertComponent from '../components/AlertComponent';
 
 
 const RecoveryPasswordScreen = ({ logueado, setLogueado }) => {
   const [email, setEmail] = React.useState('');
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertType, setAlertType] = useState(1);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertCallback, setAlertCallback] = useState(null);
+  const API = 'servicios/recuperacion/recuperacion.php';
   const navigation = useNavigation();
 
-  const handleForgotVerification = () => {
-    // Navegar a la pantalla de recuperación de contraseña
-    navigation.navigate('VerificationCode');
+  const handleForgotVerification = async () => {
+    if (email === '') {
+      setAlertType(3);
+      setAlertMessage(`El campo no puede estar vacio`);
+      setAlertCallback(null);
+      setAlertVisible(true);
+      return;
+    }
+
+    const fechaActualUTC = new Date();
+    const formData = new FormData();
+    formData.append('correo', email);
+    formData.append('nivel', 2);
+    formData.append('fecha', fechaActualUTC.toISOString());
+
+    console.log('Esto contiene el correo: ' + email);
+    console.log('Esto contiene la fecha actual en UTC: ' + fechaActualUTC.toISOString());
+
+    try {
+      const data = await fetchData(API, 'envioCorreo', formData);
+      if (data.status) {
+        setAlertType(1);
+        setAlertMessage(`${data.message}`);
+        setAlertCallback(() => () => navigation.navigate('LoginScreen'));
+        setAlertVisible(true);
+      } else {
+        setAlertType(2);
+        setAlertMessage(`${data.error}`);
+        setAlertCallback(null);
+        setAlertVisible(true);
+      }
+    } catch (error) {
+      setAlertType(2);
+      setAlertMessage(`Error: ${error}`);
+      setAlertCallback(null);
+      setAlertVisible(true);
+    }
+  };
+
+  // Función para manejar el cierre de la alerta
+  const handleAlertClose = () => {
+    setAlertVisible(false);
+    if (alertCallback) alertCallback();
   };
 
   const handleForgotLogin = () => {
@@ -23,10 +70,10 @@ const RecoveryPasswordScreen = ({ logueado, setLogueado }) => {
     <PaperProvider>
       <ImageBackground source={require('../../assets/fondo-change.png')} style={styles.backgroundImage}>
         <View style={styles.container}>
-        <TouchableOpacity style={styles.backButton} onPress={handleForgotLogin}>
-        <Text style={styles.backText}>←</Text>
-      </TouchableOpacity>
-        <Image source={require('../../assets/icon-correo.png')} style={styles.logo} />
+          <TouchableOpacity style={styles.backButton} onPress={handleForgotLogin}>
+            <Text style={styles.backText}>←</Text>
+          </TouchableOpacity>
+          <Image source={require('../../assets/icon-correo.png')} style={styles.logo} />
           <Text style={styles.textLabel}>Ingrese su correo</Text>
           <View style={styles.inputContainer}>
             <Ionicons name="mail-outline" size={20} style={styles.icon} />
@@ -42,7 +89,12 @@ const RecoveryPasswordScreen = ({ logueado, setLogueado }) => {
           </Button>
         </View>
       </ImageBackground>
-
+      <AlertComponent
+        visible={alertVisible}
+        type={alertType}
+        message={alertMessage}
+        onClose={handleAlertClose}
+      />
     </PaperProvider>
   );
 }
@@ -108,4 +160,3 @@ const styles = StyleSheet.create({
     color: '#000',
   }
 });
-  
