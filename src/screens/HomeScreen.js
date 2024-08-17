@@ -188,7 +188,16 @@ const HomeScreen = ({ categoryId, setCategoryId }) => {
       </Swiper>
 
       {/* Texto de bienvenida y categorías */}
-      <Text style={styles.welcomeText}>Bienvenido {username}</Text>
+      <View style={styles.welcomeContainer}>
+        <Image
+          source={require('../../assets/welcome.jpg')}
+          style={styles.welcomeImage}
+        />
+        <View style={styles.welcomeOverlay}>
+          <Text style={styles.welcomeTitle}>Bienvenido {username}</Text>
+          <Text style={styles.welcomeSubtitle}>Explora nuestra tienda y disfruta de las mejores hamacas, solo en Hamacoteca</Text>
+        </View>
+      </View>
       <Text style={styles.sectionTitle}>Categorías</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
         {categorias.map((item, index) => (
@@ -214,7 +223,7 @@ const HomeScreen = ({ categoryId, setCategoryId }) => {
               {renderProductItem({ item })}
             </View>
           ))}
-        </View> 
+        </View>
       </View>
     </ScrollView>
   );
@@ -354,6 +363,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#eee',
   },
+  welcomeImage: {
+    height
+  },
   welcomeText: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -372,6 +384,36 @@ const styles = StyleSheet.create({
   },
   activeDotStyle: {
     marginBottom: -20,
+  }, 
+  welcomeContainer: {
+    padding: 10,
+    marginBottom: 20,
+  },
+  welcomeImage: {
+    width: width - 20,
+    height: 400,
+    borderRadius: 10,
+    alignSelf: 'center',
+  },
+  welcomeOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    padding: 10,
+    borderRadius: 5,
+  },
+  welcomeTitle: {
+    color: 'black',
+    fontSize: 30,
+    fontWeight: 'bold',
+    maxWidth: width * 0.75,
+  },
+  welcomeSubtitle: {
+    color: 'black',
+    fontSize: 18,
+    maxWidth: width * 0.75,
+    paddingTop: 5,
   },
 });
 
