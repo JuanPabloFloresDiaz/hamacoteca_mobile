@@ -1,22 +1,81 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Dimensions } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import fetchData from '../../../api/components';
 import AlertComponent from '../AlertComponent';
-
+import { useNavigation } from '@react-navigation/native';
 const PEDIDO_API = 'servicios/publica/pedido.php';
+const FAVORITO_API = 'servicios/publica/favorito.php';
+
+const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get('window').width;
 
 const ProductMainInfo = ({ name, price, rating, productId }) => {
   const [quantity, setQuantity] = useState(1);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertType, setAlertType] = useState(1);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isInCart, setIsInCart] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertCallback, setAlertCallback] = useState(null);
+  const navigation = useNavigation();
 
   const handleAlertClose = () => {
     setAlertVisible(false);
     if (alertCallback) alertCallback();
   };
+
+
+  const verifyFav = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('idProducto', productId);
+
+      const data = await fetchData(FAVORITO_API, 'verifySave', formData);
+
+      if (data.status) {
+        const dataset = data.dataset;
+        if (dataset.length > 0) {
+          const verificar = parseInt(dataset[0].FAVORITO, 10);
+          setIsFavorite(verificar >= 1);
+        } else {
+          setIsFavorite(false);
+        }
+        console.log('Respuesta favorito: ', isFavorite);
+      }
+    } catch (error) {
+      console.error('Error verifying favorite:', error);
+    }
+  };
+
+  const verifyCart = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('idProducto', productId);
+
+      const data = await fetchData(PEDIDO_API, 'verifyCart', formData);
+
+      if (data.status) {
+        const dataset = data.dataset;
+        if (dataset.length > 0) {
+          const verificar = parseInt(dataset[0].CARRITO, 10);
+          setIsInCart(verificar >= 1);
+          console.log('Respuesta carrito: ', isInCart);
+        } else {
+          setIsInCart(false);
+          console.log('Respuesta carrito: ', isInCart);
+        }
+      }
+    } catch (error) {
+      console.error('Error verifying cart:', error);
+    }
+  };
+
+  useEffect(() => {
+    verifyFav();
+    verifyCart();
+  }, [productId]);
+
 
   const renderStars = (rating) => {
     const stars = [];
@@ -48,7 +107,7 @@ const ProductMainInfo = ({ name, price, rating, productId }) => {
       if (data.status) {
         setAlertType(1);
         setAlertMessage(`Producto agregado al carrito`);
-        setAlertCallback(null);
+        setAlertCallback(() => () => navigation.navigate('BottomTab', { screen: 'Carrito' }));
         setAlertVisible(true);
       } else {
         setAlertType(2);
@@ -59,21 +118,48 @@ const ProductMainInfo = ({ name, price, rating, productId }) => {
     } catch (error) {
       setAlertType(2);
       setAlertMessage(`Error de fetch al agregar producto al carrito`);
-      setAlertCallback(null);
+      setAlertCallback((null));
       setAlertVisible(true);
     }
   };
 
+  const handleAgregarAFavoritos = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('idProducto', productId);
+
+      const data = await fetchData(FAVORITO_API, 'favoriteSave', formData);
+
+      if (data.status) {
+        setAlertType(1);
+        setAlertMessage(`Producto agregado a favoritos`);
+        setAlertCallback(null);
+        setAlertVisible(true);
+        verifyFav();
+        verifyCart();
+      } else {
+        setAlertType(2);
+        setAlertMessage(`Error al agregar producto a favoritos`);
+        setAlertCallback(null);
+        setAlertVisible(true);
+      }
+    } catch (error) {
+      setAlertType(2);
+      setAlertMessage(`Error de fetch al agregar producto a favoritos ${error.message}}`);
+      setAlertCallback(null);
+      setAlertVisible(true);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
         <Text style={styles.productTitle}>{name}</Text>
         <View style={styles.buttonsContainer}>
           <TouchableOpacity style={styles.favoriteButton} onPress={handleAgregarDetalleCarrito}>
-            <FontAwesome name="shopping-bag" style={styles.shoppingIcon} />
+            <FontAwesome name={isInCart ? "cart-arrow-plus" : "cart-plus"} style={styles.shoppingIcon} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.favoriteButton} onPress={() => console.log('Añadir a favoritos')}>
-            <FontAwesome name="bookmark" style={styles.favoriteIcon} />
+          <TouchableOpacity style={styles.favoriteButton} onPress={handleAgregarAFavoritos}>
+            <FontAwesome name={isFavorite ? "bookmark" : "bookmark-o"} style={styles.favoriteIcon} />
           </TouchableOpacity>
         </View>
       </View>
@@ -109,6 +195,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#334195',
+    maxWidth: windowWidth * 0.6,
   },
   ratingContainer: {
     flexDirection: 'row',

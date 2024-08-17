@@ -1,60 +1,93 @@
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, ActivityIndicator, Text, Dimensions } from 'react-native';
+import React, { useState, useEffect, useCallback } from "react";
+import { View, ScrollView, StyleSheet, ActivityIndicator, Text, Dimensions, RefreshControl } from 'react-native';
 import ProductDetailCarousel from '../components/DetailProductComponents/ProductDetailCarousel';
 import ProductSpecifications from '../components/DetailProductComponents/ProductSpecifications';
 import ProductReviews from '../components/DetailProductComponents/ProductReviews';
 import RelatedProducts from '../components/DetailProductComponents/RelatedProducts';
 import ProductMainInfo from '../components/DetailProductComponents/ProductMainInfo'; // Importamos el nuevo componente
 import fetchData from '../../api/components';
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 //Constante para manejar el alto de la pantalla
 const windowHeight = Dimensions.get('window').height;
 
 const DetailProductScreen = ({ route }) => {
-  //Constante para manejar el identificador del producto entre pantallas y componentes que lo utilizaran
   const { productId } = route.params || {};
 
-  //Constantes para definir las rutas de las apis
   const PRODUCTO_API = 'servicios/publica/hamaca.php';
   const FOTO_API = 'servicios/publica/foto.php';
   const VALORACIONES_API = 'servicios/publica/valoracion.php';
 
-  //Constante para manejar los datos
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false); // Nuevo estado para refrescar
   const [error, setError] = useState(null);
+  const navigation = useNavigation();
+
+  const handleProductPress = (productId) => {
+    if (!productId) {
+      alert('No se pudo cargar el producto');
+      return;
+    }
+    console.log("Producto seleccionado " + productId);
+    navigation.navigate('DetailProduct', { productId });
+  };
+
+  const fetchProductDetails = async () => {
+    try {
+      console.log("Identificador del producto mandado entre pantallas: " + productId)
+
+      const form = new FormData();
+      form.append('idProducto', productId);
+      const productData = await fetchData(PRODUCTO_API, 'readOne', form);
+      const photoData = await fetchData(FOTO_API, 'readAll', form);
+      const reviewData = await fetchData(VALORACIONES_API, 'readOne', form);
+      const relatedProductsData = await fetchData(PRODUCTO_API, 'readRecommended', form);
+
+      console.log("Identificador del producto mandado entre pantallas: " + productId)
+      const allImages = [{ folder: 'hamacas', IMAGEN: productData.dataset.IMAGEN }, ...photoData.dataset.map(img => ({ folder: 'fotos', IMAGEN: img.IMAGEN }))];
+
+      setProduct({ ...productData.dataset, images: allImages, reviews: reviewData.dataset });
+      setRelatedProducts(relatedProductsData.dataset);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+      setRefreshing(false); // Detener el refresco
+    }
+  };
 
   useEffect(() => {
-    //Constante para manejar las distintas peticiones que cargan el detalle de producto
-    const fetchProductDetails = async () => {
-      try {
-        console.log("Identificador del producto mandado entre pantallas: " + productId)
-
-        //Manejo de peticiones a la api, para traer los datos del detalle de producto
-        const form = new FormData();
-        form.append('idProducto', productId);
-        const productData = await fetchData(PRODUCTO_API, 'readOne', form);
-        const photoData = await fetchData(FOTO_API, 'readAll', form);
-        const reviewData = await fetchData(VALORACIONES_API, 'readOne', form);
-        const relatedProductsData = await fetchData(PRODUCTO_API, 'readRecommended', form);
-
-        console.log("Identificador del producto mandado entre pantallas: " + productId)
-        // Combinar la imagen principal del producto con las demás imágenes
-        const allImages = [{ folder: 'hamacas', IMAGEN: productData.dataset.IMAGEN }, ...photoData.dataset.map(img => ({ folder: 'fotos', IMAGEN: img.IMAGEN }))];
-
-        //Mandar las distintas dataset, a los componentes según la necesidad de estos
-        setProduct({ ...productData.dataset, images: allImages, reviews: reviewData.dataset });
-        setRelatedProducts(relatedProductsData.dataset);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProductDetails();
   }, [productId]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProductDetails();
+    }, [productId])
+  );
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchProductDetails();
+  }, [productId]);
+
+  if (loading && !refreshing) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
 
   //Activity indicator mientras carga la pantalla (falta mejorar funcionalidad de este)
   if (loading) {
@@ -75,7 +108,10 @@ const DetailProductScreen = ({ route }) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
       {product && (
         <>
           <ProductDetailCarousel images={product.images} />
@@ -87,7 +123,7 @@ const DetailProductScreen = ({ route }) => {
             existencias={product.CANTIDAD}
           />
           <ProductReviews reviews={product.reviews} />
-          <RelatedProducts products={relatedProducts} onPress={(id) => console.log('Product pressed', id)} />
+          <RelatedProducts products={relatedProducts} onPress={handleProductPress} />
         </>
       )}
     </ScrollView>
@@ -99,7 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 10,
-    marginBottom: windowHeight * 0.11,
+    marginBottom: windowHeight * 0.13,
   },
   loadingContainer: {
     flex: 1,

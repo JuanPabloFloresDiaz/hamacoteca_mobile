@@ -7,7 +7,7 @@ import VerificationCodeScreen from '../screens/VerificationCodeScreen';
 import ChangePasswordScreen from "../screens/ChangePasswordScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import DetailProductScreen from "../screens/DetailProductScreen";
-
+import BottomTab from '../navigation/BottomTab';
 const Stack = createStackNavigator();
 
 // Navegación entre pantallas que no estan añadidas al menú inferior
@@ -73,6 +73,13 @@ export default function LoginNav({ logueado, setLogueado, productId }) {
          }}
       >
         {props => <DetailProductScreen {...props} setLogueado={setLogueado} logueado={logueado} productId={productId}/>}
+      </Stack.Screen>
+      <Stack.Screen
+          name="BottomTab"
+          component={BottomTab}
+          options={({ route }) => ({
+            headerShown: false
+          })}>
       </Stack.Screen>
     </Stack.Navigator>
   );
