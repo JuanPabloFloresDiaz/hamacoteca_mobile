@@ -386,8 +386,11 @@ const styles = StyleSheet.create({
     marginBottom: -20,
   }, 
   welcomeContainer: {
-    padding: 10,
+    padding: 15,
     marginBottom: 20,
+    borderRadius: 10,
+    backgroundColor: "white",
+    elevation: 2,
   },
   welcomeImage: {
     width: width - 20,
