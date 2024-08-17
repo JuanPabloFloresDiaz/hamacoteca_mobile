@@ -111,7 +111,7 @@ const CarritoCard = ({item, cargarCategorias,
               <Text style={styles.productPrice}>${item.PRECIO}</Text>
             </View>
             <View tyle={styles.infoContainer}>
-            <TouchableOpacity onPress={()=>accionBotonDetalle(item.ID, item.CANTIDAD)} style={styles.editButton}>
+            <TouchableOpacity onPress={()=>accionBotonDetalle(item.ID, item.CANTIDAD, parseInt(item.EXISTENCIAS))} style={styles.editButton}>
               <Image source={iconEdit} style={styles.imagenDelete} />
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>handleDeleteDetalleCarrito(item.ID)} style={styles.deleteButton}>

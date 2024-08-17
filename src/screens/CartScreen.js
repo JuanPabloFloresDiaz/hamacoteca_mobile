@@ -7,6 +7,11 @@ import Constants from 'expo-constants';
 import fetchData from '../../api/components'; // Importa función para realizar peticiones API
 import CarritoCard from '../components/DetailProductCart/CarritoCard';
 import ModalEditarCantidad from '../components/DetailProductCart/ModalEditar';
+import { Linking } from 'react-native';
+import * as Constantes from '../../api/constantes';
+// URL base del servidor
+const SERVER_URL = Constantes.SERVER_URL;
+
 
 //Constante para manejar el alto de la pantalla
 const windowHeight = Dimensions.get('window').height;
@@ -18,6 +23,8 @@ const Carrito = ({ navigation, logueado, setLogueado, setCategoryId }) => {
   const [idDetalle, setIdDetalle] = useState(null);
   // Estado para la cantidad del producto seleccionado en el carrito
   const [cantidadProductoCarrito, setCantidadProductoCarrito] = useState(0);
+  // Estado para las existencias del producto seleccionado en el carrito
+  const [existencias, setExistencias] = useState(0);
   // Estado para controlar la visibilidad del modal de edición de cantidad
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -96,6 +103,11 @@ const Carrito = ({ navigation, logueado, setLogueado, setCategoryId }) => {
                 Alert.alert("Pedido finalizado correctamente")
                 setDataDetalleCarrito([]); // Limpia la lista de detalles del carrito
                 //navigation.navigate('TabNavigator', { screen: 'Productos' });
+                // Abre la URL de la factura en el navegador predeterminado
+                const invoiceUrl = `${SERVER_URL}reportes/publica/factura_de_comprobante_de_compra.php`;
+                Linking.openURL(invoiceUrl).catch((err) =>
+                  console.log('Error al abrir la URL:', err)
+                );
               } else {
                 Alert.alert('Error', data.error);
               }
@@ -109,10 +121,11 @@ const Carrito = ({ navigation, logueado, setLogueado, setCategoryId }) => {
   };
 
   // Función para manejar la modificación de un detalle del carrito
-  const handleEditarDetalle = (idDetalle, cantidadDetalle) => {
+  const handleEditarDetalle = (idDetalle, cantidadDetalle, existencias) => {
     setModalVisible(true);
     setIdDetalle(idDetalle);
     setCantidadProductoCarrito(cantidadDetalle);
+    setExistencias(existencias);
   };
 
   // Función para renderizar cada elemento del carrito
@@ -153,6 +166,7 @@ const Carrito = ({ navigation, logueado, setLogueado, setCategoryId }) => {
           setCantidadProductoCarrito={setCantidadProductoCarrito}
           cantidadProductoCarrito={cantidadProductoCarrito}
           getDetalleCarrito={getDetalleCarrito}
+          existencias={existencias}
         />
         {dataDetalleCarrito.length > 0 && (
           <Text style={styles.resultsText}>Tus pedidos</Text>

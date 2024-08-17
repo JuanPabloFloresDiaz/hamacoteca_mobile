@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
   },
   productsOfWeekImage: {
     width: width - 20,
-    height: 200,
+    height: 250,
     borderRadius: 10,
     marginBottom: 10,
     alignSelf: 'center',
