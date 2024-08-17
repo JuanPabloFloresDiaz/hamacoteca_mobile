@@ -195,8 +195,12 @@ const ProductMainInfo = ({ name, price, rating, existencias, productId }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 15,
     backgroundColor: '#fff',
+    margin: 2,
+    padding: 5,
+    borderRadius: 10,
+    backgroundColor: "white",
+    elevation: 2,
   },
   productTitle: {
     fontSize: 24,

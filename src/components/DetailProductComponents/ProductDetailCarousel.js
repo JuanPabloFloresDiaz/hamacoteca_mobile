@@ -4,6 +4,7 @@ import Swiper from 'react-native-swiper';
 import imageData from '../../../api/images';
 
 const { width } = Dimensions.get('window');
+const windowHeight = Dimensions.get('window').height;
 
 const ProductDetailCarousel = ({ images }) => {
   const [imageUrls, setImageUrls] = useState([]);
@@ -61,6 +62,12 @@ const ProductDetailCarousel = ({ images }) => {
 
 const styles = StyleSheet.create({
   wrapper: {
+    paddingTop: windowHeight * 0.03,
+    margin: 2,
+    padding: 5,
+    borderRadius: 10,
+    backgroundColor: "white",
+    elevation: 2,
     height: 300,
   },
   slide: {

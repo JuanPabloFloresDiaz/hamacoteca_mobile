@@ -26,7 +26,11 @@ const ProductSpecifications = ({ category, material, description, existencias })
 
 const styles = StyleSheet.create({
   container: {
-    padding: 2,
+    margin: 2,
+    padding: 5,
+    borderRadius: 10,
+    backgroundColor: "white",
+    elevation: 2,
   },
   title: {
     fontSize: 18,

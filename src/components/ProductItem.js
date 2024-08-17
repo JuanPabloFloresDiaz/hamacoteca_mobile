@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Text, ActivityIndicator } from 'react-native-paper';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import imageData from '../../api/images';
+const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get('window').width;
 
 const ProductItem = ({ item, onPress }) => {
   //Constantes para el manejo de la imagen
@@ -65,6 +67,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     fontWeight: 'bold',
+    maxWidth: windowWidth * 0.47,
   },
   productPrice: {
     marginTop: 5,
