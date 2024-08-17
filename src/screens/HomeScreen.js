@@ -10,7 +10,7 @@ import CategoryItem from '../components/CategoriesItem';
 import { useNavigation } from '@react-navigation/native';
 
 //Obtiene la altura de la ventana
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ categoryId, setCategoryId }) => {
   //Definición de elementos del carrusel
@@ -109,9 +109,9 @@ const HomeScreen = ({ categoryId, setCategoryId }) => {
         await getUser();
         await fillCategories();
         await fillProductsWeek();
+        await setCategoryId(null); // Actualizar el estado en BottomTab
       };
       initializeApp();
-      setCategoryId(null); // Actualizar el estado en BottomTab
     }, [])
   );
 
@@ -299,20 +299,20 @@ const styles = StyleSheet.create({
   },
   productsOfWeekOverlay: {
     position: 'absolute',
-    top: 15,
-    left: 15,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 10,
-    borderRadius: 5,
+    top: 25,
+    left: 25,
   },
   productsOfWeekTitle: {
     color: 'white',
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
+    maxWidth: width * 0.75,
   },
   productsOfWeekSubtitle: {
     color: 'white',
     fontSize: 18,
+    maxWidth: width * 0.4,
+    paddingTop: 5,
   },
   subTitle: {
     color: 'gray',

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Card, ActivityIndicator } from 'react-native-paper';
-import { StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Text, Dimensions } from 'react-native';
 import imageData from '../../api/images';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const CategoryItem = ({ item, onPress }) => {
     //Constantes para el manejo de la imagen
@@ -50,6 +52,13 @@ const styles = StyleSheet.create({
     categoryItem: {
         alignItems: 'center',
         marginRight: 20,
+        height: windowHeight * 0.15,
+        width: windowWidth * 0.3,
+        margin: 2,
+        padding: 20,
+        borderRadius: 200,
+        backgroundColor: "white",
+        elevation: 2,
     },
     categoryImage: {
         width: 60,

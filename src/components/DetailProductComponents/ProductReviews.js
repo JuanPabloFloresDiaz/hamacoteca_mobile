@@ -52,7 +52,10 @@ const ProductReviews = ({ reviews }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Valoraciones</Text>
+      <View style={styles.headerContainer}>
+        <Text style={styles.title}>Valoraciones</Text>
+        <Text style={styles.verMas}>Ver mas</Text>
+      </View>
       <ScrollView horizontal>
         {reviews.map((review, index) => (
           <View key={index} style={styles.reviewCard}>
@@ -82,6 +85,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
+    maxWidth: windowWidth * 0.3,
+  },
+  verMas: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#334195',
+    maxWidth: windowWidth * 0.3,
   },
   reviewCard: {
     maxWidth: windowWidth * 0.75,
@@ -119,6 +129,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row', // Alinea horizontalmente
     alignItems: 'center', // Centra verticalmente
+    justifyContent: 'space-between',
     marginBottom: 5, // Añade un margen inferior
   },
 });

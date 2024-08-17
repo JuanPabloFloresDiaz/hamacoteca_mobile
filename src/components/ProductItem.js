@@ -45,7 +45,7 @@ const ProductItem = ({ item, onPress }) => {
       <Card.Cover source={{ uri: imagenUrl }} />
       <Card.Content>
         <Text style={styles.productTitle}>{item.NOMBRE}</Text>
-        <Text style={styles.productPrice}>{item.PRECIO}</Text>
+        <Text style={styles.productPrice}>${item.PRECIO}</Text>
       </Card.Content>
     </Card>
   );

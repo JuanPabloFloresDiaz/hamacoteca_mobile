@@ -110,7 +110,9 @@ const DetailProductScreen = ({ route }) => {
   return (
     <ScrollView style={styles.container}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh}
+        colors={['#9Bd35A', '#689F38']}
+        progressBackgroundColor="#EBF0FF" />
       }>
       {product && (
         <>
