@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
 import imageData from '../../../api/images';
-
+const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get('window').width;
 //Componente que muestra los comentarios
 const ProductReviews = ({ reviews }) => {
   const [avatarUrls, setAvatarUrls] = useState({});
@@ -26,6 +27,17 @@ const ProductReviews = ({ reviews }) => {
     cargarAvatares();
   }, [reviews]);
 
+
+
+  // Método para asignar el número de estrellas que se mostraran
+  const getStars = (CALIFICACIÓN) => {
+    if (CALIFICACIÓN <= 1) return '★'; // Mostrar solo 1 estrella
+    if (CALIFICACIÓN <= 2) return '★★'; // Mostrar 2 estrellas
+    if (CALIFICACIÓN <= 3) return '★★★'; // Mostrar 3 estrellas
+    if (CALIFICACIÓN <= 4) return '★★★★'; // Mostrar 4 estrellas
+    if (CALIFICACIÓN <= 5) return '★★★★★'; // Mostrar 5 estrellas
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -44,9 +56,13 @@ const ProductReviews = ({ reviews }) => {
       <ScrollView horizontal>
         {reviews.map((review, index) => (
           <View key={index} style={styles.reviewCard}>
-            <Image source={{ uri: avatarUrls[review.avatar] }} style={styles.avatar} />
-            <Text style={styles.name}>{review.NOMBRE}</Text>
-            <Text style={styles.rating}>{review.CALIFICACIÓN} ★</Text>
+            <View style={styles.headerContainer}>
+              <Image source={{ uri: avatarUrls[review.avatar] }} style={styles.avatar} />
+              <View>
+                <Text style={styles.name}>{review.NOMBRE}</Text>
+                <Text style={styles.rating}>{getStars(review.CALIFICACIÓN)}</Text>
+              </View>
+            </View>
             <Text style={styles.comment}>{review.COMENTARIO}</Text>
           </View>
         ))}
@@ -64,11 +80,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   reviewCard: {
-    width: 200,
-    padding: 10,
+    maxWidth: windowWidth * 0.75,
+    margin: 2,
     marginRight: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 5,
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: "white",
+    elevation: 2,
   },
   avatar: {
     width: 40,
@@ -78,19 +96,26 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 14,
     fontWeight: 'bold',
+    maxWidth: windowWidth * 0.5,
   },
   rating: {
     fontSize: 14,
     color: '#ffcc00',
   },
   comment: {
-    fontSize: 14,
+    maxWidth: windowWidth * 0.55,
+    fontSize: 16,
     color: '#333',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  headerContainer: {
+    flexDirection: 'row', // Alinea horizontalmente
+    alignItems: 'center', // Centra verticalmente
+    marginBottom: 5, // Añade un margen inferior
   },
 });
 

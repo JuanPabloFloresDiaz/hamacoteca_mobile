@@ -10,7 +10,7 @@ const FAVORITO_API = 'servicios/publica/favorito.php';
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
-const ProductMainInfo = ({ name, price, rating, productId }) => {
+const ProductMainInfo = ({ name, price, rating, existencias, productId }) => {
   const [quantity, setQuantity] = useState(1);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertType, setAlertType] = useState(1);
@@ -94,10 +94,19 @@ const ProductMainInfo = ({ name, price, rating, productId }) => {
   const handleAgregarDetalleCarrito = async () => {
     try {
       if (quantity <= 0) {
-        Alert.alert("La cantidad no puede ser igual o menor a 0");
+        setAlertType(2);
+        setAlertMessage(`La cantidad no puede ser igual o menor a 0`);
+        setAlertCallback(null);
+        setAlertVisible(true);
         return;
       }
-
+      if (quantity > existencias) {
+        setAlertType(2);
+        setAlertMessage(`La cantidad no puede ser mayor al número de existencias actuales, que son ${existencias}`);
+        setAlertCallback(null);
+        setAlertVisible(true);
+        return;
+      }
       const formData = new FormData();
       formData.append('idProducto', productId);
       formData.append('cantidad', quantity);
@@ -131,10 +140,6 @@ const ProductMainInfo = ({ name, price, rating, productId }) => {
       const data = await fetchData(FAVORITO_API, 'favoriteSave', formData);
 
       if (data.status) {
-        setAlertType(1);
-        setAlertMessage(`Producto agregado a favoritos`);
-        setAlertCallback(null);
-        setAlertVisible(true);
         verifyFav();
         verifyCart();
       } else {
@@ -142,6 +147,8 @@ const ProductMainInfo = ({ name, price, rating, productId }) => {
         setAlertMessage(`Error al agregar producto a favoritos`);
         setAlertCallback(null);
         setAlertVisible(true);
+        verifyFav();
+        verifyCart();
       }
     } catch (error) {
       setAlertType(2);
@@ -156,7 +163,7 @@ const ProductMainInfo = ({ name, price, rating, productId }) => {
         <Text style={styles.productTitle}>{name}</Text>
         <View style={styles.buttonsContainer}>
           <TouchableOpacity style={styles.favoriteButton} onPress={handleAgregarDetalleCarrito}>
-            <FontAwesome name={isInCart ? "cart-arrow-plus" : "cart-plus"} style={styles.shoppingIcon} />
+            <FontAwesome name={isInCart ? "cart-arrow-down" : "cart-plus"} style={styles.shoppingIcon} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.favoriteButton} onPress={handleAgregarAFavoritos}>
             <FontAwesome name={isFavorite ? "bookmark" : "bookmark-o"} style={styles.favoriteIcon} />
