@@ -48,7 +48,7 @@ const DetailProductScreen = ({ route }) => {
       console.log("Identificador del producto mandado entre pantallas: " + productId)
       const allImages = [{ folder: 'hamacas', IMAGEN: productData.dataset.IMAGEN }, ...photoData.dataset.map(img => ({ folder: 'fotos', IMAGEN: img.IMAGEN }))];
 
-      setProduct({ ...productData.dataset, images: allImages, reviews: reviewData.dataset });
+      setProduct({ ...productData.dataset, images: allImages, reviews: reviewData.dataset, clienteId: reviewData.cliente });
       setRelatedProducts(relatedProductsData.dataset);
     } catch (error) {
       setError(error.message);
@@ -128,7 +128,7 @@ const DetailProductScreen = ({ route }) => {
             description={product.DESCRIPCIÓN}
             existencias={product.CANTIDAD}
           />
-          <ProductReviews reviews={product.reviews} />
+          <ProductReviews reviews={product.reviews} clienteId={product.clienteId} />
           <RelatedProducts products={relatedProducts} onPress={handleProductPress} />
         </>
       )}
