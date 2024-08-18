@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Dimensions 
 import { FontAwesome } from '@expo/vector-icons';
 import fetchData from '../../../api/components';
 import AlertComponent from '../AlertComponent';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 const PEDIDO_API = 'servicios/publica/pedido.php';
 const FAVORITO_API = 'servicios/publica/favorito.php';
 
@@ -116,7 +116,7 @@ const ProductMainInfo = ({ name, price, rating, existencias, productId }) => {
       if (data.status) {
         setAlertType(1);
         setAlertMessage(`Producto agregado al carrito`);
-        setAlertCallback(() => () => navigation.navigate('BottomTab', { screen: 'Carrito' }));
+        setAlertCallback(() => () => navigation.dispatch(CommonActions.navigate({ name: 'Carrito' })));
         setAlertVisible(true);
       } else {
         setAlertType(2);
@@ -170,7 +170,9 @@ const ProductMainInfo = ({ name, price, rating, existencias, productId }) => {
           </TouchableOpacity>
         </View>
       </View>
+      <Text style={styles.rating}>Promedio:</Text>
       <View style={styles.ratingContainer}>
+        <Text style={styles.rating}>{rating}</Text>
         {renderStars(rating)}
       </View>
       <Text style={styles.productPrice}>${price.toFixed(2)}</Text>
@@ -220,6 +222,10 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 22,
     color: '#334195',
+  },
+  rating: {
+    fontSize: 20,
+    color: '#000',
   },
   quantityContainer: {
     flexDirection: 'row',

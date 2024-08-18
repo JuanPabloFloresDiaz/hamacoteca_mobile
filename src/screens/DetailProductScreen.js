@@ -128,7 +128,7 @@ const DetailProductScreen = ({ route }) => {
             description={product.DESCRIPCIÓN}
             existencias={product.CANTIDAD}
           />
-          <ProductReviews reviews={product.reviews} clienteId={product.clienteId} />
+          <ProductReviews reviews={product.reviews} clienteId={product.clienteId} productId={productId} onRefresh={onRefresh}/>
           <RelatedProducts products={relatedProducts} onPress={handleProductPress} />
         </>
       )}
