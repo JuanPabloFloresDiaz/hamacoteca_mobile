@@ -214,7 +214,7 @@ const HomeScreen = ({ categoryId, setCategoryId }) => {
           style={styles.productsOfWeekImage}
         />
         <View style={styles.productsOfWeekOverlay}>
-          <Text style={styles.productsOfWeekTitle}>Productos de la semana</Text>
+          <Text style={styles.productsOfWeekTitle}>Hamacas mas vendidas</Text>
           <Text style={styles.productsOfWeekSubtitle}>Las hamacas del momento</Text>
         </View>
         <View style={styles.productGrid}>

@@ -170,9 +170,8 @@ const ProductMainInfo = ({ name, price, rating, existencias, productId }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <Text style={styles.rating}>Promedio:</Text>
+      <Text style={styles.rating}>Promedio: {rating}</Text>
       <View style={styles.ratingContainer}>
-        <Text style={styles.rating}>{rating}</Text>
         {renderStars(rating)}
       </View>
       <Text style={styles.productPrice}>${price.toFixed(2)}</Text>

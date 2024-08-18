@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { View, StyleSheet, Text, FlatList, Dimensions, ScrollView, RefreshControl } from 'react-native';
-import { Button, Searchbar, Menu, Provider, Modal, Portal } from 'react-native-paper';
+import { Button, Searchbar, Menu, Provider, Tooltip, IconButton, } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import fetchData from '../../api/components';
 import ProductItem from '../components/ProductItem';
+import FilterModal from '../components/FilterModal';
 //Constante para manejar el alto de la pantalla
 const windowHeight = Dimensions.get('window').height;
 
@@ -75,7 +76,9 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
         if (data.status) {
           setDataProductos(data.dataset);
           setQuantityProducts(data.message);
-          sortProducts(sortOption); // Aplicar ordenamiento actual
+          if (sortOption) {
+            sortProducts(sortOption); // Aplicar ordenamiento actual
+          }
         }
         //Si la petición falla
         else {
@@ -91,7 +94,9 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
         if (data.status) {
           setDataProductos(data.dataset);
           setQuantityProducts(data.message);
-          sortProducts(sortOption); // Aplicar ordenamiento actual
+          if (sortOption) {
+            sortProducts(sortOption); // Aplicar ordenamiento actual
+          }
         }
         //Si la petición falla
         else {
@@ -172,9 +177,11 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
             value={searchQuery}
             style={styles.searchbar}
           />
-          <Button mode="contained" onPress={showModal} style={styles.filterButton}>
-            <Ionicons name="filter-outline" size={20} color="gray" style={styles.filterIcon} />
-          </Button>
+          <Tooltip title="Filtrar productos">
+            <Button mode="contained" onPress={showModal} style={styles.filterButton}>
+              <Ionicons name="filter-outline" size={20} color="gray" style={styles.filterIcon} />
+            </Button>
+          </Tooltip>
         </View>
         <View style={styles.headerContainer}>
           <Text style={styles.resultsText}>{quantityProducts}</Text>
@@ -207,37 +214,7 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
             />
           }
         />
-        <Portal>
-          <Modal visible={filterModalVisible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>
-            <ScrollView contentContainerStyle={styles.modalContent}>
-              <Text style={styles.modalTitle}>Filtros</Text>
-              <View style={styles.filterSection}>
-                <Text style={styles.filterLabel}>Rango de precio</Text>
-                <Text style={styles.priceRange}>$1,245 - $9,344</Text>
-                {/* Aquí puedes agregar un Slider para el rango de precio */}
-              </View>
-              <View style={styles.filterSection}>
-                <Text style={styles.filterLabel}>Categorías</Text>
-                <Button mode="contained" style={styles.categoryButton}>Clásicas</Button>
-                <Button mode="contained" style={styles.categoryButton}>De Tela</Button>
-                <Button mode="contained" style={styles.categoryButton}>Con soporte</Button>
-                <Button mode="contained" style={styles.categoryButton}>Sillas</Button>
-                <Button mode="contained" style={styles.categoryButton}>Otros</Button>
-              </View>
-              <View style={styles.filterSection}>
-                <Text style={styles.filterLabel}>Material</Text>
-                <Button mode="contained" style={styles.categoryButton}>Cordón de Nylon</Button>
-                <Button mode="contained" style={styles.categoryButton}>Algodón orgánico</Button>
-                <Button mode="contained" style={styles.categoryButton}>Tela impermeable</Button>
-                <Button mode="contained" style={styles.categoryButton}>Seda de paracaídas</Button>
-                <Button mode="contained" style={styles.categoryButton}>Algodón</Button>
-              </View>
-              <Button mode="contained" onPress={hideModal} style={styles.applyButton}>
-                Filtrar
-              </Button>
-            </ScrollView>
-          </Modal>
-        </Portal>
+        <FilterModal visible={filterModalVisible} onDismiss={hideModal} />
       </View>
     </Provider>
   );
