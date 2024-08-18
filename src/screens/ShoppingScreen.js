@@ -28,12 +28,30 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
   //Constantes para el manejo del menú de ordenar resultados
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
+  // Función para ordenar los productos
+  const sortProducts = (option) => {
+    let sortedProducts = [...dataProductos];
+    switch (option) {
+      case 'alphabetically':
+        sortedProducts.sort((a, b) => a.NOMBRE.localeCompare(b.NOMBRE));
+        break;
+      case 'priceHighToLow':
+        sortedProducts.sort((a, b) => b.PRECIO - a.PRECIO);
+        break;
+      case 'priceLowToHigh':
+        sortedProducts.sort((a, b) => a.PRECIO - b.PRECIO);
+        break;
+      default:
+        break;
+    }
+    setDataProductos(sortedProducts);
+  };
 
   //Constante para ocultar el menú de opciones de ordenar resultados
   const handleSortOption = (option) => {
     setSortOption(option);
     closeMenu();
-    // Implementar la lógica de ordenamiento aquí
+    sortProducts(option);
   };
 
   const cargarMasElementos = () => {
@@ -57,6 +75,7 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
         if (data.status) {
           setDataProductos(data.dataset);
           setQuantityProducts(data.message);
+          sortProducts(sortOption); // Aplicar ordenamiento actual
         }
         //Si la petición falla
         else {
@@ -72,6 +91,7 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
         if (data.status) {
           setDataProductos(data.dataset);
           setQuantityProducts(data.message);
+          sortProducts(sortOption); // Aplicar ordenamiento actual
         }
         //Si la petición falla
         else {
@@ -168,7 +188,6 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
             }
           >
             <Menu.Item onPress={() => handleSortOption('alphabetically')} title="Ordenar alfabéticamente" />
-            <Menu.Item onPress={() => handleSortOption('date')} title="Ordenar por fecha de ingreso" />
             <Menu.Item onPress={() => handleSortOption('priceHighToLow')} title="Ordenar por mayor precio" />
             <Menu.Item onPress={() => handleSortOption('priceLowToHigh')} title="Ordenar por menor precio" />
           </Menu>
