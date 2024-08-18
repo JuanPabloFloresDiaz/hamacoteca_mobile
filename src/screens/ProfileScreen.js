@@ -8,6 +8,7 @@ import {
   Dimensions,
   ScrollView,
   Image,
+  FlatList
 } from "react-native";
 import { TextInput, Card, Avatar, Button, Chip } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
@@ -21,6 +22,7 @@ import imageData from "../../api/images";
 import foto from "../../assets/anya.jpg";
 import AlertComponent from "../components/AlertComponent";
 import { useFocusEffect } from "@react-navigation/native";
+import ProductItem from '../components/ProductItem';
 
 //Obtiene la altura de la ventana
 const windowHeight = Dimensions.get("window").height;
@@ -28,6 +30,7 @@ const windowHeight = Dimensions.get("window").height;
 const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   //URL de la API
   const USER_API = "servicios/publica/cliente.php";
+  const FAVORITOS_API = 'servicios/publica/favorito.php';
 
   //Estado para alternar el modo de edición
   const [isEditing, setIsEditing] = useState(false);
@@ -56,6 +59,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [favorites, setFavorites] = useState([]);
 
   //Constante para ocultar la visibilidad de la alerta
   const handleAlertClose = () => {
@@ -177,6 +181,23 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     }
   };
 
+  //Constante para que al seleccionar un producto, redirija a la pantalla de detalle de producto, enviando el id del producto
+  const handleProductPress = (productId) => {
+    //Verificación de si el identificador del producto se ha enviado bien
+    if (!productId) {
+      alert('No se pudo cargar el producto');
+      return;
+    }
+    console.log("Producto seleccionado " + productId);
+    //Navegar a detalle de producto
+    navigation.navigate('LoginNav', { screen: 'DetailProduct', params: { productId } });
+  };
+
+  //Renderizador de las cartas de los productos
+  const renderProductsItem = ({ item }) => (
+    <ProductItem item={item} onPress={handleProductPress} />
+  );
+
   //Función para cerrar sesión
   const handleLogOut = async () => {
     try {
@@ -244,9 +265,28 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     }
   };
 
+  //Metodo para cargar los productos de la semana
+  const readFavorites = async () => {
+    try {
+      //Petición a la api
+      const data = await fetchData(FAVORITOS_API, "readAll");
+      //La petición funciona correctamente
+      if (data.status) {
+        setFavorites(data.dataset);
+      }
+      //Si la petición falla
+      else {
+        setFavorites([]);
+      }
+    } catch (error) {
+      setError(error);
+    }
+  }
+
   //Lee los datos del perfil al montar el componente
   useEffect(() => {
     readProfile();
+    readFavorites();
   }, []);
 
   //Cambia la pantalla activa
@@ -257,6 +297,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   useFocusEffect(
     useCallback(() => {
       readProfile();
+      readFavorites();
       setCategoryId(null);
     }, [])
   );
@@ -558,14 +599,13 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
         )}
         {activeChip === "favoritos" && (
           <Card style={styles.profileCard}>
-            <Card.Content>
-              {/* Aquí puedes agregar contenido para los favoritos */}
-              <Text style={styles.label}>Lista de Favoritos</Text>
-              {/* Ejemplo de contenido */}
-              <Text>Producto 1</Text>
-              <Text>Producto 2</Text>
-              <Text>Producto 3</Text>
-            </Card.Content>
+            <FlatList
+          data={favorites}
+          renderItem={renderProductsItem}
+          keyExtractor={(item) => item.ID}
+          numColumns={2}
+          contentContainerStyle={styles.productsList}
+        />
           </Card>
         )}
 
@@ -728,6 +768,9 @@ const styles = StyleSheet.create({
     margin: 5,
     marginBottom: 10,
   },
+  productsList: {
+    paddingBottom: 10,
+  }
 });
 
 export default ProfileScreen;
