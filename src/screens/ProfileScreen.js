@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, ScrollView, Image } from "react-native";
-import { TextInput, Card, Avatar, Button } from "react-native-paper";
+import { TextInput, Card, Avatar, Button, Chip } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import fetchData from "../../api/components";
 import { AntDesign } from "@expo/vector-icons";
@@ -44,6 +44,10 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
 
   //Controla la visualización del selector de fecha
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [activeChip, setActiveChip] = useState("perfil");
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   //Constante para ocultar la visibilidad de la alerta
   const handleAlertClose = () => {
@@ -127,6 +131,35 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     setProfile({ ...profile, [name]: value });
   };
 
+  //Maneja el cambio de contraseña
+  const handlePasswordChange = async () => {
+    try {
+      if (newPassword !== confirmPassword) {
+        Alert.alert("Error", "La confirmación de la contraseña no coincide.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("claveActual", password);
+      formData.append("claveCliente", newPassword);
+      formData.append("repetirclaveCliente", confirmPassword);
+
+      const response = await fetchData(USER_API, "changePassword", formData);
+
+      if (response.status) {
+        Alert.alert("Éxito", response.message);
+        setPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } else {
+        Alert.alert("Error", response.error);
+      }
+    } catch (error) {
+      Alert.alert("No se pudo acceder a la API", error.message);
+      console.log(error.message);
+    }
+  };
+
   //Función para cerrar sesión
   const handleLogOut = async () => {
     try {
@@ -197,6 +230,10 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     readProfile();
   }, []);
 
+  //Cambia la pantalla activa
+  const changeScreen = (screen) => {
+    setActiveChip(screen);
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -219,14 +256,41 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
           </TouchableOpacity>
           <Text style={styles.name}>{profile.name}</Text>
           <Text style={styles.email}>{profile.email}</Text>
+          {activeChip !== "password" && (
           <TouchableOpacity onPress={handleEditPress} style={styles.editIcon}>
             <AntDesign name={isEditing ? "leftcircle" : "edit"} size={30} color="#FFF" />
           </TouchableOpacity>
+          )}
           <TouchableOpacity onPress={handleLogOut} style={styles.logoutIcon}>
             <Entypo name="log-out" size={30} color="#FFF" />
           </TouchableOpacity>
         </LinearGradient>
 
+        <View style={styles.rowButton}>
+          <Chip
+            style={{
+              backgroundColor: activeChip === "perfil" ? "#4CAF50" : "#F2EEEF",
+            }}
+            onPress={() => changeScreen("perfil")}
+            textStyle={{ color: activeChip === "perfil" ? "white" : "#9A9A9A" }}
+          >
+            Perfil
+          </Chip>
+          <Chip
+            style={{
+              backgroundColor:
+                activeChip === "password" ? "#4CAF50" : "#F2EEEF",
+            }}
+            onPress={() => changeScreen("password")}
+            textStyle={{
+              color: activeChip === "password" ? "white" : "#9A9A9A",
+            }}
+          >
+            Cambiar Contraseña
+          </Chip>
+        </View>
+        
+      {activeChip === "perfil" ? (
         <Card style={styles.profileCard}>
           <Card.Content>
             {/*Contenedor para el nombre*/}
@@ -378,6 +442,61 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
             </Button>
           )}
         </Card>
+      ) : (
+        <Card style={styles.profileCard}>
+            <Card.Content>
+              <View style={styles.inputContainer}>
+                <View style={styles.infoRow}>
+                  <Text style={styles.label}>Contraseña Actual:</Text>
+                  <View style={styles.rowContent}>
+                    <Entypo name="lock-open" size={24} />
+                    <TextInput
+                      style={styles.infoText}
+                      value={password}
+                      secureTextEntry
+                      onChangeText={(text) => setPassword(text)}
+                    />
+                  </View>
+                </View>
+              </View>
+              <View style={styles.inputContainer}>
+                <View style={styles.infoRow}>
+                  <Text style={styles.label}>Nueva Contraseña:</Text>
+                  <View style={styles.rowContent}>
+                    <Entypo name="lock" size={24} />
+                    <TextInput
+                      style={styles.infoText}
+                      value={newPassword}
+                      secureTextEntry
+                      onChangeText={(text) => setNewPassword(text)}
+                    />
+                  </View>
+                </View>
+              </View>
+              <View style={styles.inputContainer}>
+                <View style={styles.infoRow}>
+                  <Text style={styles.label}>Confirmar Nueva Contraseña:</Text>
+                  <View style={styles.rowContent}>
+                    <Entypo name="lock" size={24} />
+                    <TextInput
+                      style={styles.infoText}
+                      value={confirmPassword}
+                      secureTextEntry
+                      onChangeText={(text) => setConfirmPassword(text)}
+                    />
+                  </View>
+                </View>
+              </View>
+            </Card.Content>
+            <Button
+              mode="contained"
+              onPress={handlePasswordChange}
+              style={styles.saveButton}
+            >
+              Guardar
+            </Button>
+          </Card>
+        )}
       </View>
       <AlertComponent
         visible={alertVisible}
@@ -494,7 +613,7 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: 10,
-    backgroundColor: "#003366",
+    backgroundColor: "#4CAF50",
     maxWidth: 150,
     left: 200,
   },
@@ -512,6 +631,14 @@ const styles = StyleSheet.create({
     height: 40,
     borderWidth: 0,
   },
+  rowButton: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 5,
+    paddingHorizontal: 20,
+    paddingTop: 5,
+    width: "80%",
+  }
 });
 
 export default ProfileScreen;
