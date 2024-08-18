@@ -13,7 +13,7 @@ const Stack = createStackNavigator();
 export default function LoginNav({ logueado, setLogueado, productId }) {
   return (
     <Stack.Navigator
-        initialRouteName='SplashScreen'
+        initialRouteName='LoginScreen'
         screenOptions={({ route }) => ({
             headerStyle: {
                 backgroundColor: 'rgba(56, 163, 76, 0.8)',

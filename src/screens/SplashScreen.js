@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Image, Animated } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
 const SplashScreen = () => {
-  const navigation = useNavigation();
   const rotation = new Animated.Value(0);
 
   useEffect(() => {
@@ -17,11 +15,10 @@ const SplashScreen = () => {
     ).start();
     //Después de 3 segundos cambiar a la pantalla del login
     const timer = setTimeout(() => {
-      navigation.navigate('LoginScreen');
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [navigation]);
+  }, []);
 
   const rotate = rotation.interpolate({
     inputRange: [0, 1],

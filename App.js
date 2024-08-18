@@ -14,13 +14,21 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   const verifyLogged = async () => {
+    setLoading(true);
     try {
       const data = await fetchData(API, 'getUser');
       if (data.session) {
         setLogueado(true);
         console.log(data.nombre);
+
+        setTimeout(()=>{
+          setLoading(false)
+        }, 1500)
       } else {
         setLogueado(false);
+        setTimeout(()=>{
+          setLoading(false)
+        }, 1500)
       }
     } catch (error) {
       console.log(error);
@@ -30,20 +38,12 @@ export default function App() {
   useEffect(() => {
     const initializeApp = async () => {
       await verifyLogged();
-      setLoading(false);
     };
-
     initializeApp();
   }, []);
 
   if (loading) {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
+    return <SplashScreen/>
   }
 
   return (
