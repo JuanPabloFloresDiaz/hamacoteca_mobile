@@ -23,6 +23,7 @@ import foto from "../../assets/anya.jpg";
 import AlertComponent from "../components/AlertComponent";
 import { useFocusEffect } from "@react-navigation/native";
 import ProductItem from '../components/ProductItem';
+import { useNavigation } from '@react-navigation/native';
 
 //Obtiene la altura de la ventana
 const windowHeight = Dimensions.get("window").height;
@@ -60,6 +61,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [favorites, setFavorites] = useState([]);
+  const navigation = useNavigation();
 
   //Constante para ocultar la visibilidad de la alerta
   const handleAlertClose = () => {
