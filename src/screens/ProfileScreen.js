@@ -1,25 +1,33 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, ScrollView, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Dimensions,
+  ScrollView,
+  Image,
+} from "react-native";
 import { TextInput, Card, Avatar, Button, Chip } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import fetchData from "../../api/components";
 import { AntDesign } from "@expo/vector-icons";
-import Entypo from '@expo/vector-icons/Entypo';
-import * as ImagePicker from 'expo-image-picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import Entypo from "@expo/vector-icons/Entypo";
+import * as ImagePicker from "expo-image-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import RNPickerSelect from "react-native-picker-select";
 import imageData from "../../api/images";
-import foto from '../../assets/anya.jpg';
-import AlertComponent from '../components/AlertComponent';
+import foto from "../../assets/anya.jpg";
+import AlertComponent from "../components/AlertComponent";
 import { useFocusEffect } from "@react-navigation/native";
 
 //Obtiene la altura de la ventana
-const windowHeight = Dimensions.get('window').height;
+const windowHeight = Dimensions.get("window").height;
 
 const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
-
   //URL de la API
-  const USER_API = 'servicios/publica/cliente.php';
+  const USER_API = "servicios/publica/cliente.php";
 
   //Estado para alternar el modo de edición
   const [isEditing, setIsEditing] = useState(false);
@@ -39,7 +47,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
 
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertType, setAlertType] = useState(1);
-  const [alertMessage, setAlertMessage] = useState('');
+  const [alertMessage, setAlertMessage] = useState("");
   const [alertCallback, setAlertCallback] = useState(null);
 
   //Controla la visualización del selector de fecha
@@ -64,20 +72,27 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   //Función para guardar los cambios en el perfil
   const handleSavePress = async () => {
     try {
-
       //Validación de correo electrónico
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(profile.email)) {
         Alert.alert("Error", "Correo electrónico no válido");
         return;
-      } else if (!profile.name || !profile.fullname || !profile.email || !profile.address || !profile.dui || !profile.phone) {
+      } else if (
+        !profile.name ||
+        !profile.fullname ||
+        !profile.email ||
+        !profile.address ||
+        !profile.dui ||
+        !profile.phone
+      ) {
         setAlertType(2);
-        setAlertMessage(`Campos requeridos, Por favor, complete todos los campos.`);
+        setAlertMessage(
+          `Campos requeridos, Por favor, complete todos los campos.`
+        );
         setAlertCallback(null);
         setAlertVisible(true);
         return;
       } else {
-
         const formData = new FormData();
         formData.append("nombrePerfil", profile.name);
         formData.append("apellidoPerfil", profile.fullname);
@@ -85,7 +100,10 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
         formData.append("direccionPerfil", profile.address);
         formData.append("duiPerfil", profile.dui);
         if (profile.birthday instanceof Date) {
-          formData.append("fechanacimientoPerfil", profile.birthday.toISOString().split('T')[0]);
+          formData.append(
+            "fechanacimientoPerfil",
+            profile.birthday.toISOString().split("T")[0]
+          );
         } else {
           Alert.alert("Error", "Fecha de nacimiento no válida");
           return;
@@ -93,7 +111,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
         formData.append("telefonoPerfil", profile.phone);
         formData.append("generoPerfil", profile.gender);
         if (profile.image) {
-          const uriParts = profile.image.split('.');
+          const uriParts = profile.image.split(".");
           const fileType = uriParts[uriParts.length - 1];
           formData.append("imagenPerfil", {
             uri: profile.image,
@@ -117,8 +135,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
           setAlertVisible(true);
         }
       }
-    }
-    catch (error) {
+    } catch (error) {
       setAlertType(2);
       setAlertMessage(`Error al cargar la petición: ${error.message}`);
       setAlertCallback(null);
@@ -201,9 +218,11 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   //Función para leer los datos del perfil desde la API
   const readProfile = async () => {
     try {
-      const data = await fetchData(USER_API, 'readOne');
+      const data = await fetchData(USER_API, "readOne");
       const profileData = data.dataset;
-      const imageUrl = profileData.FOTO ? await imageData('clientes', profileData.FOTO) : Image.resolveAssetSource(foto).uri;
+      const imageUrl = profileData.FOTO
+        ? await imageData("clientes", profileData.FOTO)
+        : Image.resolveAssetSource(foto).uri;
 
       setProfile({
         name: profileData.NOMBRE,
@@ -221,7 +240,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     } catch (error) {
       console.error(error);
     } finally {
-      console.log('petición hecha');
+      console.log("petición hecha");
     }
   };
 
@@ -242,24 +261,24 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     }, [])
   );
 
-
   return (
     <ScrollView>
       <View style={styles.container}>
         {/*Contenedor para el header*/}
         <LinearGradient colors={["#85CF74", "#4CAF50"]} style={styles.header}>
           <TouchableOpacity onPress={pickImage}>
-            <Avatar.Image
-              size={100}
-              source={{ uri: profile.image }}
-            />
+            <Avatar.Image size={100} source={{ uri: profile.image }} />
           </TouchableOpacity>
           <Text style={styles.name}>{profile.name}</Text>
           <Text style={styles.email}>{profile.email}</Text>
           {activeChip !== "password" && (
-          <TouchableOpacity onPress={handleEditPress} style={styles.editIcon}>
-            <AntDesign name={isEditing ? "leftcircle" : "edit"} size={30} color="#FFF" />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={handleEditPress} style={styles.editIcon}>
+              <AntDesign
+                name={isEditing ? "leftcircle" : "edit"}
+                size={30}
+                color="#FFF"
+              />
+            </TouchableOpacity>
           )}
           <TouchableOpacity onPress={handleLogOut} style={styles.logoutIcon}>
             <Entypo name="log-out" size={30} color="#FFF" />
@@ -268,182 +287,222 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
 
         <View style={styles.rowButton}>
           <Chip
-            style={{
-              backgroundColor: activeChip === "perfil" ? "#4CAF50" : "#F2EEEF",
-            }}
+            style={[
+              styles.chip,
+              {
+                backgroundColor:
+                  activeChip === "perfil" ? "#4CAF50" : "#F2EEEF",
+              },
+            ]}
             onPress={() => changeScreen("perfil")}
             textStyle={{ color: activeChip === "perfil" ? "white" : "#9A9A9A" }}
           >
             Perfil
           </Chip>
           <Chip
-            style={{
-              backgroundColor:
-                activeChip === "password" ? "#4CAF50" : "#F2EEEF",
-            }}
+            style={[
+              styles.chip,
+              {
+                backgroundColor:
+                  activeChip === "password" ? "#4CAF50" : "#F2EEEF",
+              },
+            ]}
             onPress={() => changeScreen("password")}
             textStyle={{
               color: activeChip === "password" ? "white" : "#9A9A9A",
             }}
           >
-            Cambiar Contraseña
+            Cambiar contraseña
+          </Chip>
+          <Chip
+            style={[
+              styles.chip,
+              {
+                backgroundColor:
+                  activeChip === "favoritos" ? "#4CAF50" : "#F2EEEF",
+              },
+            ]}
+            onPress={() => changeScreen("favoritos")}
+            textStyle={{
+              color: activeChip === "favoritos" ? "white" : "#9A9A9A",
+            }}
+          >
+            Favoritos
+          </Chip>
+          <Chip
+            style={[
+              styles.chip,
+              {
+                backgroundColor:
+                  activeChip === "historial" ? "#4CAF50" : "#F2EEEF",
+              },
+            ]}
+            onPress={() => changeScreen("historial")}
+            textStyle={{
+              color: activeChip === "historial" ? "white" : "#9A9A9A",
+            }}
+          >
+            Historial de Compra
           </Chip>
         </View>
-        
-      {activeChip === "perfil" ? (
-        <Card style={styles.profileCard}>
-          <Card.Content>
-            {/*Contenedor para el nombre*/}
-            <View style={styles.inputContainer}>
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Nombre:</Text>
-                <View style={styles.rowContent}>
-                  <AntDesign name="user" size={24} />
-                  <TextInput
-                    style={styles.infoText}
-                    value={profile.name}
-                    editable={isEditing}
-                    onChangeText={(text) => handleChange("name", text)}
-                  />
-                </View>
-              </View>
-            </View>
-            {/*Contenedor para el apellido*/}
-            <View style={styles.inputContainer}>
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Apellido:</Text>
-                <View style={styles.rowContent}>
-                  <AntDesign name="user" size={24} />
-                  <TextInput
-                    style={styles.infoText}
-                    value={profile.fullname}
-                    editable={isEditing}
-                    onChangeText={(text) => handleChange("fullname", text)}
-                  />
-                </View>
-              </View>
-            </View>
-            {/*Contenedor para la fecha de nacimiento*/}
-            <View style={[styles.inputContainer, { flex: 1 }]}>
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Fecha de nacimiento:</Text>
-                <View style={styles.rowContent}>
-                  <Entypo name="calendar" size={24} />
-                  <TouchableOpacity onPress={() => isEditing && setShowDatePicker(true)}>
-                    <Text style={styles.infoText}>
-                      {profile.birthday.toLocaleDateString()}
-                    </Text>
-                  </TouchableOpacity>
-                  {showDatePicker && (
-                    <DateTimePicker
-                      value={profile.birthday}
-                      mode="date"
-                      display="default"
-                      onChange={onDateChange}
-                    />
-                  )}
-                </View>
-              </View>
-            </View>
-            {/*Contenedor para el género*/}
-            <View style={styles.inputContainer}>
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Género:</Text>
-                <View style={styles.rowContent}>
-                  <Entypo name="user" size={24} />
-                  <RNPickerSelect
-                    onValueChange={(value) => handleChange("gender", value)}
-                    items={[
-                      { label: "Masculino", value: "Masculino" },
-                      { label: "Femenino", value: "Femenino" },
-                    ]}
-                    value={profile.gender}
-                    style={{
-                      inputIOS: styles.pickerText,
-                      inputAndroid: styles.pickerText,
-                    }}
-                    useNativeAndroidPickerStyle={false}
-                    disabled={!isEditing}
-                  />
-                </View>
-              </View>
-            </View>
-            {/*Contenedor para el correo*/}
-            <View style={styles.inputContainer}>
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Correo:</Text>
-                <View style={styles.rowContent}>
-                  <AntDesign name="mail" size={24} />
-                  <TextInput
-                    style={styles.infoText}
-                    value={profile.email}
-                    editable={isEditing}
-                    onChangeText={(text) => handleChange("email", text)}
-                  />
-                </View>
-              </View>
-            </View>
-            {/*Contenedor para la dirección*/}
-            <View style={styles.inputContainer}>
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Dirección:</Text>
-                <View style={styles.rowContent}>
-                  <Entypo name="map" size={24} />
-                  <TextInput
-                    style={styles.infoText}
-                    value={profile.address}
-                    editable={isEditing}
-                    onChangeText={(text) => handleChange("address", text)}
-                  />
-                </View>
-              </View>
-            </View>
-            {/*Contenedor para el DUI*/}
-            <View style={styles.fila}>
-              <View style={[styles.inputContainer, { flex: 1 }]}>
+
+        {activeChip === "perfil" && (
+          <Card style={styles.profileCard}>
+            <Card.Content>
+              {/*Contenedor para el nombre*/}
+              <View style={styles.inputContainer}>
                 <View style={styles.infoRow}>
-                  <Text style={styles.label}>DUI</Text>
+                  <Text style={styles.label}>Nombre:</Text>
                   <View style={styles.rowContent}>
-                    <AntDesign name="idcard" size={24} />
+                    <AntDesign name="user" size={24} />
                     <TextInput
                       style={styles.infoText}
-                      value={profile.dui}
+                      value={profile.name}
                       editable={isEditing}
-                      onChangeText={(text) => handleChange("dui", text)}
+                      onChangeText={(text) => handleChange("name", text)}
                     />
                   </View>
                 </View>
               </View>
-              {/*Contenedor para el teléfono*/}
-              <View style={[styles.inputContainer, { flex: 1 }]}>
+              {/*Contenedor para el apellido*/}
+              <View style={styles.inputContainer}>
                 <View style={styles.infoRow}>
-                  <Text style={styles.label}>Teléfono</Text>
+                  <Text style={styles.label}>Apellido:</Text>
                   <View style={styles.rowContent}>
-                    <AntDesign name="phone" size={24} />
+                    <AntDesign name="user" size={24} />
                     <TextInput
                       style={styles.infoText}
-                      value={profile.phone}
+                      value={profile.fullname}
                       editable={isEditing}
-                      onChangeText={(text) => handleChange("phone", text)}
+                      onChangeText={(text) => handleChange("fullname", text)}
                     />
                   </View>
                 </View>
               </View>
-            </View>
-          </Card.Content>
-          {/*Botón para guardar cambios*/}
-          {isEditing && (
-            <Button
-              mode="contained"
-              onPress={handleSavePress}
-              style={styles.saveButton}
-            >
-              Guardar
-            </Button>
-          )}
-        </Card>
-      ) : (
-        <Card style={styles.profileCard}>
+              {/*Contenedor para la fecha de nacimiento*/}
+              <View style={[styles.inputContainer, { flex: 1 }]}>
+                <View style={styles.infoRow}>
+                  <Text style={styles.label}>Fecha de nacimiento:</Text>
+                  <View style={styles.rowContent}>
+                    <Entypo name="calendar" size={24} />
+                    <TouchableOpacity
+                      onPress={() => isEditing && setShowDatePicker(true)}
+                    >
+                      <Text style={styles.infoText}>
+                        {profile.birthday.toLocaleDateString()}
+                      </Text>
+                    </TouchableOpacity>
+                    {showDatePicker && (
+                      <DateTimePicker
+                        value={profile.birthday}
+                        mode="date"
+                        display="default"
+                        onChange={onDateChange}
+                      />
+                    )}
+                  </View>
+                </View>
+              </View>
+              {/*Contenedor para el género*/}
+              <View style={styles.inputContainer}>
+                <View style={styles.infoRow}>
+                  <Text style={styles.label}>Género:</Text>
+                  <View style={styles.rowContent}>
+                    <Entypo name="user" size={24} />
+                    <RNPickerSelect
+                      onValueChange={(value) => handleChange("gender", value)}
+                      items={[
+                        { label: "Masculino", value: "Masculino" },
+                        { label: "Femenino", value: "Femenino" },
+                      ]}
+                      value={profile.gender}
+                      style={{
+                        inputIOS: styles.pickerText,
+                        inputAndroid: styles.pickerText,
+                      }}
+                      useNativeAndroidPickerStyle={false}
+                      disabled={!isEditing}
+                    />
+                  </View>
+                </View>
+              </View>
+              {/*Contenedor para el correo*/}
+              <View style={styles.inputContainer}>
+                <View style={styles.infoRow}>
+                  <Text style={styles.label}>Correo:</Text>
+                  <View style={styles.rowContent}>
+                    <AntDesign name="mail" size={24} />
+                    <TextInput
+                      style={styles.infoText}
+                      value={profile.email}
+                      editable={isEditing}
+                      onChangeText={(text) => handleChange("email", text)}
+                    />
+                  </View>
+                </View>
+              </View>
+              {/*Contenedor para la dirección*/}
+              <View style={styles.inputContainer}>
+                <View style={styles.infoRow}>
+                  <Text style={styles.label}>Dirección:</Text>
+                  <View style={styles.rowContent}>
+                    <Entypo name="map" size={24} />
+                    <TextInput
+                      style={styles.infoText}
+                      value={profile.address}
+                      editable={isEditing}
+                      onChangeText={(text) => handleChange("address", text)}
+                    />
+                  </View>
+                </View>
+              </View>
+              {/*Contenedor para el DUI*/}
+              <View style={styles.fila}>
+                <View style={[styles.inputContainer, { flex: 1 }]}>
+                  <View style={styles.infoRow}>
+                    <Text style={styles.label}>DUI</Text>
+                    <View style={styles.rowContent}>
+                      <AntDesign name="idcard" size={24} />
+                      <TextInput
+                        style={styles.infoText}
+                        value={profile.dui}
+                        editable={isEditing}
+                        onChangeText={(text) => handleChange("dui", text)}
+                      />
+                    </View>
+                  </View>
+                </View>
+                {/*Contenedor para el teléfono*/}
+                <View style={[styles.inputContainer, { flex: 1 }]}>
+                  <View style={styles.infoRow}>
+                    <Text style={styles.label}>Teléfono</Text>
+                    <View style={styles.rowContent}>
+                      <AntDesign name="phone" size={24} />
+                      <TextInput
+                        style={styles.infoText}
+                        value={profile.phone}
+                        editable={isEditing}
+                        onChangeText={(text) => handleChange("phone", text)}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </Card.Content>
+            {/*Botón para guardar cambios*/}
+            {isEditing && (
+              <Button
+                mode="contained"
+                onPress={handleSavePress}
+                style={styles.saveButton}
+              >
+                Guardar
+              </Button>
+            )}
+          </Card>
+        )}
+        {activeChip === "password" && (
+          <Card style={styles.profileCard}>
             <Card.Content>
               <View style={styles.inputContainer}>
                 <View style={styles.infoRow}>
@@ -497,6 +556,31 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
             </Button>
           </Card>
         )}
+        {activeChip === "favoritos" && (
+          <Card style={styles.profileCard}>
+            <Card.Content>
+              {/* Aquí puedes agregar contenido para los favoritos */}
+              <Text style={styles.label}>Lista de Favoritos</Text>
+              {/* Ejemplo de contenido */}
+              <Text>Producto 1</Text>
+              <Text>Producto 2</Text>
+              <Text>Producto 3</Text>
+            </Card.Content>
+          </Card>
+        )}
+
+        {activeChip === "historial" && (
+          <Card style={styles.profileCard}>
+            <Card.Content>
+              {/* Aquí puedes agregar contenido para el historial de compra */}
+              <Text style={styles.label}>Historial de Compra</Text>
+              {/* Ejemplo de contenido */}
+              <Text>Compra 1 - Fecha</Text>
+              <Text>Compra 2 - Fecha</Text>
+              <Text>Compra 3 - Fecha</Text>
+            </Card.Content>
+          </Card>
+        )}
       </View>
       <AlertComponent
         visible={alertVisible}
@@ -506,7 +590,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
       />
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -618,10 +702,10 @@ const styles = StyleSheet.create({
     left: 200,
   },
   status: {
-    backgroundColor: '#558D32',
+    backgroundColor: "#558D32",
     width: 10,
     height: 10,
-    borderRadius: 100 / 2
+    borderRadius: 100 / 2,
   },
   pickerText: {
     flex: 1,
@@ -633,12 +717,17 @@ const styles = StyleSheet.create({
   },
   rowButton: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    flexWrap: "wrap", 
+    justifyContent: "center",
+    alignItems: "center",
     marginVertical: 5,
-    paddingHorizontal: 20,
-    paddingTop: 5,
-    width: "80%",
-  }
+    paddingHorizontal: 10,
+    width: "100%",
+  },
+  chip: {
+    margin: 5,
+    marginBottom: 10,
+  },
 });
 
 export default ProfileScreen;
