@@ -9,7 +9,7 @@ const windowHeight = Dimensions.get('window').height;
 const MATERIALES_API = 'servicios/publica/material.php';
 const CATEGORIAS_API = 'servicios/publica/categoria.php';
 
-const FilterModal = ({ visible, onDismiss }) => {
+const FilterModal = ({ visible, onDismiss, applyFilters }) => {
   const [categories, setCategories] = useState([]);
   const [materials, setMaterials] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -83,6 +83,17 @@ const FilterModal = ({ visible, onDismiss }) => {
     setPriceRange({ min, max });
   };
 
+  const handleFilterButton = () => {
+    const form = new FormData();
+    form.append('categorias', selectedCategories);
+    form.append('materiales', selectedMaterials);
+    form.append('minimo', priceRange.min);
+    form.append('maximo', priceRange.max);
+    applyFilters(form);
+    onDismiss();
+  };
+
+
   return (
     <Portal>
       <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.modalContainer}>
@@ -99,7 +110,7 @@ const FilterModal = ({ visible, onDismiss }) => {
           </Tooltip>
         </View>
         <ScrollView contentContainerStyle={styles.modalContent}>
-          <View style={styles.filterSection}>
+          <View style={styles.filterSectionRange}>
             <Text style={styles.filterLabel}>Rango de precio</Text>
             <PriceSlider
               minPrice={10}
@@ -144,7 +155,7 @@ const FilterModal = ({ visible, onDismiss }) => {
               />
             ))}
           </View>
-          <Button mode="contained" onPress={onDismiss} style={styles.applyButton}>
+          <Button mode="contained" onPress={handleFilterButton} style={styles.applyButton}>
             Filtrar
           </Button>
         </ScrollView>
@@ -174,8 +185,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  filterSection: {
+  filterSectionRange: {
     marginBottom: 20,
+  },
+  filterSection: {
+    margin: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   filterLabel: {
     fontSize: 16,

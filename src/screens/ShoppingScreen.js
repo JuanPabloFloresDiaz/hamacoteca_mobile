@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, StyleSheet, Text, FlatList, Dimensions, ScrollView, RefreshControl } from 'react-native';
-import { Button, Searchbar, Menu, Provider, Tooltip, IconButton, } from 'react-native-paper';
+import { View, StyleSheet, Text, FlatList, Dimensions, ScrollView, RefreshControl, Image } from 'react-native';
+import { Button, Searchbar, Menu, Provider, Tooltip, IconButton, ActivityIndicator } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import fetchData from '../../api/components';
@@ -23,6 +23,8 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [loadedItems, setLoadedItems] = useState(4);
+  const [loading, setLoading] = useState(true);
+  const [response, setResponse] = useState(false);
   //Constantes para la busqueda con el elemento de la libreria searchBar
   const onChangeSearch = query => setSearchQuery(query);
 
@@ -55,18 +57,13 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
     sortProducts(option);
   };
 
-  const cargarMasElementos = () => {
-    // Incrementa la cantidad de elementos cargados (por ejemplo, carga 5 elementos más)
-    setLoadedItems(loadedItems + 5);
-  };
-
-
   //Url de la api
   const HAMACAS_API = 'servicios/publica/hamaca.php';
 
   //Metodo para cargar los productos, con la condición de que si se esta buscando algo, entonces busca, si no muestra todo
   const fillProducts = async (searchForm = null) => {
     try {
+      setLoading(true);
       //Verificación de acción a realizar
       if (!categoryId) {
         const action = searchForm ? 'searchRows' : 'readAll';
@@ -79,11 +76,15 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
           if (sortOption) {
             sortProducts(sortOption); // Aplicar ordenamiento actual
           }
+          setLoading(false);
+          setResponse(true);
         }
         //Si la petición falla
         else {
           setDataProductos([]);
           setQuantityProducts('Existen 0 coincidencias');
+          setLoading(false);
+          setResponse(false);
         }
       } else {
         searchForm = new FormData();
@@ -97,12 +98,46 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
           if (sortOption) {
             sortProducts(sortOption); // Aplicar ordenamiento actual
           }
+          setLoading(false);
+          setResponse(true);
         }
         //Si la petición falla
         else {
           setDataProductos([]);
           setQuantityProducts('Existen 0 coincidencias');
+          setLoading(false);
+          setResponse(false);
         }
+      }
+    } catch (error) {
+      setError(error);
+    }
+  }
+
+
+  //Metodo para cargar los productos, con la condición de que si se esta buscando algo, entonces busca, si no muestra todo
+  const filterProducts = async (filters = null) => {
+    try {
+      setDataProductos([]);
+      setLoading(true);
+      //Petición a la api
+      const data = await fetchData(HAMACAS_API, 'filterRows', filters);
+      //La petición funciona correctamente
+      if (data.status) {
+        setDataProductos(data.dataset);
+        setQuantityProducts(data.message);
+        if (sortOption) {
+          sortProducts(sortOption); // Aplicar ordenamiento actual
+        }
+        setLoading(false);
+        setResponse(true);
+      }
+      //Si la petición falla
+      else {
+        setDataProductos([]);
+        setQuantityProducts('Existen 0 coincidencias');
+        setLoading(false);
+        setResponse(false);
       }
     } catch (error) {
       setError(error);
@@ -125,6 +160,7 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
   useEffect(() => {
     const initializeApp = async () => {
       await fillProducts();
+      setLoading(false);
     };
     initializeApp();
   }, []);
@@ -134,6 +170,7 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
     useCallback(() => {
       const initializeApp = async () => {
         await fillProducts();
+        setLoading(false);
       };
       initializeApp();
     }, [])
@@ -144,6 +181,7 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
     setRefreshing(true); // Activar el estado de refresco
     // Lógica para recargar los datos
     await fillProducts();
+    setLoading(false);
     setRefreshing(false); // Desactivar el estado de refresco cuando se complete
   }, []);
   //Verificación, buscar si existe algo buscado en el campo de buscar, si no leer todo
@@ -199,22 +237,42 @@ const ShoppingScreen = ({ categoryId, setCategoryId }) => {
             <Menu.Item onPress={() => handleSortOption('priceLowToHigh')} title="Ordenar por menor precio" />
           </Menu>
         </View>
-        <FlatList
-          data={dataProductos}
-          renderItem={renderProductsItem}
-          keyExtractor={(item) => item.ID}
-          numColumns={2}
-          contentContainerStyle={styles.productsList}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={['#9Bd35A', '#689F38']}
-              progressBackgroundColor="#EBF0FF"
+
+        {loading ? (
+          <ActivityIndicator animating={true} color={'#334195'} />
+        ) : (
+          response ? (
+            <FlatList
+              data={dataProductos}
+              renderItem={renderProductsItem}
+              keyExtractor={(item) => item.ID}
+              numColumns={2}
+              contentContainerStyle={styles.productsList}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  colors={['#9Bd35A', '#689F38']}
+                  progressBackgroundColor="#EBF0FF"
+                />
+              }
             />
-          }
-        />
-        <FilterModal visible={filterModalVisible} onDismiss={hideModal} />
+          ) : (
+            <ScrollView
+              style={styles.scrollContainer}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                />
+              }
+            >
+              <View style={{ height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Image style={{ height: 200, width: 200, marginBottom: 10 }} source={require('../../assets/not-found.png')} />
+              </View>
+            </ScrollView>
+          ))}
+        <FilterModal visible={filterModalVisible} onDismiss={hideModal} applyFilters={filterProducts} />
       </View>
     </Provider>
   );
