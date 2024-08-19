@@ -55,43 +55,63 @@ const RegisterScreen = () => {
   //Metodo para manejar el registro de usuarios
   const handleRegister = async () => {
     try {
-      const formData = new FormData();
-      formData.append("nombreRegistro", nombre);
-      formData.append("apellidoRegistro", apellido);
-      formData.append("correoRegistro", correo);
-      formData.append("direccionRegistro", direccion);
-      formData.append("duiRegistro", dui);
-      //Manejo de insertar fecha en la base de datos
-      formData.append("fechanacimientoRegistro", fechaNacimiento.toISOString().split('T')[0]);
-      formData.append("telefonoRegistro", telefono);
-      formData.append("claveRegistro", clave);
-      formData.append("generoRegistro", genero);
-      //Manejo de insertar imagen en la base de datos
-      if (image) {
-        const uriParts = image.split('.');
-        const fileType = uriParts[uriParts.length - 1];
-        formData.append("imagenRegistro", {
-          uri: image,
-          name: `photo.${fileType}`,
-          type: `image/${fileType}`,
-        });
-      }
-
-      //Petición a la api para insertar un usuario
-      const response = await fetchData(USER_API, "signUpMovli", formData);
-
-      if (response.status) {
-        setAlertType(1);
-        setAlertMessage(`${response.message}`);
-        setAlertCallback(null);
-        setAlertVisible(true);
-        setUrl('LoginScreen');
-      } else {
+      if (
+        !nombre ||
+        !apellido ||
+        !correo ||
+        !direccion ||
+        !dui ||
+        !telefono ||
+        !fechaNacimiento ||
+        !genero ||
+        !clave
+      ) {
         setAlertType(2);
-        setAlertMessage(`Error: ${response.error}`);
+        setAlertMessage(
+          `Campos requeridos, Por favor, complete todos los campos.`
+        );
         setAlertCallback(null);
         setAlertVisible(true);
-        setUrl(null);
+        return;
+      } else {
+        const formData = new FormData();
+        formData.append("nombreRegistro", nombre);
+        formData.append("apellidoRegistro", apellido);
+        formData.append("correoRegistro", correo);
+        formData.append("direccionRegistro", direccion);
+        formData.append("duiRegistro", dui);
+        //Manejo de insertar fecha en la base de datos
+        formData.append("fechanacimientoRegistro", fechaNacimiento.toISOString().split('T')[0]);
+        formData.append("telefonoRegistro", telefono);
+        formData.append("claveRegistro", clave);
+        formData.append("generoRegistro", genero);
+        //Manejo de insertar imagen en la base de datos
+        if (image) {
+          const uriParts = image.split('.');
+          const fileType = uriParts[uriParts.length - 1];
+          formData.append("imagenRegistro", {
+            uri: image,
+            name: `photo.${fileType}`,
+            type: `image/${fileType}`,
+          });
+        }
+
+        //Petición a la api para insertar un usuario
+        const response = await fetchData(USER_API, "signUpMovli", formData);
+
+        if (response.status) {
+          setAlertType(1);
+          setAlertMessage(`${response.message}`);
+          setAlertCallback(null);
+          setAlertVisible(true);
+          setUrl('LoginScreen');
+        } else {
+          setAlertType(2);
+          setAlertMessage(`Error: ${response.error}`);
+          setAlertCallback(null);
+          setAlertVisible(true);
+          setUrl(null);
+        }
       }
     } catch (error) {
       setAlertType(2);
@@ -102,7 +122,7 @@ const RegisterScreen = () => {
     }
   };
 
-  
+
   //Constante para ocultar la visibilidad de la alerta
   const handleAlertClose = () => {
     setAlertVisible(false);
