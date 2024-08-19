@@ -601,13 +601,13 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
         )}
         {activeChip === "favoritos" && (
           <Card style={styles.profileCard}>
-            <FlatList
-          data={favorites}
-          renderItem={renderProductsItem}
-          keyExtractor={(item) => item.ID}
-          numColumns={2}
-          contentContainerStyle={styles.productsList}
-        />
+            <View style={styles.productGrid}>
+              {favorites.map((item, index) => (
+                <View key={index} style={styles.productItem}>
+                  {renderProductsItem({ item })}
+                </View>
+              ))}
+            </View>
           </Card>
         )}
 
@@ -772,7 +772,16 @@ const styles = StyleSheet.create({
   },
   productsList: {
     paddingBottom: 10,
-  }
+  },
+  productGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  productItem: {
+    width: '48%',
+    marginBottom: 20,
+  },
 });
 
 export default ProfileScreen;
