@@ -32,6 +32,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   //URL de la API
   const USER_API = "servicios/publica/cliente.php";
   const FAVORITOS_API = "servicios/publica/favorito.php";
+  const PEDIDOS_API = "servicios/publica/pedido.php";
 
   //Estado para alternar el modo de edición
   const [isEditing, setIsEditing] = useState(false);
@@ -62,7 +63,22 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [favorites, setFavorites] = useState([]);
   const navigation = useNavigation();
-
+  const [shopHistory, setShopHistory] = useState([ 
+    {
+      id: "1",
+      cliente: "Xochilt Gabriela López Pineda",
+      direccion: "San Salvador",
+      fecha: "2024-08-17",
+      estado: "En camino",
+    },
+    {
+      id: "2",
+      cliente: "Xochilt Gabriela López Pineda",
+      direccion: "San Salvador",
+      fecha: "2023-02-05",
+      estado: "Entregado",
+    },
+  ]);
   //Constante para ocultar la visibilidad de la alerta
   const handleAlertClose = () => {
     setAlertVisible(false);
@@ -288,10 +304,36 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     }
   };
 
+  //Metodo para cargar los productos de la semana
+  const readHistory = async () => {
+    try {
+      //Petición a la api
+      const data = await fetchData(PEDIDOS_API, "readAll");
+      //La petición funciona correctamente
+      if (data.status) {
+        const processedData = data.dataset.map(row => ({
+          id: row.ID,
+          cliente: row.CLIENTE,
+          direccion: row.DIRECCION,
+          fecha: row.FECHA,
+          estado: row.ESTADO,
+        }));
+        setShopHistory(processedData);
+      }
+      //Si la petición falla
+      else {
+        setShopHistory([]);
+      }
+    } catch (error) {
+      setError(error);
+    }
+  };
+
   //Lee los datos del perfil al montar el componente
   useEffect(() => {
     readProfile();
     readFavorites();
+    readHistory();
   }, []);
 
   //Cambia la pantalla activa
@@ -303,6 +345,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     useCallback(() => {
       readProfile();
       readFavorites();
+      readHistory();
       setCategoryId(null);
     }, [])
   );
@@ -617,26 +660,10 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
         {activeChip === "historial" && (
           <Card style={styles.profileCard}>
             <Card.Content>
-              <FlatList
-                data={[
+              {shopHistory.map((item, index) => (
+                <View key={index}>
                   {
-                    id: "1",
-                    cliente: "Xochilt Gabriela López Pineda",
-                    direccion: "San Salvador",
-                    fecha: "2024-08-17",
-                    estado: "En camino",
-                  },
-                  {
-                    id: "2",
-                    cliente: "Xochilt Gabriela López Pineda",
-                    direccion: "San Salvador",
-                    fecha: "2023-02-05",
-                    estado: "Entregado",
-                  },
-                ]}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                  <Card style={styles.pedidoCard}>
+                    <Card style={styles.pedidoCard}>
                     <Card.Content>
                       <View style={styles.pedidoRow}>
                         <Text style={styles.pedidoLabel}>Cliente:</Text>
@@ -691,8 +718,9 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
                       </View>
                     </Card.Content>
                   </Card>
-                )}
-              />
+                  }
+                </View>
+              ))}
             </Card.Content>
           </Card>
         )}
