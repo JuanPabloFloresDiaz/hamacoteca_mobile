@@ -312,7 +312,7 @@ const RegisterScreen = () => {
                   ) : (
                     <Avatar.Image
                       size={100}
-                      source={require("../../assets/anya.jpg")}
+                      source={require("../../assets/imagen.jpg")}
                     />
                   )}
                 </TouchableOpacity>

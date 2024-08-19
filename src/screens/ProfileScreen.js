@@ -19,7 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import RNPickerSelect from "react-native-picker-select";
 import imageData from "../../api/images";
-import foto from "../../assets/anya.jpg";
+import foto from "../../assets/imagen.jpg";
 import AlertComponent from "../components/AlertComponent";
 import { useFocusEffect } from "@react-navigation/native";
 import ProductItem from "../components/ProductItem";
