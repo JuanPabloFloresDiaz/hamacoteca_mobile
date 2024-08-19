@@ -8,7 +8,7 @@ import {
   Dimensions,
   ScrollView,
   Image,
-  FlatList,
+  Linking
 } from "react-native";
 import { TextInput, Card, Avatar, Button, Chip } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
@@ -24,6 +24,9 @@ import AlertComponent from "../components/AlertComponent";
 import { useFocusEffect } from "@react-navigation/native";
 import ProductItem from "../components/ProductItem";
 import { useNavigation } from "@react-navigation/native";
+import * as Constantes from '../../api/constantes';
+// URL base del servidor
+const SERVER_URL = Constantes.SERVER_URL;
 
 //Obtiene la altura de la ventana
 const windowHeight = Dimensions.get("window").height;
@@ -349,6 +352,15 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     );
   };
 
+  
+  const handleReport = (id) => {
+    // Abre la URL de la factura en el navegador predeterminado
+    const invoiceUrl = `${SERVER_URL}reportes/publica/comprobante_de_compra.php?id=${id}`;
+    Linking.openURL(invoiceUrl).catch((err) =>
+      console.log('Error al abrir la URL:', err)
+    );
+  };
+
   const changeState = async (id) => {
     try {
       // Realización de la petición de finalizar pedido
@@ -359,6 +371,11 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
       if (data.status) {
         Alert.alert(`${data.message}`);
         readHistory();
+      }else{
+        setAlertType(2);
+        setAlertMessage(`Error: ${data.error} ${data.exception}`);
+        setAlertCallback(null);
+        setAlertVisible(true);
       }
     }
     catch (error) {
@@ -749,7 +766,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
                               color="#2196F3"
                             />
                           </TouchableOpacity>
-                          <TouchableOpacity style={styles.accionBoton}>
+                          <TouchableOpacity style={styles.accionBoton} onPress={() => handleReport(item.id)}>
                             <AntDesign
                               name="pdffile1"
                               size={24}
