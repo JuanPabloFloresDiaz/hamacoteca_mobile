@@ -314,7 +314,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
           </TouchableOpacity>
           <Text style={styles.name}>{profile.name}</Text>
           <Text style={styles.email}>{profile.email}</Text>
-          {activeChip !== "password" && (
+          {activeChip == "perfil" && (
             <TouchableOpacity onPress={handleEditPress} style={styles.editIcon}>
               <AntDesign
                 name={isEditing ? "leftcircle" : "edit"}
