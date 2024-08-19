@@ -63,20 +63,20 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [favorites, setFavorites] = useState([]);
   const navigation = useNavigation();
-  const [shopHistory, setShopHistory] = useState([ 
+  const [shopHistory, setShopHistory] = useState([
     {
-      id: "1",
-      cliente: "Xochilt Gabriela López Pineda",
-      direccion: "San Salvador",
-      fecha: "2024-08-17",
-      estado: "En camino",
+      id: " ",
+      cliente: " ",
+      direccion: " ",
+      fecha: " ",
+      estado: " ",
     },
     {
-      id: "2",
-      cliente: "Xochilt Gabriela López Pineda",
-      direccion: "San Salvador",
-      fecha: "2023-02-05",
-      estado: "Entregado",
+      id: " ",
+      cliente: " ",
+      direccion: " ",
+      fecha: " ",
+      estado: " ",
     },
   ]);
   //Constante para ocultar la visibilidad de la alerta
@@ -329,6 +329,43 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     }
   };
 
+  const handleChangeState = (id) => {
+    // Mostrar un mensaje de confirmación antes de eliminar
+    Alert.alert(
+      'Confirmación',
+      '¿Está seguro de cambiar el estado de tu pedido?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel'
+        },
+        {
+          text: 'Aceptar',
+          onPress: async () => {
+            changeState(id);
+          }
+        }
+      ]
+    );
+  };
+
+  const changeState = async (id) => {
+    try {
+      // Realización de la petición de finalizar pedido
+
+      const form = new FormData();
+      form.append('idPedido', id);
+      const data = await fetchData(PEDIDOS_API, "changeState", form);
+      if (data.status) {
+        Alert.alert(`${data.message}`);
+        readHistory();
+      }
+    }
+    catch (error) {
+      setError(error);
+    }
+  };
+
   //Lee los datos del perfil al montar el componente
   useEffect(() => {
     readProfile();
@@ -349,6 +386,13 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
       setCategoryId(null);
     }, [])
   );
+
+  // Método para asignar un color según el estado
+  const getColorByState = (estado) => {
+    if (estado == 'Cancelado') return '#F44336'; // Rojo
+    if (estado == 'En camino') return '#FFC107'; // Amarillo
+    if (estado == 'Entregado') return '#4CAF50'; // Verde
+  };
 
   return (
     <ScrollView>
@@ -664,60 +708,57 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
                 <View key={index}>
                   {
                     <Card style={styles.pedidoCard}>
-                    <Card.Content>
-                      <View style={styles.pedidoRow}>
-                        <Text style={styles.pedidoLabel}>Cliente:</Text>
-                        <Text style={styles.pedidoText}>{item.cliente}</Text>
-                      </View>
-                      <View style={styles.pedidoRow}>
-                        <Text style={styles.pedidoLabel}>Dirección:</Text>
-                        <Text style={styles.pedidoText}>{item.direccion}</Text>
-                      </View>
-                      <View style={styles.pedidoRow}>
-                        <Text style={styles.pedidoLabel}>Fecha:</Text>
-                        <Text style={styles.pedidoText}>{item.fecha}</Text>
-                      </View>
-                      <View style={styles.pedidoRow}>
-                        <Text style={styles.pedidoLabel}>Estado:</Text>
-                        <Text
-                          style={[
-                            styles.pedidoText,
-                            {
-                              color:
-                                item.estado === "En camino"
-                                  ? "#FFA500"
-                                  : "#4CAF50",
-                            },
-                          ]}
-                        >
-                          {item.estado}
-                        </Text>
-                      </View>
-                      <View style={styles.accionesContainer}>
-                        <TouchableOpacity style={styles.accionBoton}>
-                          <AntDesign
-                            name="infocirlceo"
-                            size={24}
-                            color="#4CAF50"
-                          />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.accionBoton}>
-                          <AntDesign
-                            name="filetext1"
-                            size={24}
-                            color="#2196F3"
-                          />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.accionBoton}>
-                          <AntDesign
-                            name="pdffile1"
-                            size={24}
-                            color="#FF5722"
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    </Card.Content>
-                  </Card>
+                      <Card.Content>
+                        <View style={styles.pedidoRow}>
+                          <Text style={styles.pedidoLabel}>Cliente:</Text>
+                          <Text style={styles.pedidoText}>{item.cliente}</Text>
+                        </View>
+                        <View style={styles.pedidoRow}>
+                          <Text style={styles.pedidoLabel}>Dirección:</Text>
+                          <Text style={styles.pedidoText}>{item.direccion}</Text>
+                        </View>
+                        <View style={styles.pedidoRow}>
+                          <Text style={styles.pedidoLabel}>Fecha:</Text>
+                          <Text style={styles.pedidoText}>{item.fecha}</Text>
+                        </View>
+                        <View style={styles.pedidoRow}>
+                          <Text style={styles.pedidoLabel}>Estado:</Text>
+                          <Text
+                            style={[
+                              styles.pedidoText,
+                              {
+                                color:getColorByState(item.estado),
+                              },
+                            ]}
+                          >
+                            {item.estado}
+                          </Text>
+                        </View>
+                        <View style={styles.accionesContainer}>
+                          <TouchableOpacity style={styles.accionBoton} onPress={() => handleChangeState(item.id)}>
+                            <AntDesign
+                              name="infocirlceo"
+                              size={24}
+                              color="#4CAF50"
+                            />
+                          </TouchableOpacity>
+                          <TouchableOpacity style={styles.accionBoton}>
+                            <AntDesign
+                              name="filetext1"
+                              size={24}
+                              color="#2196F3"
+                            />
+                          </TouchableOpacity>
+                          <TouchableOpacity style={styles.accionBoton}>
+                            <AntDesign
+                              name="pdffile1"
+                              size={24}
+                              color="#FF5722"
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      </Card.Content>
+                    </Card>
                   }
                 </View>
               ))}
