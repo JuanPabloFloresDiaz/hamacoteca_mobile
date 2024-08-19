@@ -8,7 +8,7 @@ import {
   Dimensions,
   ScrollView,
   Image,
-  FlatList
+  FlatList,
 } from "react-native";
 import { TextInput, Card, Avatar, Button, Chip } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
@@ -22,8 +22,8 @@ import imageData from "../../api/images";
 import foto from "../../assets/anya.jpg";
 import AlertComponent from "../components/AlertComponent";
 import { useFocusEffect } from "@react-navigation/native";
-import ProductItem from '../components/ProductItem';
-import { useNavigation } from '@react-navigation/native';
+import ProductItem from "../components/ProductItem";
+import { useNavigation } from "@react-navigation/native";
 
 //Obtiene la altura de la ventana
 const windowHeight = Dimensions.get("window").height;
@@ -31,7 +31,7 @@ const windowHeight = Dimensions.get("window").height;
 const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   //URL de la API
   const USER_API = "servicios/publica/cliente.php";
-  const FAVORITOS_API = 'servicios/publica/favorito.php';
+  const FAVORITOS_API = "servicios/publica/favorito.php";
 
   //Estado para alternar el modo de edición
   const [isEditing, setIsEditing] = useState(false);
@@ -187,12 +187,15 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   const handleProductPress = (productId) => {
     //Verificación de si el identificador del producto se ha enviado bien
     if (!productId) {
-      alert('No se pudo cargar el producto');
+      alert("No se pudo cargar el producto");
       return;
     }
     console.log("Producto seleccionado " + productId);
     //Navegar a detalle de producto
-    navigation.navigate('LoginNav', { screen: 'DetailProduct', params: { productId } });
+    navigation.navigate("LoginNav", {
+      screen: "DetailProduct",
+      params: { productId },
+    });
   };
 
   //Renderizador de las cartas de los productos
@@ -283,7 +286,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     } catch (error) {
       setError(error);
     }
-  }
+  };
 
   //Lee los datos del perfil al montar el componente
   useEffect(() => {
@@ -385,7 +388,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
               color: activeChip === "historial" ? "white" : "#9A9A9A",
             }}
           >
-            Historial de Compra
+            Historial de Compras
           </Chip>
         </View>
 
@@ -614,12 +617,82 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
         {activeChip === "historial" && (
           <Card style={styles.profileCard}>
             <Card.Content>
-              {/* Aquí puedes agregar contenido para el historial de compra */}
-              <Text style={styles.label}>Historial de Compra</Text>
-              {/* Ejemplo de contenido */}
-              <Text>Compra 1 - Fecha</Text>
-              <Text>Compra 2 - Fecha</Text>
-              <Text>Compra 3 - Fecha</Text>
+              <FlatList
+                data={[
+                  {
+                    id: "1",
+                    cliente: "Xochilt Gabriela López Pineda",
+                    direccion: "San Salvador",
+                    fecha: "2024-08-17",
+                    estado: "En camino",
+                  },
+                  {
+                    id: "2",
+                    cliente: "Xochilt Gabriela López Pineda",
+                    direccion: "San Salvador",
+                    fecha: "2023-02-05",
+                    estado: "Entregado",
+                  },
+                ]}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <Card style={styles.pedidoCard}>
+                    <Card.Content>
+                      <View style={styles.pedidoRow}>
+                        <Text style={styles.pedidoLabel}>Cliente:</Text>
+                        <Text style={styles.pedidoText}>{item.cliente}</Text>
+                      </View>
+                      <View style={styles.pedidoRow}>
+                        <Text style={styles.pedidoLabel}>Dirección:</Text>
+                        <Text style={styles.pedidoText}>{item.direccion}</Text>
+                      </View>
+                      <View style={styles.pedidoRow}>
+                        <Text style={styles.pedidoLabel}>Fecha:</Text>
+                        <Text style={styles.pedidoText}>{item.fecha}</Text>
+                      </View>
+                      <View style={styles.pedidoRow}>
+                        <Text style={styles.pedidoLabel}>Estado:</Text>
+                        <Text
+                          style={[
+                            styles.pedidoText,
+                            {
+                              color:
+                                item.estado === "En camino"
+                                  ? "#FFA500"
+                                  : "#4CAF50",
+                            },
+                          ]}
+                        >
+                          {item.estado}
+                        </Text>
+                      </View>
+                      <View style={styles.accionesContainer}>
+                        <TouchableOpacity style={styles.accionBoton}>
+                          <AntDesign
+                            name="infocirlceo"
+                            size={24}
+                            color="#4CAF50"
+                          />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.accionBoton}>
+                          <AntDesign
+                            name="filetext1"
+                            size={24}
+                            color="#2196F3"
+                          />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.accionBoton}>
+                          <AntDesign
+                            name="pdffile1"
+                            size={24}
+                            color="#FF5722"
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    </Card.Content>
+                  </Card>
+                )}
+              />
             </Card.Content>
           </Card>
         )}
@@ -759,7 +832,7 @@ const styles = StyleSheet.create({
   },
   rowButton: {
     flexDirection: "row",
-    flexWrap: "wrap", 
+    flexWrap: "wrap",
     justifyContent: "center",
     alignItems: "center",
     marginVertical: 5,
@@ -774,13 +847,45 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   productGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   productItem: {
-    width: '48%',
+    width: "48%",
     marginBottom: 20,
+  },
+  historialTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  pedidoCard: {
+    marginBottom: 10,
+    elevation: 2,
+    backgroundColor: 'white',
+  },
+  pedidoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+  },
+  pedidoLabel: {
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  pedidoText: {
+    flex: 1,
+    textAlign: 'right',
+    color: '#555',
+  },
+  accionesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 10,
+  },
+  accionBoton: {
+    marginLeft: 15,
   },
 });
 
