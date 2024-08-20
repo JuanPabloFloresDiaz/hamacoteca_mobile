@@ -46,6 +46,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   const USER_API = "servicios/publica/cliente.php";
   const FAVORITOS_API = "servicios/publica/favorito.php";
   const PEDIDOS_API = "servicios/publica/pedido.php";
+  const DETALLE_PEDIDO_API = 'servicios/publica/detalle_pedido.php';
 
   //Estado para alternar el modo de edición
   const [isEditing, setIsEditing] = useState(false);
@@ -94,7 +95,15 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   ]);
 
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [modalDetail, setModalDetail] = useState([
+    {
+      foto: " ",
+      nombre: " ",
+      cantidad: " ",
+      precio: " ",
+      subtotal: " ",
+    },
+  ]);
   //Metodos para el manejo de los modals
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
@@ -112,6 +121,8 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
 
   const handleReadDetail = (id) => {
     showModal();
+    console.log(id);
+    readDetail(id);
     // Aquí se hara la lógica de mostrar las cartas :)
   };
   //Función para guardar los cambios en el perfil
@@ -350,6 +361,42 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     } catch (error) {
       setError(error);
     }
+  };
+
+  //Metodo para cargar los productos de la semana
+  const readDetail = async (id) => {
+    try {
+      form = new FormData();
+      form.append('idPedido', id);
+      //Petición a la api
+      const data = await fetchData(DETALLE_PEDIDO_API, "readOne", form);
+      //La petición funciona correctamente
+      if (data.status) {
+        const processedData = data.dataset.map((row) => ({
+          foto: `${SERVER_URL}imagenes/hamacas/${row.FOTO}`,
+          nombre: row.PRODUCTO,
+          cantidad: row.CANTIDAD,
+          precio: row.PRECIO,
+          subtotal: (row.PRECIO * row.CANTIDAD),
+        }));
+        setModalDetail(processedData);
+      }
+      //Si la petición falla
+      else {
+        setModalDetail([]);
+      }
+    } catch (error) {
+      setError(error);
+    }
+  };
+
+  // Función para calcular el total de productos en el carrito
+  const getTotalDinero = () => {
+    return modalDetail.reduce((total, item) => {
+      const precio = Number(item.precio);
+      const cantidad = Number(item.cantidad);
+      return total + ((isNaN(precio) || isNaN(cantidad)) ? 0 : precio * cantidad);
+    }, 0).toFixed(2);
   };
 
   const handleChangeState = (id) => {
@@ -835,7 +882,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
             contentContainerStyle={styles.modalContainer}
           >
             <View style={styles.headerModal}>
-              <Text style={styles.modalTitle}>Detalle del pedido 2</Text>
+              <Text style={styles.modalTitle}>Detalle del pedido</Text>
               <IconButton
                 icon="close"
                 size={24}
@@ -843,6 +890,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
                 color="#334195"
               />
             </View>
+
             <ScrollView style={styles.modalContent}>
               <Card style={styles.detailCard}>
                 <Card.Content>
@@ -854,20 +902,22 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
                     <Text style={styles.columnHeader}>Subtotal</Text>
                   </View>
 
-                  <View style={styles.detailRow}>
-                    <Image
-                      source={require("../../assets/imagen.jpg")}
-                      style={styles.productImage}
-                    />
-                    <Text style={styles.productName}>Hamaca de tela</Text>
-                    <Text style={styles.quantityText}>2</Text>
-                    <Text style={styles.priceText}>$79.99</Text>
-                    <Text style={styles.subtotalText}>$159.98</Text>
-                  </View>
+                  {modalDetail.map((item, index) => (
+                    <View key={index} style={styles.detailRow}>
+                      <Image
+                        source={{ uri: item.foto }}
+                        style={styles.productImage}
+                      />
+                      <Text style={styles.productName}>{item.nombre}</Text>
+                      <Text style={styles.quantityText}>{item.cantidad}</Text>
+                      <Text style={styles.priceText}>${item.precio}</Text>
+                      <Text style={styles.subtotalText}>${item.subtotal}</Text>
+                    </View>
+                  ))}
 
                   <View style={styles.totalRow}>
                     <Text style={styles.totalLabel}>TOTAL QUE PAGO (US$)</Text>
-                    <Text style={styles.totalAmount}>$159.98</Text>
+                    <Text style={styles.totalAmount}>${getTotalDinero()}</Text>
                   </View>
                 </Card.Content>
               </Card>
