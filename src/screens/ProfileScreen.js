@@ -8,9 +8,19 @@ import {
   Dimensions,
   ScrollView,
   Image,
-  Linking
+  Linking,
 } from "react-native";
-import { TextInput, Card, Avatar, Button, Chip, Modal, Provider, Portal, IconButton } from "react-native-paper";
+import {
+  TextInput,
+  Card,
+  Avatar,
+  Button,
+  Chip,
+  Modal,
+  Provider,
+  Portal,
+  IconButton,
+} from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import fetchData from "../../api/components";
 import { AntDesign } from "@expo/vector-icons";
@@ -24,7 +34,7 @@ import AlertComponent from "../components/AlertComponent";
 import { useFocusEffect } from "@react-navigation/native";
 import ProductItem from "../components/ProductItem";
 import { useNavigation } from "@react-navigation/native";
-import * as Constantes from '../../api/constantes';
+import * as Constantes from "../../api/constantes";
 // URL base del servidor
 const SERVER_URL = Constantes.SERVER_URL;
 
@@ -103,7 +113,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   const handleReadDetail = (id) => {
     showModal();
     // Aquí se hara la lógica de mostrar las cartas :)
-  }
+  };
   //Función para guardar los cambios en el perfil
   const handleSavePress = async () => {
     try {
@@ -324,7 +334,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
       const data = await fetchData(PEDIDOS_API, "readAll");
       //La petición funciona correctamente
       if (data.status) {
-        const processedData = data.dataset.map(row => ({
+        const processedData = data.dataset.map((row) => ({
           id: row.ID,
           cliente: row.CLIENTE,
           direccion: row.DIRECCION,
@@ -345,29 +355,28 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   const handleChangeState = (id) => {
     // Mostrar un mensaje de confirmación antes de eliminar
     Alert.alert(
-      'Confirmación',
-      '¿Está seguro de cambiar el estado de tu pedido?',
+      "Confirmación",
+      "¿Está seguro de cambiar el estado de tu pedido?",
       [
         {
-          text: 'Cancelar',
-          style: 'cancel'
+          text: "Cancelar",
+          style: "cancel",
         },
         {
-          text: 'Aceptar',
+          text: "Aceptar",
           onPress: async () => {
             changeState(id);
-          }
-        }
+          },
+        },
       ]
     );
   };
-
 
   const handleReport = (id) => {
     // Abre la URL de la factura en el navegador predeterminado
     const invoiceUrl = `${SERVER_URL}reportes/publica/comprobante_de_compra.php?id=${id}`;
     Linking.openURL(invoiceUrl).catch((err) =>
-      console.log('Error al abrir la URL:', err)
+      console.log("Error al abrir la URL:", err)
     );
   };
 
@@ -376,7 +385,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
       // Realización de la petición de finalizar pedido
 
       const form = new FormData();
-      form.append('idPedido', id);
+      form.append("idPedido", id);
       const data = await fetchData(PEDIDOS_API, "changeState", form);
       if (data.status) {
         Alert.alert(`${data.message}`);
@@ -387,8 +396,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
         setAlertCallback(null);
         setAlertVisible(true);
       }
-    }
-    catch (error) {
+    } catch (error) {
       setError(error);
     }
   };
@@ -416,9 +424,9 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
 
   // Método para asignar un color según el estado
   const getColorByState = (estado) => {
-    if (estado == 'Cancelado') return '#F44336'; // Rojo
-    if (estado == 'En camino') return '#FFC107'; // Amarillo
-    if (estado == 'Entregado') return '#4CAF50'; // Verde
+    if (estado == "Cancelado") return "#F44336"; // Rojo
+    if (estado == "En camino") return "#FFC107"; // Amarillo
+    if (estado == "Entregado") return "#4CAF50"; // Verde
   };
 
   return (
@@ -433,7 +441,10 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
             <Text style={styles.name}>{profile.name}</Text>
             <Text style={styles.email}>{profile.email}</Text>
             {activeChip == "perfil" && (
-              <TouchableOpacity onPress={handleEditPress} style={styles.editIcon}>
+              <TouchableOpacity
+                onPress={handleEditPress}
+                style={styles.editIcon}
+              >
                 <AntDesign
                   name={isEditing ? "leftcircle" : "edit"}
                   size={30}
@@ -456,7 +467,9 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
                 },
               ]}
               onPress={() => changeScreen("perfil")}
-              textStyle={{ color: activeChip === "perfil" ? "white" : "#9A9A9A" }}
+              textStyle={{
+                color: activeChip === "perfil" ? "white" : "#9A9A9A",
+              }}
             >
               Perfil
             </Chip>
@@ -695,7 +708,9 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
                 </View>
                 <View style={styles.inputContainer}>
                   <View style={styles.infoRow}>
-                    <Text style={styles.label}>Confirmar Nueva Contraseña:</Text>
+                    <Text style={styles.label}>
+                      Confirmar Nueva Contraseña:
+                    </Text>
                     <View style={styles.rowContent}>
                       <Entypo name="lock" size={24} />
                       <TextInput
@@ -739,11 +754,15 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
                         <Card.Content>
                           <View style={styles.pedidoRow}>
                             <Text style={styles.pedidoLabel}>Cliente:</Text>
-                            <Text style={styles.pedidoText}>{item.cliente}</Text>
+                            <Text style={styles.pedidoText}>
+                              {item.cliente}
+                            </Text>
                           </View>
                           <View style={styles.pedidoRow}>
                             <Text style={styles.pedidoLabel}>Dirección:</Text>
-                            <Text style={styles.pedidoText}>{item.direccion}</Text>
+                            <Text style={styles.pedidoText}>
+                              {item.direccion}
+                            </Text>
                           </View>
                           <View style={styles.pedidoRow}>
                             <Text style={styles.pedidoLabel}>Fecha:</Text>
@@ -763,21 +782,30 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
                             </Text>
                           </View>
                           <View style={styles.accionesContainer}>
-                            <TouchableOpacity style={styles.accionBoton} onPress={() => handleChangeState(item.id)}>
+                            <TouchableOpacity
+                              style={styles.accionBoton}
+                              onPress={() => handleChangeState(item.id)}
+                            >
                               <AntDesign
                                 name="infocirlceo"
                                 size={24}
                                 color="#4CAF50"
                               />
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.accionBoton} onPress={() => handleReadDetail(item.id)}>
+                            <TouchableOpacity
+                              style={styles.accionBoton}
+                              onPress={() => handleReadDetail(item.id)}
+                            >
                               <AntDesign
                                 name="filetext1"
                                 size={24}
                                 color="#2196F3"
                               />
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.accionBoton} onPress={() => handleReport(item.id)}>
+                            <TouchableOpacity
+                              style={styles.accionBoton}
+                              onPress={() => handleReport(item.id)}
+                            >
                               <AntDesign
                                 name="pdffile1"
                                 size={24}
@@ -801,59 +829,48 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
           onClose={handleAlertClose}
         />
         <Portal>
-          <Modal visible={modalVisible} onDismiss={hideModal} style={styles.modalContainer}>
+          <Modal
+            visible={modalVisible}
+            onDismiss={hideModal}
+            contentContainerStyle={styles.modalContainer}
+          >
             <View style={styles.headerModal}>
-              <Text style={styles.modalTitle}>Detalle</Text>
+              <Text style={styles.modalTitle}>Detalle del pedido 2</Text>
               <IconButton
                 icon="close"
                 size={24}
                 onPress={hideModal}
-                style={styles.closeButton}
                 color="#334195"
               />
             </View>
-            <ScrollView contentContainerStyle={styles.modalContent}>
-              <Card style={styles.profileCard}>
+            <ScrollView style={styles.modalContent}>
+              <Card style={styles.detailCard}>
                 <Card.Content>
-                  {shopHistory.map((item, index) => (
-                    <View key={index}>
-                      {
-                        <Card style={styles.pedidoCard}>
-                          <Card.Content>
-                            <View style={styles.pedidoRow}>
-                              <Text style={styles.pedidoLabel}>Foto:</Text>
-                              <Text style={styles.pedidoText}>{item.cliente}</Text>
-                            </View>
-                            <View style={styles.pedidoRow}>
-                              <Text style={styles.pedidoLabel}>Nombre del producto:</Text>
-                              <Text style={styles.pedidoText}>{item.direccion}</Text>
-                            </View>
-                            <View style={styles.pedidoRow}>
-                              <Text style={styles.pedidoLabel}>Cantidad comprada:</Text>
-                              <Text style={styles.pedidoText}>{item.fecha}</Text>
-                            </View>
-                            <View style={styles.pedidoRow}>
-                              <Text style={styles.pedidoLabel}>Precio unitario:</Text>
-                              <Text style={styles.pedidoText}>{item.fecha}</Text>
-                            </View>
-                            <View style={styles.pedidoRow}>
-                              <Text style={styles.pedidoLabel}>Subtotal:</Text>
-                              <Text style={styles.pedidoText}>{item.fecha}</Text>
-                            </View>
-                            <View style={styles.accionesContainer}>
-                            <View style={styles.pedidoRow}>
-                              <Text style={styles.pedidoLabel}>TOTAL QUE PAGO $:</Text>
-                              <Text style={styles.pedidoText}>{item.fecha}</Text>
-                            </View>
-                            </View>
-                          </Card.Content>
-                        </Card>
-                      }
-                    </View>
-                  ))}
+                  <View style={styles.detailRow}>
+                    <Text style={styles.columnHeader}>Foto</Text>
+                    <Text style={styles.columnHeader}>Nombre del producto</Text>
+                    <Text style={styles.columnHeader}>Cantidad comprada</Text>
+                    <Text style={styles.columnHeader}>Precio unitario</Text>
+                    <Text style={styles.columnHeader}>Subtotal</Text>
+                  </View>
+
+                  <View style={styles.detailRow}>
+                    <Image
+                      source={require("../../assets/imagen.jpg")}
+                      style={styles.productImage}
+                    />
+                    <Text style={styles.productName}>Hamaca de tela</Text>
+                    <Text style={styles.quantityText}>2</Text>
+                    <Text style={styles.priceText}>$79.99</Text>
+                    <Text style={styles.subtotalText}>$159.98</Text>
+                  </View>
+
+                  <View style={styles.totalRow}>
+                    <Text style={styles.totalLabel}>TOTAL QUE PAGO (US$)</Text>
+                    <Text style={styles.totalAmount}>$159.98</Text>
+                  </View>
                 </Card.Content>
               </Card>
-
             </ScrollView>
           </Modal>
         </Portal>
@@ -1012,31 +1029,31 @@ const styles = StyleSheet.create({
   },
   historialTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   pedidoCard: {
     marginBottom: 10,
     elevation: 2,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   pedidoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 5,
   },
   pedidoLabel: {
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   pedidoText: {
     flex: 1,
-    textAlign: 'right',
-    color: '#555',
+    textAlign: "right",
+    color: "#555",
   },
   accionesContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
     marginTop: 10,
   },
   accionBoton: {
@@ -1045,20 +1062,80 @@ const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: 'white',
     padding: 20,
-    marginHorizontal: 20,
+    margin: 20,
     borderRadius: 10,
-    marginBottom: windowHeight * 0.11,
   },
   headerModal: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  modalContent: {
-    paddingBottom: 20,
+    alignItems: 'center',
+    marginBottom: 20,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
+  },
+  modalContent: {
+    maxHeight: '80%',
+  },
+  detailCard: {
+    elevation: 4,
+    borderRadius: 8,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    paddingVertical: 5,
+  },
+  columnHeader: {
+    fontWeight: 'bold',
+    fontSize: 12,
+    flex: 1,
+    textAlign: 'center',
+  },
+  productImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  productName: {
+    flex: 1,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  quantityText: {
+    flex: 1,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  priceText: {
+    flex: 1,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  subtotalText: {
+    flex: 1,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  totalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    paddingTop: 10,
+  },
+  totalLabel: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  totalAmount: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#4CAF50',
   },
 });
 
