@@ -7,6 +7,7 @@ export default async function imageData(folder, filename) {
     // Construir la URL completa de la imagen
     const imageUrl = `${SERVER_URL}${folder}/${filename}`;
     try {
+        console.log(imageUrl);
         return imageUrl; // Retornar la URL de la imagen si está disponible
     } catch (error) {
         console.error('Imagen error:', error);

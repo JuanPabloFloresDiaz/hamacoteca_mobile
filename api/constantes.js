@@ -1,3 +1,3 @@
-export const ip = `192.168.56.1`; 
-export const SERVER_URL = `http://${ip}/hamacoteca/api/`;
-export const IMAGES_URL = `http://${ip}/hamacoteca/api/imagenes/`;
+export const ip = `http://34.134.152.208/`;  
+export const SERVER_URL = `${ip}/hamacoteca/api/`;
+export const IMAGES_URL = `${ip}/hamacoteca/api/imagenes/`;
