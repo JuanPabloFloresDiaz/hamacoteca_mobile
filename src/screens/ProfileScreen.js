@@ -35,6 +35,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import ProductItem from "../components/ProductItem";
 import { useNavigation } from "@react-navigation/native";
 import * as Constantes from "../../api/constantes";
+
 // URL base del servidor
 const SERVER_URL = Constantes.SERVER_URL;
 
@@ -42,7 +43,7 @@ const SERVER_URL = Constantes.SERVER_URL;
 const windowHeight = Dimensions.get("window").height;
 
 const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
-  //URL de la API
+  //URL de las APIs utilizadas
   const USER_API = "servicios/publica/cliente.php";
   const FAVORITOS_API = "servicios/publica/favorito.php";
   const PEDIDOS_API = "servicios/publica/pedido.php";
@@ -64,6 +65,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     image: Image.resolveAssetSource(foto).uri,
   });
 
+  //Estados para el manejo de alertas
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertType, setAlertType] = useState(1);
   const [alertMessage, setAlertMessage] = useState("");
@@ -71,12 +73,22 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
 
   //Controla la visualización del selector de fecha
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  //Estado para controlar la pestaña activa en el perfil
   const [activeChip, setActiveChip] = useState("perfil");
+
+  //Estados para el manejo de contraseñas
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  //Estado para almacenar los productos favoritos
   const [favorites, setFavorites] = useState([]);
+
+  //Hook de navegación
   const navigation = useNavigation();
+
+  //Estado para almacenar el historial de compras
   const [shopHistory, setShopHistory] = useState([
     {
       id: " ",
@@ -84,16 +96,10 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
       direccion: " ",
       fecha: " ",
       estado: " ",
-    },
-    {
-      id: " ",
-      cliente: " ",
-      direccion: " ",
-      fecha: " ",
-      estado: " ",
-    },
+    }
   ]);
 
+  //Estados para el manejo del modal de detalles
   const [modalVisible, setModalVisible] = useState(false);
   const [modalDetail, setModalDetail] = useState([
     {
@@ -104,9 +110,11 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
       subtotal: " ",
     },
   ]);
-  //Metodos para el manejo de los modals
+
+  //Funciones para mostrar y ocultar el modal
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
+
   //Constante para ocultar la visibilidad de la alerta
   const handleAlertClose = () => {
     setAlertVisible(false);
@@ -119,12 +127,13 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     readProfile();
   };
 
+  //Función para leer los detalles de un pedido
   const handleReadDetail = (id) => {
     showModal();
     console.log(id);
     readDetail(id);
-    // Aquí se hara la lógica de mostrar las cartas :)
   };
+
   //Función para guardar los cambios en el perfil
   const handleSavePress = async () => {
     try {
@@ -204,7 +213,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     setProfile({ ...profile, [name]: value });
   };
 
-  //Maneja el cambio de contraseña
+  //Función para el cambio de contraseña
   const handlePasswordChange = async () => {
     try {
       if (newPassword !== confirmPassword) {
@@ -320,7 +329,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     }
   };
 
-  //Metodo para cargar los productos de la semana
+  //Metodo para cargar los productos favoritos
   const readFavorites = async () => {
     try {
       //Petición a la api
@@ -338,7 +347,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     }
   };
 
-  //Metodo para cargar los productos de la semana
+  //Metodo para cargar el historial de compras
   const readHistory = async () => {
     try {
       //Petición a la api
@@ -363,7 +372,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     }
   };
 
-  //Metodo para cargar los productos de la semana
+  //Metodo para leer los detalles de un pedido
   const readDetail = async (id) => {
     try {
       form = new FormData();
@@ -390,7 +399,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     }
   };
 
-  // Función para calcular el total de productos en el carrito
+  // Función para calcular el total
   const getTotalDinero = () => {
     return modalDetail.reduce((total, item) => {
       const precio = Number(item.precio);
@@ -399,6 +408,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     }, 0).toFixed(2);
   };
 
+  //Función para manejar el cambio de estado de un pedido
   const handleChangeState = (id) => {
     // Mostrar un mensaje de confirmación antes de eliminar
     Alert.alert(
@@ -419,6 +429,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     );
   };
 
+  //Función para generar y abrir el reporte de un pedido
   const handleReport = (id) => {
     // Abre la URL de la factura en el navegador predeterminado
     const invoiceUrl = `${SERVER_URL}reportes/publica/comprobante_de_compra.php?id=${id}`;
@@ -427,6 +438,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     );
   };
 
+  //Función para cambiar el estado de un pedido
   const changeState = async (id) => {
     try {
       // Realización de la petición de finalizar pedido
@@ -460,6 +472,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
     setActiveChip(screen);
   };
 
+  //Efecto para cargar datos cuando la pantalla obtiene el foco
   useFocusEffect(
     useCallback(() => {
       readProfile();
