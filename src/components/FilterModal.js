@@ -16,7 +16,7 @@ const FilterModal = ({ visible, onDismiss, applyFilters }) => {
   const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [allCategoriesChecked, setAllCategoriesChecked] = useState(false);
   const [allMaterialsChecked, setAllMaterialsChecked] = useState(false);
-  const [priceRange, setPriceRange] = useState({ min: 10, max: 1000 });
+  const [priceRange, setPriceRange] = useState({ min: 10, max: 999 });
 
   useEffect(() => {
     cargarCategorias();
@@ -114,7 +114,7 @@ const FilterModal = ({ visible, onDismiss, applyFilters }) => {
             <Text style={styles.filterLabel}>Rango de precio</Text>
             <PriceSlider
               minPrice={10}
-              maxPrice={1000}
+              maxPrice={999}
               onValueChange={handlePriceChange}
             />
           </View>

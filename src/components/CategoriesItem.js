@@ -67,7 +67,8 @@ const styles = StyleSheet.create({
     },
     categoryText: {
         marginTop: 5,
-        fontSize: 16,
+        fontSize: 13,
+        maxWidth: 70,
     },
 });
 
