@@ -8,7 +8,6 @@ import {
   Dimensions,
   ScrollView,
   Image,
-  Linking,
 } from "react-native";
 import {
   TextInput,
@@ -323,7 +322,7 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
 
       console.log(data.dataset);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     } finally {
       console.log("petición hecha");
     }
@@ -433,9 +432,12 @@ const ProfileScreen = ({ logueado, setLogueado, setCategoryId }) => {
   const handleReport = (id) => {
     // Abre la URL de la factura en el navegador predeterminado
     const invoiceUrl = `${SERVER_URL}reportes/publica/comprobante_de_compra.php?id=${id}`;
-    Linking.openURL(invoiceUrl).catch((err) =>
-      console.log("Error al abrir la URL:", err)
-    );
+    console.log(invoiceUrl);
+    //Navegar a detalle de producto
+    navigation.navigate("LoginNav", {
+      screen: "PDFViewer",
+      params: { pdfUrl: invoiceUrl },
+    });
   };
 
   //Función para cambiar el estado de un pedido

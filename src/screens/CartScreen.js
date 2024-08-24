@@ -7,7 +7,6 @@ import Constants from 'expo-constants';
 import fetchData from '../../api/components'; // Importa función para realizar peticiones API
 import CarritoCard from '../components/DetailProductCart/CarritoCard';
 import ModalEditarCantidad from '../components/DetailProductCart/ModalEditar';
-import { Linking } from 'react-native';
 import * as Constantes from '../../api/constantes';
 // URL base del servidor
 const SERVER_URL = Constantes.SERVER_URL;
@@ -75,7 +74,7 @@ const Carrito = ({ navigation, logueado, setLogueado, setCategoryId }) => {
         //Alert.alert('ADVERTENCIA', data.error);
       }
     } catch (error) {
-      console.error(error, "Error desde Catch");
+      console.log(error, "Error desde Catch");
       Alert.alert('Error', 'Ocurrió un error al listar las categorias');
     }
   };
@@ -105,9 +104,11 @@ const Carrito = ({ navigation, logueado, setLogueado, setCategoryId }) => {
                 //navigation.navigate('TabNavigator', { screen: 'Productos' });
                 // Abre la URL de la factura en el navegador predeterminado
                 const invoiceUrl = `${SERVER_URL}reportes/publica/factura_de_comprobante_de_compra.php`;
-                Linking.openURL(invoiceUrl).catch((err) =>
-                  console.log('Error al abrir la URL:', err)
-                );
+                //Navegar a la factura
+                navigation.navigate("LoginNav", {
+                  screen: "PDFViewer",
+                  params: { pdfUrl: invoiceUrl },
+                });
               } else {
                 Alert.alert('Error', data.error);
               }

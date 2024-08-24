@@ -29,10 +29,10 @@ const FilterModal = ({ visible, onDismiss, applyFilters }) => {
       if (data.status) {
         setCategories(data.dataset);
       } else {
-        console.error('Error al cargar las categorías:', data.message);
+        console.log('Error al cargar las categorías:', data.message);
       }
     } catch (error) {
-      console.error('Error al obtener datos de la API:', error);
+      console.log('Error al obtener datos de la API:', error);
     }
   };
 
@@ -42,10 +42,10 @@ const FilterModal = ({ visible, onDismiss, applyFilters }) => {
       if (data.status) {
         setMaterials(data.dataset);
       } else {
-        console.error('Error al cargar los materiales:', data.message);
+        console.log('Error al cargar los materiales:', data.message);
       }
     } catch (error) {
-      console.error('Error al obtener datos de la API:', error);
+      console.log('Error al obtener datos de la API:', error);
     }
   };
 

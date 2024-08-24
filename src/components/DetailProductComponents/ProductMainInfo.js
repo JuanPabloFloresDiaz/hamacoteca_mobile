@@ -44,7 +44,7 @@ const ProductMainInfo = ({ name, price, rating, existencias, productId }) => {
         console.log('Respuesta favorito: ', isFavorite);
       }
     } catch (error) {
-      console.error('Error verifying favorite:', error);
+      console.log('Error verifying favorite:', error);
     }
   };
 
@@ -67,7 +67,7 @@ const ProductMainInfo = ({ name, price, rating, existencias, productId }) => {
         }
       }
     } catch (error) {
-      console.error('Error verifying cart:', error);
+      console.log('Error verifying cart:', error);
     }
   };
 
