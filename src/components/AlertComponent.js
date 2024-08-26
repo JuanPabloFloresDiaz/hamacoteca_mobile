@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 const AlertComponent = ({ visible, type, message, onClose, url = null }) => {
   const navigation = useNavigation();
   let title, icon;
-
+  //Definir el tipo de alerta
   switch (type) {
     case 1:
       title = 'Éxito';

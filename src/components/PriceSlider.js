@@ -3,11 +3,14 @@ import { View, Text, StyleSheet } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { HelperText } from 'react-native-paper';
 
+//Componente de slider
 const PriceSlider = ({ minPrice = 0, maxPrice = 1000, onValueChange }) => {
+  //Definir constantes para la lógica del slider
   const [selectedMinPrice, setSelectedMinPrice] = useState(minPrice);
   const [selectedMaxPrice, setSelectedMaxPrice] = useState(maxPrice);
   const [error, setError] = useState('');
 
+  //Rango de precio para el minimo valor
   const handleMinPriceChange = (value) => {
     if (value > selectedMaxPrice) {
       setError('El valor mínimo no puede ser mayor al valor máximo');
@@ -17,7 +20,7 @@ const PriceSlider = ({ minPrice = 0, maxPrice = 1000, onValueChange }) => {
       onValueChange(value, selectedMaxPrice);
     }
   };
-
+  //Rango de precio para el maximo valor
   const handleMaxPriceChange = (value) => {
     if (value < selectedMinPrice) {
       setError('El valor máximo no puede ser menor al valor mínimo');

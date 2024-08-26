@@ -10,6 +10,7 @@ const MATERIALES_API = 'servicios/publica/material.php';
 const CATEGORIAS_API = 'servicios/publica/categoria.php';
 
 const FilterModal = ({ visible, onDismiss, applyFilters }) => {
+  //Definir las constantes para los filtros
   const [categories, setCategories] = useState([]);
   const [materials, setMaterials] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -18,11 +19,13 @@ const FilterModal = ({ visible, onDismiss, applyFilters }) => {
   const [allMaterialsChecked, setAllMaterialsChecked] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: 10, max: 999 });
 
+  //Cargar los metodos
   useEffect(() => {
     cargarCategorias();
     cargarMateriales();
   }, []);
 
+  //Cargar los checkBox de categorías
   const cargarCategorias = async () => {
     try {
       const data = await fetchData(CATEGORIAS_API, 'readAll');
@@ -36,6 +39,7 @@ const FilterModal = ({ visible, onDismiss, applyFilters }) => {
     }
   };
 
+  //Cargar los checkBox de materiales
   const cargarMateriales = async () => {
     try {
       const data = await fetchData(MATERIALES_API, 'readAll');
@@ -49,6 +53,7 @@ const FilterModal = ({ visible, onDismiss, applyFilters }) => {
     }
   };
 
+  //Seleccionar todas las categorías
   const handleSelectAllCategories = () => {
     if (allCategoriesChecked) {
       setSelectedCategories([]);
@@ -58,12 +63,14 @@ const FilterModal = ({ visible, onDismiss, applyFilters }) => {
     setAllCategoriesChecked(!allCategoriesChecked);
   };
 
+  //Seleccionar una categoría chequeada
   const handleCategoryChange = (id) => {
     setSelectedCategories(prev =>
       prev.includes(id) ? prev.filter(catId => catId !== id) : [...prev, id]
     );
   };
 
+  //Seleccionar todos los materiales
   const handleSelectAllMaterials = () => {
     if (allMaterialsChecked) {
       setSelectedMaterials([]);
@@ -73,16 +80,19 @@ const FilterModal = ({ visible, onDismiss, applyFilters }) => {
     setAllMaterialsChecked(!allMaterialsChecked);
   };
 
+  //Seleccionar los materiales chequeados
   const handleMaterialChange = (id) => {
     setSelectedMaterials(prev =>
       prev.includes(id) ? prev.filter(matId => matId !== id) : [...prev, id]
     );
   };
 
+  //Cambiar el rango de precio
   const handlePriceChange = (min, max) => {
     setPriceRange({ min, max });
   };
 
+  //Enviar formulario de filtro
   const handleFilterButton = () => {
     const form = new FormData();
     form.append('categorias', selectedCategories);

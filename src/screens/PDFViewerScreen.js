@@ -8,6 +8,7 @@ import errorImage from '../../assets/error.jpg';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
+// Descargar el pdf de la factura
 const PDFViewerScreen = ({ route }) => {
   const { pdfUrl } = route.params;
   const [downloadStatus, setDownloadStatus] = useState(null);

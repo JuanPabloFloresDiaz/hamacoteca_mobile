@@ -103,6 +103,7 @@ const HomeScreen = ({ categoryId, setCategoryId }) => {
   }, []);
 
 
+  //Volver a cargar en caso que se regrese a la pantalla desde otra
   useFocusEffect(
     useCallback(() => {
       const initializeApp = async () => {
