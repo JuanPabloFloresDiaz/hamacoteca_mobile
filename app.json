@@ -17,10 +17,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.torugam14.hamacotecamobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b469e6b3-c11d-4353-9114-b9b743228091"
+      }
     }
   }
 }

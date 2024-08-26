@@ -17,7 +17,7 @@ const HomeScreen = ({ categoryId, setCategoryId }) => {
   const carouselItems = [
     {
       title: "Hamacas de gran calidad",
-      image: require('../../assets/imagen.png'),
+      image: require('../../assets/ejemplo-hamaca.png'),
     },
     {
       title: "Hamacas cómodas",
